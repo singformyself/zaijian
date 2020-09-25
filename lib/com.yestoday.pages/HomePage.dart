@@ -83,46 +83,46 @@ class Item extends StatelessWidget {
     return Container(
         decoration: new BoxDecoration(color: Colors.white),
         margin: EdgeInsets.only(top: 2.5, bottom: 2.5),
-        padding: EdgeInsets.all(10.0),
-        child: AspectRatio(
-          aspectRatio: 16.0/10.0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ClipOval(
-                      child: Image(
-                    width: 30.0,
-                    height: 30.0,
-                    fit: BoxFit.cover,
-                    image: NetworkImage(icon),
-                  )),
-                  Padding(padding: EdgeInsets.all(3.0)),
-                  Text(user)
-                ],
-              ),
-              Divider(),
-              Text(title,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.clip),
-              Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
-              Expanded(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
-                //交叉轴的布局方式，对于column来说就是水平方向的布局方式
-                crossAxisAlignment: CrossAxisAlignment.center,
-                //就是字child的垂直布局方向，向上还是向下
-                verticalDirection: VerticalDirection.down,
-                children: sonItems,
-              )),
-              Divider(),
-              Text("2016-09-20 ~ 2020-10-15",
-                  style: TextStyle(color: Colors.black38)),
-            ],
-          ),
-        ));
+        padding: EdgeInsets.all(7.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ClipOval(
+                    child: Image(
+                      width: 30.0,
+                      height: 30.0,
+                      fit: BoxFit.cover,
+                      image: NetworkImage(icon),
+                    )),
+                Padding(padding: EdgeInsets.all(3.0)),
+                Text(user)
+              ],
+            ),
+            Divider(),
+            Text(title,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.clip),
+            Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
+            AspectRatio(
+              aspectRatio: sonItems.length/0.8,
+              child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisSize: MainAxisSize.max,
+                    //交叉轴的布局方式，对于column来说就是水平方向的布局方式
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    //就是字child的垂直布局方向，向上还是向下
+                    verticalDirection: VerticalDirection.down,
+                    children: sonItems,
+                  ),
+            ),
+            Divider(),
+            Text("2016-09-20 ~ 2020-10-15",
+                style: TextStyle(color: Colors.black38)),
+          ],
+        ),
+    );
   }
     Expanded genExpanded(String value){
         return Expanded(

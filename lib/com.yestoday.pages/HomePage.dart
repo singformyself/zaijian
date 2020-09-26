@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return HomePageState();
   }
+  
 }
 
 class HomePageState extends State<HomePage> {
+  List<Item> items = List();
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black38),
+        backgroundColor: Colors.white,
+        leading: Icon(Icons.brightness_low),
+        actions: [Icon(Icons.menu)],
+      ),
+      body: ListView.builder(itemBuilder: (context, index){
+        return items[index];
+      }
+      ,itemCount: items.length),
+    );
+  }
+
+  @override
+  void initState() {
+    items = [
       Item(
           "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1600972320718&di=2ed809bb74414331395b9120cd6b7245&imgtype=0&src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202008%2F11%2F20200811231800_rqlkt.thumb.400_0.jpeg",
           "再见Atlantis",
@@ -33,7 +53,7 @@ class HomePageState extends State<HomePage> {
           ],
           "2016-12-26",
           "2020-09-24"),
-        Item(
+      Item(
           "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=299548342,2048282219&fm=26&gp=0.jpg",
           "很傻很天真",
           "如果只有一个视频怎么办",
@@ -52,7 +72,7 @@ class HomePageState extends State<HomePage> {
           ],
           "2016-12-26",
           "2020-09-24"),
-    ]);
+    ];
   }
 }
 
@@ -71,70 +91,86 @@ class Item extends StatelessWidget {
     List<Expanded> sonItems = List();
     for (var value in images) {
       var temp = Expanded(
-          child: Stack(alignment: AlignmentDirectional.center,
+          child: Stack(
+              alignment: AlignmentDirectional.center,
               children: [
                 SizedBox.expand(
-                  child: Image(image: NetworkImage(value),fit:BoxFit.cover),
+                  child: Image(image: NetworkImage(value), fit: BoxFit.cover),
                 ),
-                IconButton(icon: Icon(Icons.play_circle_outline,color: Colors.white))
+                IconButton(
+                    onPressed:null,
+                    icon: Icon(Icons.play_circle_outline, color: Colors.white,size: 30.0,))
       ]));
       sonItems.add(temp);
     }
     return Container(
-        decoration: new BoxDecoration(color: Colors.white),
-        margin: EdgeInsets.only(top: 2.5, bottom: 2.5),
-        padding: EdgeInsets.all(7.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                ClipOval(
-                    child: Image(
-                      width: 30.0,
-                      height: 30.0,
-                      fit: BoxFit.cover,
-                      image: NetworkImage(icon),
-                    )),
-                Padding(padding: EdgeInsets.all(3.0)),
-                Text(user)
-              ],
-            ),
-            Divider(),
-            Text(title,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.clip),
-            Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
-            AspectRatio(
-              aspectRatio: sonItems.length/0.8,
-              child:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    mainAxisSize: MainAxisSize.max,
-                    //交叉轴的布局方式，对于column来说就是水平方向的布局方式
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    //就是字child的垂直布局方向，向上还是向下
-                    verticalDirection: VerticalDirection.down,
-                    children: sonItems,
-                  ),
-            ),
-            Divider(),
-            Text("2016-09-20 ~ 2020-10-15",
-                style: TextStyle(color: Colors.black38)),
-          ],
+      decoration: BoxDecoration(color: Colors.white,boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 5.0,
         ),
+      ]),
+      margin: EdgeInsets.only(top: 2.5, bottom: 2.5),
+      padding: EdgeInsets.all(7.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 30.0,
+            child: FlatButton(
+                onPressed: null,
+                padding: EdgeInsets.all(0.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Row(
+                        children: [
+                          ClipOval(
+                              child: Image(
+                                width: 30.0,
+                                height: 30.0,
+                                fit: BoxFit.cover,
+                                image: NetworkImage(icon),
+                              )),
+                          Padding(padding: EdgeInsets.all(3.0)),
+                          Text(user,style: TextStyle(color: Colors.deepOrange)),
+                        ],
+                      ),
+                      Icon(Icons.more_horiz)
+                    ]
+                )),
+          ),
+          Divider(),
+          Text(title, textAlign: TextAlign.left, overflow: TextOverflow.clip),
+          Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
+          AspectRatio(
+            aspectRatio: _getAspectRatio(sonItems.length),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
+              //交叉轴的布局方式，对于column来说就是水平方向的布局方式
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //就是字child的垂直布局方向，向上还是向下
+              verticalDirection: VerticalDirection.down,
+              children: sonItems,
+            ),
+          ),
+          Divider(),
+          Text("2016-09-20 ~ 2020-10-15",
+              style: TextStyle(color: Colors.black38)),
+        ],
+      ),
     );
   }
-    Expanded genExpanded(String value){
-        return Expanded(
-      child: Stack(alignment: AlignmentDirectional.center,
-          children: [
-            FlatButton(
-                shape:RoundedRectangleBorder(side:BorderSide(color: Colors.black),borderRadius:BorderRadius.circular(5.0)),
-                child: SizedBox.expand(
-                  child: Image(image: NetworkImage(value),fit:BoxFit.cover),
-                )
-            ),
-            Icon(Icons.play_arrow)
-          ]));
+
+  double _getAspectRatio(int length) {
+    switch(length){
+      case 3:return 16/10.0*3;
+      case 2:return 16/10.0*2;
+      case 1:return 16/10.0;
+      default: break;
     }
+    return length/1.0;
+  }
 }
+

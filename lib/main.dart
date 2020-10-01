@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'zaijian',
-      theme:
-          ThemeData(brightness: Brightness.light, primaryColor: Colors.deepOrange),
+      debugShowCheckedModeBanner: false,
+      title: '再见',
+      theme: ThemeData(brightness: Brightness.light),
       home: NavigationFrame(),
     );
   }
@@ -34,16 +34,9 @@ class NavigationFrameState extends State<NavigationFrame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(0xEE, 0xEE, 0xEE, 1),
-//      appBar: AppBar(
-//          leading: Padding(
-//            padding: EdgeInsets.fromLTRB(7.0, 7.0, 0, 7.0),
-//            child: ClipOval(child: Image.asset("images/logo.png"),),
-//          ),
-//          title: Text("再见"),
-//          centerTitle: true),
       body: pages[currentTabIndex],
       bottomNavigationBar: BottomNavigationBar(
+          iconSize: 24.0,
           selectedFontSize: 12.0,
           currentIndex: currentTabIndex,
           onTap: (index) {
@@ -54,7 +47,7 @@ class NavigationFrameState extends State<NavigationFrame> {
             BottomNavigationBarItem(icon: Icon(Icons.camera), title: Text("回忆管理", style:TextStyle(fontSize: 12.0))),
             BottomNavigationBarItem(icon: Icon(Icons.perm_identity), title: Text("我的", style:TextStyle(fontSize: 12.0)))
           ],
-          type: BottomNavigationBarType.fixed),
+          type: BottomNavigationBarType.fixed)
     );
   }
 

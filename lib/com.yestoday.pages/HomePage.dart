@@ -5,6 +5,7 @@ import 'package:zaijian/com.yestoday.model/AnnouncementVO.dart';
 import 'package:zaijian/com.yestoday.model/MediumVO.dart';
 import 'package:zaijian/com.yestoday.model/MyFocusVO.dart';
 import 'package:zaijian/com.yestoday.service/HomepageService.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,12 +15,11 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  HomepageService homepageService = new HomepageService();
-  AspectRatio aspectRatio;
-  List<AnnouncementVO> announcement = [];
-  List<MyFocusVO> myFocus = [];
-  List<Widget> items = [];
-  ScrollController scrollController = ScrollController(); //listview的控制器
+  HomepageService _homepageService = new HomepageService();
+  List<AnnouncementVO> _announcement = [];
+  List<MyFocusVO> _myFocus = [];
+  List<Widget> _items = [];
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,18 +30,29 @@ class HomePageState extends State<HomePage> {
               actions: [Icon(Icons.menu)],
             ),
             preferredSize: Size.fromHeight(50.0)),
-        body: items.length == 0
+        body: _items.length == 0
             ? Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: _loadData,
+            : SmartRefresher(
+                controller: _refreshController,
+                enablePullUp: true,
+                header: WaterDropHeader(waterDropColor: Colors.blue),
+                footer: ClassicFooter(
+                  loadStyle: LoadStyle.ShowWhenLoading,
+                  completeDuration: Duration(milliseconds: 500),
+                ),
                 child: ListView.builder(
                     itemBuilder: (context, index) {
-                      return items[index];
+                    return _items[index];
                     },
-                    itemCount: items.length,
-                    controller: scrollController
+                    itemCount: _items.length,
                 ),
-              )
+                onRefresh: () async {
+                    this._loadData();
+                },
+                onLoading: () async {
+                    this._loadMore();
+                },
+        )
     );
   }
 
@@ -49,38 +60,44 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     this._loadData();
-    this.scrollController.addListener(() {
-      print(scrollController.position);
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        print('滑动到了最底部');
-      }
-    });
   }
 
-  Future _loadData() async {
-    this.items=[];
-    homepageService
+  void _loadData() {
+    this._items=[];
+    _homepageService
         .getAnnouncements()
-        .then((announcements) => this.announcement = announcements)
+        .then((announcements) => this._announcement = announcements)
         .whenComplete(() => this.setState(() {
-      this.items.add(AspectRatio(
+      this._items.add(AspectRatio(
           aspectRatio: 16 / 9.0,
           child: Swiper(
               autoplay: true,
               itemBuilder: (context, index) {
-                return Image.network(announcement[index].imageUrl,
+                return Image.network(_announcement[index].imageUrl,
                     fit: BoxFit.cover);
               },
-              itemCount: announcement.length,
+              itemCount: _announcement.length,
               pagination: SwiperPagination())));
     }));
-    homepageService
+    _homepageService
         .getMyFocus("userId")
-        .then((myFocus) => this.myFocus = myFocus)
+        .then((myFocus) => this._myFocus = myFocus)
         .whenComplete(() => this.setState(() {
-      this.myFocus.forEach((myFocusVO) {
-        this.items.add(MyFocus(myFocusVO));
+          this._myFocus.forEach((myFocusVO) {
+          this._items.add(MyFocus(myFocusVO));
+          this._refreshController.refreshCompleted();
+      });
+    }));
+  }
+
+  void _loadMore() {
+    _homepageService
+        .getMyFocus("userId")
+        .then((myFocus) => this._myFocus = myFocus)
+        .whenComplete(() => this.setState(() {
+          this._myFocus.forEach((myFocusVO) {
+          this._items.add(MyFocus(myFocusVO));
+          this._refreshController.loadComplete();
       });
     }));
   }

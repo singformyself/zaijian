@@ -4,6 +4,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com.yestoday.model/AnnouncementVO.dart';
 import 'package:zaijian/com.yestoday.model/MediumVO.dart';
 import 'package:zaijian/com.yestoday.model/MyFocusVO.dart';
+import 'package:zaijian/com.yestoday.pages/enum/ListViewActionEnum.dart';
 import 'package:zaijian/com.yestoday.service/HomepageService.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -16,10 +17,13 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   HomepageService _homepageService = new HomepageService();
-  List<AnnouncementVO> _announcement = [];
-  List<MyFocusVO> _myFocus = [];
+
+//  List<AnnouncementVO> _announcement = [];
+//  List<MyFocusVO> _myFocus = [];
   List<Widget> _items = [];
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: false);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,25 +37,25 @@ class HomePageState extends State<HomePage> {
         body: _items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
-                controller: _refreshController,
-                enablePullUp: true,
-                header: WaterDropHeader(waterDropColor: Colors.blue),
-                footer: ClassicFooter(
-                  loadStyle: LoadStyle.ShowWhenLoading,
-                  completeDuration: Duration(milliseconds: 500),
-                ),
-                child: ListView.builder(
-                    itemBuilder: (context, index) {
-                    return _items[index];
-                    },
-                    itemCount: _items.length,
-                ),
-                onRefresh: () async {
-                    this._loadData();
-                },
-                onLoading: () async {
-                    this._loadMore();
-                },
+          controller: _refreshController,
+          enablePullUp: true,
+          header: WaterDropHeader(waterDropColor: Colors.blue),
+          footer: ClassicFooter(
+            loadStyle: LoadStyle.ShowWhenLoading,
+            completeDuration: Duration(milliseconds: 500),
+          ),
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return _items[index];
+            },
+            itemCount: _items.length,
+          ),
+          onRefresh: () async {
+            this._loadData(ListViewActionEnum.PULL_DOWN);
+          },
+          onLoading: () async {
+            this._loadMore();
+          },
         )
     );
   }
@@ -59,47 +63,80 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    this._loadData();
+    this._loadData(null);
   }
 
-  void _loadData() {
-    this._items=[];
-    _homepageService
-        .getAnnouncements()
-        .then((announcements) => this._announcement = announcements)
-        .whenComplete(() => this.setState(() {
-      this._items.add(AspectRatio(
-          aspectRatio: 16 / 9.0,
-          child: Swiper(
-              autoplay: true,
-              itemBuilder: (context, index) {
-                return Image.network(_announcement[index].imageUrl,
-                    fit: BoxFit.cover);
-              },
-              itemCount: _announcement.length,
-              pagination: SwiperPagination())));
-    }));
-    _homepageService
-        .getMyFocus("userId")
-        .then((myFocus) => this._myFocus = myFocus)
-        .whenComplete(() => this.setState(() {
-          this._myFocus.forEach((myFocusVO) {
-          this._items.add(MyFocus(myFocusVO));
+  void _loadData(ListViewActionEnum action) {
+    this._items = [];
+    _homepageService.getAnnouncements().then((announcements) =>
+    {
+      _homepageService.getMyFocus("userId").then((myFocus) =>
+      {
+        this.setState(() {
+          this._updateAnnouncement(announcements);
+          this._updateMyFocus(myFocus,action);
           this._refreshController.refreshCompleted();
-      });
-    }));
+        })
+      })
+    });
+//    _homepageService
+//        .getAnnouncements()
+//        .then((announcements) => this._announcement = announcements)
+//        .whenComplete(() => this.setState(() {
+//      this._items.add(AspectRatio(
+//          aspectRatio: 16 / 9.0,
+//          child: Swiper(
+//              autoplay: true,
+//              itemBuilder: (context, index) {
+//                return Image.network(_announcement[index].imageUrl,
+//                    fit: BoxFit.cover);
+//              },
+//              itemCount: _announcement.length,
+//              pagination: SwiperPagination())));
+//    }));
+//    _homepageService
+//        .getMyFocus("userId")
+//        .then((myFocus) => this._myFocus = myFocus)
+//        .whenComplete(() => this.setState(() {
+//          this._myFocus.forEach((myFocusVO) {
+//          this._items.add(MyFocus(myFocusVO));
+//          this._refreshController.refreshCompleted();
+//      });
+//    }));
   }
 
   void _loadMore() {
     _homepageService
         .getMyFocus("userId")
-        .then((myFocus) => this._myFocus = myFocus)
-        .whenComplete(() => this.setState(() {
-          this._myFocus.forEach((myFocusVO) {
-          this._items.add(MyFocus(myFocusVO));
-          this._refreshController.loadComplete();
-      });
-    }));
+        .then((myFocus) => {
+          this.setState(() {
+            this._updateMyFocus(myFocus,ListViewActionEnum.PULL_UP);
+          })
+        });
+  }
+
+  void _updateAnnouncement(List<AnnouncementVO> announcements) {
+    this._items.add(AspectRatio(
+        aspectRatio: 16 / 9.0,
+        child: Swiper(
+            autoplay: true,
+            itemBuilder: (context, index) {
+              return Image.network(announcements[index].imageUrl,
+                  fit: BoxFit.cover);
+            },
+            itemCount: announcements.length,
+            pagination: SwiperPagination())));
+  }
+
+  void _updateMyFocus(List<MyFocusVO> myFocus, ListViewActionEnum action) {
+    myFocus.forEach((myFocusVO) {
+      this._items.add(MyFocus(myFocusVO));
+    });
+    switch(action){
+      case ListViewActionEnum.PULL_DOWN: this._refreshController.refreshCompleted();break;
+      case ListViewActionEnum.PULL_UP: this._refreshController.loadComplete();break;
+      default: break;
+    }
   }
 }
 
@@ -114,18 +151,22 @@ class MyFocus extends StatelessWidget {
     for (var medium in myFocus.showItems) {
       var temp = Expanded(
           child: Stack(alignment: AlignmentDirectional.center, children: [
-        SizedBox.expand(
-          child: Image(image: NetworkImage(medium.icon), fit: BoxFit.cover),
-        ),
-        IconButton(
-            onPressed: () => {Toast.show("打开详情页面", context)},
-            icon: Icon(
-                medium.type == MediumEnum.VIDEO
-                    ? Icons.play_circle_outline
-                    : Icons.photo,
-                color: Colors.white54,
-                size: 30.0))
-      ]));
+            SizedBox.expand(
+              child: Container(
+                padding: EdgeInsets.all(1.0),
+                child: Image(image: NetworkImage(medium.icon), fit: BoxFit.cover),
+              ),//
+            ),
+            IconButton(
+                iconSize: medium.type == MediumEnum.VIDEO? 30.0: 90.0,
+                onPressed: () => {Toast.show("打开详情页面", context)},
+                icon: Icon(
+                    medium.type == MediumEnum.VIDEO
+                        ? Icons.play_circle_outline
+                        : null,
+                    color: Colors.white54,
+                    ))
+          ]));
       sonItems.add(temp);
     }
     return Container(
@@ -152,11 +193,11 @@ class MyFocus extends StatelessWidget {
                         children: [
                           ClipOval(
                               child: Image(
-                            width: 30.0,
-                            height: 30.0,
-                            fit: BoxFit.cover,
-                            image: NetworkImage(myFocus.userIcon),
-                          )),
+                                width: 30.0,
+                                height: 30.0,
+                                fit: BoxFit.cover,
+                                image: NetworkImage(myFocus.userIcon),
+                              )),
                           Padding(padding: EdgeInsets.all(3.0)),
                           Text(myFocus.userNickName, style: TextStyle()),
                         ],

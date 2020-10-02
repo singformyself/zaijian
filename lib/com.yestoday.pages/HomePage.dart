@@ -7,6 +7,7 @@ import 'package:zaijian/com.yestoday.model/MyFocusVO.dart';
 import 'package:zaijian/com.yestoday.pages/enum/ListViewActionEnum.dart';
 import 'package:zaijian/com.yestoday.service/HomepageService.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:zaijian/com.yestoday.widget/ZJ_AppBar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,28 +17,22 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  HomepageService _homepageService = new HomepageService();
-
-//  List<AnnouncementVO> _announcement = [];
-//  List<MyFocusVO> _myFocus = [];
-  List<Widget> _items = [];
-  RefreshController _refreshController = RefreshController(
+  // 获取服务器数据的service
+  HomepageService service = new HomepageService();
+  List<Widget> items = [];
+  // 下拉刷新上拉加载控制器
+  RefreshController refreshController = RefreshController(
       initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: PreferredSize(
-            child: AppBar(
-              title: Text("再见"),
-              actions: [Icon(Icons.menu)],
-            ),
-            preferredSize: Size.fromHeight(50.0)),
-        body: _items.length == 0
+        appBar: ZJ_AppBar("再见",[Icon(Icons.menu)]),
+        body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
-          controller: _refreshController,
+          controller: refreshController,
           enablePullUp: true,
           header: WaterDropHeader(waterDropColor: Colors.blue),
           footer: ClassicFooter(
@@ -46,15 +41,15 @@ class HomePageState extends State<HomePage> {
           ),
           child: ListView.builder(
             itemBuilder: (context, index) {
-              return _items[index];
+              return items[index];
             },
-            itemCount: _items.length,
+            itemCount: items.length,
           ),
           onRefresh: () async {
-            this._loadData(ListViewActionEnum.PULL_DOWN);
+            this.loadData(ListViewActionEnum.PULL_DOWN);
           },
           onLoading: () async {
-            this._loadMore();
+            this.loadMore();
           },
         )
     );
@@ -63,60 +58,36 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    this._loadData(null);
+    this.loadData(null);
   }
 
-  void _loadData(ListViewActionEnum action) {
-    this._items = [];
-    _homepageService.getAnnouncements().then((announcements) =>
+  void loadData(ListViewActionEnum action) {
+    this.items = [];
+    service.getAnnouncements().then((announcements) =>
     {
-      _homepageService.getMyFocus("userId").then((myFocus) =>
+      service.getMyFocus("userId").then((myFocus) =>
       {
         this.setState(() {
-          this._updateAnnouncement(announcements);
-          this._updateMyFocus(myFocus,action);
-          this._refreshController.refreshCompleted();
+          this.updateAnnouncement(announcements);
+          this.updateMyFocus(myFocus,action);
+          this.refreshController.refreshCompleted();
         })
       })
     });
-//    _homepageService
-//        .getAnnouncements()
-//        .then((announcements) => this._announcement = announcements)
-//        .whenComplete(() => this.setState(() {
-//      this._items.add(AspectRatio(
-//          aspectRatio: 16 / 9.0,
-//          child: Swiper(
-//              autoplay: true,
-//              itemBuilder: (context, index) {
-//                return Image.network(_announcement[index].imageUrl,
-//                    fit: BoxFit.cover);
-//              },
-//              itemCount: _announcement.length,
-//              pagination: SwiperPagination())));
-//    }));
-//    _homepageService
-//        .getMyFocus("userId")
-//        .then((myFocus) => this._myFocus = myFocus)
-//        .whenComplete(() => this.setState(() {
-//          this._myFocus.forEach((myFocusVO) {
-//          this._items.add(MyFocus(myFocusVO));
-//          this._refreshController.refreshCompleted();
-//      });
-//    }));
   }
 
-  void _loadMore() {
-    _homepageService
+  void loadMore() {
+    service
         .getMyFocus("userId")
         .then((myFocus) => {
           this.setState(() {
-            this._updateMyFocus(myFocus,ListViewActionEnum.PULL_UP);
+            this.updateMyFocus(myFocus,ListViewActionEnum.PULL_UP);
           })
         });
   }
 
-  void _updateAnnouncement(List<AnnouncementVO> announcements) {
-    this._items.add(AspectRatio(
+  void updateAnnouncement(List<AnnouncementVO> announcements) {
+    this.items.add(AspectRatio(
         aspectRatio: 16 / 9.0,
         child: Swiper(
             autoplay: true,
@@ -128,13 +99,13 @@ class HomePageState extends State<HomePage> {
             pagination: SwiperPagination())));
   }
 
-  void _updateMyFocus(List<MyFocusVO> myFocus, ListViewActionEnum action) {
+  void updateMyFocus(List<MyFocusVO> myFocus, ListViewActionEnum action) {
     myFocus.forEach((myFocusVO) {
-      this._items.add(MyFocus(myFocusVO));
+      this.items.add(MyFocus(myFocusVO));
     });
     switch(action){
-      case ListViewActionEnum.PULL_DOWN: this._refreshController.refreshCompleted();break;
-      case ListViewActionEnum.PULL_UP: this._refreshController.loadComplete();break;
+      case ListViewActionEnum.PULL_DOWN: this.refreshController.refreshCompleted();break;
+      case ListViewActionEnum.PULL_UP: this.refreshController.loadComplete();break;
       default: break;
     }
   }
@@ -142,7 +113,6 @@ class HomePageState extends State<HomePage> {
 
 class MyFocus extends StatelessWidget {
   MyFocusVO myFocus;
-
   MyFocus(this.myFocus);
 
   @override

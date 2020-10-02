@@ -27,7 +27,6 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
         appBar: ZJ_AppBar("再见",[Icon(Icons.menu)]),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
@@ -70,7 +69,6 @@ class HomePageState extends State<HomePage> {
         this.setState(() {
           this.updateAnnouncement(announcements);
           this.updateMyFocus(myFocus,action);
-          this.refreshController.refreshCompleted();
         })
       })
     });
@@ -169,7 +167,7 @@ class MyFocus extends StatelessWidget {
                                 image: NetworkImage(myFocus.userIcon),
                               )),
                           Padding(padding: EdgeInsets.all(3.0)),
-                          Text(myFocus.userNickName, style: TextStyle()),
+                          Text(myFocus.userNickName, overflow: TextOverflow.ellipsis),
                         ],
                       ),
                       Icon(Icons.more_horiz)

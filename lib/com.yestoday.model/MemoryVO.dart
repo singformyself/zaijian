@@ -7,4 +7,8 @@ class MemoryVO {
   String title;
   String date;
   String creator;
+  String creatorIcon;
+
+  MemoryVO(this.id, this.icon, this.title, this.date, this.creator,
+      this.creatorIcon);
 }

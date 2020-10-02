@@ -27,6 +27,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.black12,
         appBar: ZJ_AppBar("再见",[Icon(Icons.menu)]),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
@@ -138,14 +139,9 @@ class MyFocus extends StatelessWidget {
       sonItems.add(temp);
     }
     return Container(
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 5.0,
-        ),
-      ]),
-      margin: EdgeInsets.only(top: 2.5, bottom: 2.5),
-      padding: EdgeInsets.all(7.0),
+      decoration: BoxDecoration(color: Colors.white),
+      margin: EdgeInsets.only(bottom: 3.0),
+      padding: EdgeInsets.fromLTRB(3.0,7.0,3.0,7.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,7 +170,7 @@ class MyFocus extends StatelessWidget {
                     ])),
           ),
           Divider(),
-          Text(myFocus.title,
+          Text("        " + myFocus.title,
               textAlign: TextAlign.left, overflow: TextOverflow.clip),
           Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
           AspectRatio(

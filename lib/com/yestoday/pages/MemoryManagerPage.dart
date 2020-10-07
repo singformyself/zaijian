@@ -40,7 +40,7 @@ class MemoryManagerPageState extends State<MemoryManagerPage> {
           : SmartRefresher(
               controller: refreshController,
               enablePullUp: true,
-              header: WaterDropHeader(waterDropColor: Colors.blue),
+              header: WaterDropHeader(waterDropColor: Theme.of(context).primaryColor),
               footer: ClassicFooter(
                 loadStyle: LoadStyle.ShowWhenLoading,
                 completeDuration: Duration(milliseconds: 500),

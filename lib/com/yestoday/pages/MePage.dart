@@ -26,7 +26,7 @@ class MePageState extends State<MePage> {
             aspectRatio: 16 / 8.0,
             child: Container(
               padding: EdgeInsets.fromLTRB(20.0, 30.0, 3.0, 10.0),
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Row(
                 children: [
                   Column(

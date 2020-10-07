@@ -38,7 +38,7 @@ class HomePageState extends State<HomePage> {
             : SmartRefresher(
                 controller: refreshController,
                 enablePullUp: true,
-                header: WaterDropHeader(waterDropColor: Colors.blue),
+                header: WaterDropHeader(waterDropColor: Theme.of(context).primaryColor),
                 footer: ClassicFooter(
                   loadStyle: LoadStyle.ShowWhenLoading,
                   completeDuration: Duration(milliseconds: 500),

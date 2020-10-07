@@ -120,7 +120,7 @@ class MemoryItem extends StatelessWidget {
                 Toast.show("长按分享", context);
               },
               contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-              title: Text(memoryVO.title, overflow: TextOverflow.clip),
+              title: Text("        "+memoryVO.title, overflow: TextOverflow.clip),
               trailing: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image(

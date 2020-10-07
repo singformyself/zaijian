@@ -20,39 +20,39 @@ class HomePageState extends State<HomePage> {
   // 获取服务器数据的service
   HomepageService service = new HomepageService();
   List<Widget> items = [];
+
   // 下拉刷新上拉加载控制器
-  RefreshController refreshController = RefreshController(
-      initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black12,
-        appBar: ZJ_AppBar("再见",[Icon(Icons.menu)]),
+        appBar: ZJ_AppBar("再见", [Icon(Icons.menu)]),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
-          controller: refreshController,
-          enablePullUp: true,
-          header: WaterDropHeader(waterDropColor: Colors.blue),
-          footer: ClassicFooter(
-            loadStyle: LoadStyle.ShowWhenLoading,
-            completeDuration: Duration(milliseconds: 500),
-          ),
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return items[index];
-            },
-            itemCount: items.length,
-          ),
-          onRefresh: () async {
-            this.loadData(ListViewActionEnum.PULL_DOWN);
-          },
-          onLoading: () async {
-            this.loadMore();
-          },
-        )
-    );
+                controller: refreshController,
+                enablePullUp: true,
+                header: WaterDropHeader(waterDropColor: Colors.blue),
+                footer: ClassicFooter(
+                  loadStyle: LoadStyle.ShowWhenLoading,
+                  completeDuration: Duration(milliseconds: 500),
+                ),
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return items[index];
+                  },
+                  itemCount: items.length,
+                ),
+                onRefresh: () async {
+                  this.loadData(ListViewActionEnum.PULL_DOWN);
+                },
+                onLoading: () async {
+                  this.loadMore();
+                },
+              ));
   }
 
   @override
@@ -63,24 +63,20 @@ class HomePageState extends State<HomePage> {
 
   void loadData(ListViewActionEnum action) {
     this.items = [];
-    service.getAnnouncements().then((announcements) =>
-    {
-      service.getMyFocus("userId").then((myFocus) =>
-      {
-        this.setState(() {
-          this.updateAnnouncement(announcements);
-          this.updateMyFocus(myFocus,action);
-        })
-      })
-    });
+    service.getAnnouncements().then((announcements) => {
+          service.getMyFocus("userId").then((myFocus) => {
+                this.setState(() {
+                  this.updateAnnouncement(announcements);
+                  this.updateMyFocus(myFocus, action);
+                })
+              })
+        });
   }
 
   void loadMore() {
-    service
-        .getMyFocus("userId")
-        .then((myFocus) => {
+    service.getMyFocus("userId").then((myFocus) => {
           this.setState(() {
-            this.updateMyFocus(myFocus,ListViewActionEnum.PULL_UP);
+            this.updateMyFocus(myFocus, ListViewActionEnum.PULL_UP);
           })
         });
   }
@@ -102,16 +98,22 @@ class HomePageState extends State<HomePage> {
     myFocus.forEach((myFocusVO) {
       this.items.add(MyFocus(myFocusVO));
     });
-    switch(action){
-      case ListViewActionEnum.PULL_DOWN: this.refreshController.refreshCompleted();break;
-      case ListViewActionEnum.PULL_UP: this.refreshController.loadComplete();break;
-      default: break;
+    switch (action) {
+      case ListViewActionEnum.PULL_DOWN:
+        this.refreshController.refreshCompleted();
+        break;
+      case ListViewActionEnum.PULL_UP:
+        this.refreshController.loadComplete();
+        break;
+      default:
+        break;
     }
   }
 }
 
 class MyFocus extends StatelessWidget {
   MyFocusVO myFocus;
+
   MyFocus(this.myFocus);
 
   @override
@@ -119,29 +121,29 @@ class MyFocus extends StatelessWidget {
     List<Expanded> sonItems = List();
     for (var medium in myFocus.showItems) {
       var temp = Expanded(
-          child: Stack(alignment: AlignmentDirectional.center, children: [
-            SizedBox.expand(
-              child: Container(
-                padding: EdgeInsets.all(1.0),
-                child: Image(image: NetworkImage(medium.icon), fit: BoxFit.cover),
-              ),//
-            ),
-            IconButton(
-                iconSize: medium.type == MediumEnum.VIDEO? 30.0: 90.0,
-                onPressed: () => {Toast.show("打开详情页面", context)},
-                icon: Icon(
-                    medium.type == MediumEnum.VIDEO
-                        ? Icons.play_circle_outline
-                        : null,
-                    color: Colors.white54,
-                    ))
-          ]));
+          child: Stack(alignment: AlignmentDirectional.bottomStart, children: [
+        SizedBox.expand(
+          child: GestureDetector(
+            onTap: () {
+              Toast.show("打开详情页面", context);
+            },
+            child: Container(
+              padding: EdgeInsets.all(1.0),
+              child: Image(image: NetworkImage(medium.icon), fit: BoxFit.cover),
+            ), //
+          ),
+        ),
+        Icon(
+          medium.type == MediumEnum.VIDEO ? Icons.videocam : Icons.photo,
+          color: Colors.white
+        )
+      ]));
       sonItems.add(temp);
     }
     return Container(
       decoration: BoxDecoration(color: Colors.white),
       margin: EdgeInsets.only(bottom: 3.0),
-      padding: EdgeInsets.fromLTRB(3.0,7.0,3.0,7.0),
+      padding: EdgeInsets.fromLTRB(3.0, 7.0, 3.0, 7.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -157,13 +159,14 @@ class MyFocus extends StatelessWidget {
                         children: [
                           ClipOval(
                               child: Image(
-                                width: 30.0,
-                                height: 30.0,
-                                fit: BoxFit.cover,
-                                image: NetworkImage(myFocus.userIcon),
-                              )),
+                            width: 30.0,
+                            height: 30.0,
+                            fit: BoxFit.cover,
+                            image: NetworkImage(myFocus.userIcon),
+                          )),
                           Padding(padding: EdgeInsets.all(3.0)),
-                          Text(myFocus.userNickName, overflow: TextOverflow.ellipsis),
+                          Text(myFocus.userNickName,
+                              overflow: TextOverflow.ellipsis),
                         ],
                       ),
                       Icon(Icons.more_horiz)

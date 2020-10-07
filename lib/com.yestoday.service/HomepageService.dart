@@ -28,7 +28,6 @@ class HomepageService {
           "2016-12-05",
           "2020-10.01"));
     }
-    print(myFocus);
     return myFocus;
   }
 

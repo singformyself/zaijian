@@ -5,6 +5,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com.yestoday.model/MemoryVO.dart';
 import 'package:zaijian/com.yestoday.service/MemoryManagerPageService.dart';
 import 'package:zaijian/com.yestoday.widget/ZJ_AppBar.dart';
+import 'package:zaijian/com.yestoday.widget/ZJ_Image.dart';
 
 import 'enum/ListViewActionEnum.dart';
 
@@ -123,11 +124,7 @@ class MemoryItem extends StatelessWidget {
               title: Text("        "+memoryVO.title, overflow: TextOverflow.clip),
               trailing: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image(
-                    width: 95.0,
-                    fit: BoxFit.cover,
-                    image: NetworkImage(memoryVO.icon),
-                  ))),
+                  child: ZJ_Image.network(memoryVO.icon,width:95.0))),
           Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,13 +132,10 @@ class MemoryItem extends StatelessWidget {
               Row(
                 children: [
                   ClipOval(
-                    child: Image(
-                      width: 24.0,
-                      height: 24.0,
-                      fit: BoxFit.cover,
-                      image: NetworkImage(memoryVO.creatorIcon),
+                    child: ZJ_Image.network(memoryVO.creatorIcon,
+                      width: 30.0,
+                      height: 30.0),
                     ),
-                  ),
                   Padding(padding: EdgeInsets.all(2.0)),
                   Text(memoryVO.creator, overflow: TextOverflow.ellipsis)
                 ],

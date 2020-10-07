@@ -8,6 +8,7 @@ import 'package:zaijian/com.yestoday.pages/enum/ListViewActionEnum.dart';
 import 'package:zaijian/com.yestoday.service/HomepageService.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zaijian/com.yestoday.widget/ZJ_AppBar.dart';
+import 'package:zaijian/com.yestoday.widget/ZJ_Image.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -87,8 +88,7 @@ class HomePageState extends State<HomePage> {
         child: Swiper(
             autoplay: true,
             itemBuilder: (context, index) {
-              return Image.network(announcements[index].imageUrl,
-                  fit: BoxFit.cover);
+              return ZJ_Image.network(announcements[index].imageUrl);
             },
             itemCount: announcements.length,
             pagination: SwiperPagination())));
@@ -129,7 +129,7 @@ class MyFocus extends StatelessWidget {
             },
             child: Container(
               padding: EdgeInsets.all(1.0),
-              child: Image(image: NetworkImage(medium.icon), fit: BoxFit.cover),
+              child: ZJ_Image.network(medium.icon),
             ), //
           ),
         ),
@@ -158,12 +158,8 @@ class MyFocus extends StatelessWidget {
                       Row(
                         children: [
                           ClipOval(
-                              child: Image(
-                            width: 30.0,
-                            height: 30.0,
-                            fit: BoxFit.cover,
-                            image: NetworkImage(myFocus.userIcon),
-                          )),
+                              child: ZJ_Image.network(myFocus.userIcon,width: 30.0,height: 30.0),
+                          ),
                           Padding(padding: EdgeInsets.all(3.0)),
                           Text(myFocus.userNickName,
                               overflow: TextOverflow.ellipsis),

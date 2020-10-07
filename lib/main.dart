@@ -45,7 +45,7 @@ class NavigationFrameState extends State<NavigationFrame> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("首页", style:TextStyle(fontSize: 12.0))),
             BottomNavigationBarItem(icon: Icon(Icons.camera), title: Text("回忆管理", style:TextStyle(fontSize: 12.0))),
-            BottomNavigationBarItem(icon: Icon(Icons.perm_identity), title: Text("我的", style:TextStyle(fontSize: 12.0)))
+            BottomNavigationBarItem(icon: Icon(Icons.person), title: Text("我的", style:TextStyle(fontSize: 12.0)))
           ],
           type: BottomNavigationBarType.fixed)
     );

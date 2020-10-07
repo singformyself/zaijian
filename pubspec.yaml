@@ -32,6 +32,7 @@ dependencies:
   pull_to_refresh: ^1.6.1
   toast: ^0.1.5
   extended_image: ^1.1.2
+  shared_preferences: ^0.5.12
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +54,7 @@ flutter:
     - images/logo.png
     - images/loadfailed.png
     - images/icons/video.png
+    - images/defaultHead.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

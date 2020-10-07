@@ -30,7 +30,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black12,
-        appBar: ZJ_AppBar("再见", [Icon(Icons.menu)]),
+        appBar: ZJ_AppBar("再见", actions:[Icon(Icons.menu)]),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(

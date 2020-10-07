@@ -27,7 +27,7 @@ class MemoryManagerPageState extends State<MemoryManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black12,
-      appBar: ZJ_AppBar("列表", [Icon(Icons.menu)]),
+      appBar: ZJ_AppBar("列表"),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {

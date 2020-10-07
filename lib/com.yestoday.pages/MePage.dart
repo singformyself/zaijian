@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import 'package:zaijian/com.yestoday.widget/ZJ_AppBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zaijian/com.yestoday.model/UserVO.dart';
+import 'package:zaijian/com.yestoday.widget/ZJ_Image.dart';
+
+import 'LoginPage.dart';
 
 class MePage extends StatefulWidget {
   @override
@@ -10,6 +14,8 @@ class MePage extends StatefulWidget {
 }
 
 class MePageState extends State<MePage> {
+  UserVO userInfo;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +34,21 @@ class MePageState extends State<MePage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Toast.show("进入头像编辑页面", context);
+                          if (userInfo != null) {
+                            Toast.show("进入头像编辑页面", context);
+                          } else {
+                            Toast.show("进入登陆页面", context);
+                          }
                         },
                         child: ClipOval(
-                          child: Image(
-                            width: 105.0,
-                            height: 105.0,
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "https://zaijian.obs.cn-north-4.myhuaweicloud.com/kjlhfghfdsdfdgf.jpg"),
-                          ),
+                          child: userInfo != null
+                              ? ZJ_Image.network(userInfo.icon,
+                                  width: 105.0, height: 105.0)
+                              : Image(
+                                  width: 105.0,
+                                  height: 105.0,
+                                  image: AssetImage("images/defaultHead.jpg"),
+                                ),
                         ),
                       ),
                       Text("点击编辑",
@@ -58,28 +69,17 @@ class MePageState extends State<MePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("很傻很天真反对法士大夫",
+                                Text(
+                                    userInfo != null
+                                        ? userInfo.nickName
+                                        : "未登陆",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
-                                Row(
-                                  children: [
-                                    Icon(Icons.verified_user,
-                                        color: Colors.amber),
-                                    Text("已实名",
-                                        style: TextStyle(color: Colors.amber)),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.local_offer,
-                                        color: Colors.amber),
-                                    Text("VIP",
-                                        style: TextStyle(color: Colors.amber)),
-                                  ],
-                                ),
+                                getRealNameInfo(),
+                                getVipInfo(),
                                 Text("点击编辑基本信息",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 12.0))
@@ -93,45 +93,105 @@ class MePageState extends State<MePage> {
             ),
           ),
           ListTile(
-            onTap: (){Toast.show("VIP", context);},
+            onTap: () {
+              Toast.show("VIP", context);
+            },
             leading: Icon(Icons.local_offer),
             title: Text("VIP管理"),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
-            onTap: (){Toast.show("打开密码更换页面", context);},
+            onTap: () {
+              Toast.show("打开密码更换页面", context);
+            },
             leading: Icon(Icons.security),
             title: Text("账号与安全"),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
-            onTap: (){Toast.show("关于再见", context);},
+            onTap: () {
+              Toast.show("关于再见", context);
+            },
             leading: Icon(Icons.info),
             title: Text("关于再见"),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
-            onTap: (){Toast.show("检查版本更新", context);},
+            onTap: () {
+              Toast.show("检查版本更新", context);
+            },
             leading: Icon(Icons.refresh),
             title: Text("检查版本更新"),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
-            onTap: (){Toast.show("帮助", context);},
+            onTap: () {
+              Toast.show("帮助", context);
+            },
             leading: Icon(Icons.help),
             title: Text("帮助"),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
-            onTap: (){Toast.show("退出登陆了", context);},
-            title: Center(child: Text("退出登陆")),
+            onTap: () {
+              if(userInfo!=null){
+                Toast.show("退出登陆了", context);
+              }else{
+                Toast.show("登陆页面", context);
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+              }
+            },
+            title: Center(child: Text(userInfo!=null?"退出登陆":"点击登陆")),
           ),
           Divider()
         ]));
+  }
+
+  @override
+  void initState() {
+    getLoginUser();
+  }
+
+  void getLoginUser() {
+    SharedPreferences.getInstance().then((pfs) => {
+          this.setState(() {
+            this.userInfo = pfs.get(UserVO.LOGIN_KEY);
+          })
+        });
+  }
+
+  Widget getRealNameInfo() {
+    String text = "未实名";
+    Color color = Colors.white;
+    if (userInfo != null && userInfo.name != null) {
+      text = "已实名";
+      color = Colors.amber;
+    }
+    return Row(
+      children: [
+        Icon(Icons.verified_user, color: color),
+        Text(text, style: TextStyle(color: color)),
+      ],
+    );
+  }
+
+  Widget getVipInfo() {
+    String text = "普通";
+    Color color = Colors.white;
+    if (userInfo != null && userInfo.vip != null) {
+      text = userInfo.vip;
+      color = Colors.amber;
+    }
+    return Row(
+      children: [
+        Icon(Icons.local_offer, color: color),
+        Text(text, style: TextStyle(color: color)),
+      ],
+    );
   }
 }

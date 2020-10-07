@@ -1,4 +1,5 @@
 class UserVO {
+  static final String LOGIN_KEY = "userInfo";
   String id;
   String nickName; // 昵称
   String name; // 真是姓名
@@ -6,4 +7,5 @@ class UserVO {
   String phone; // 电话号码
   String identityCard; // 身份证号
   String email; // 邮箱
+  String vip;
 }

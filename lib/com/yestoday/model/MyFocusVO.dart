@@ -1,4 +1,6 @@
-import 'package:zaijian/com.yestoday.model/MediumVO.dart';
+
+
+import 'MediumVO.dart';
 
 /**
  * 我的关注实体

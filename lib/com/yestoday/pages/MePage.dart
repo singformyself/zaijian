@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/com.yestoday.model/UserVO.dart';
-import 'package:zaijian/com.yestoday.widget/ZJ_Image.dart';
+import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
+
 
 import 'LoginPage.dart';
 

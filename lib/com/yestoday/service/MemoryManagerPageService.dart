@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:zaijian/TestData.dart';
-import 'package:zaijian/com.yestoday.model/MemoryVO.dart';
+import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
 
 class MemoryManagerPageService {
 

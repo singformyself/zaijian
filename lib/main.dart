@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zaijian/com.yestoday.pages/HomePage.dart';
-import 'package:zaijian/com.yestoday.pages/MePage.dart';
-import 'package:zaijian/com.yestoday.pages/MemoryManagerPage.dart';
+import 'file:///D:/IdeaProjects/zaijian/lib/com/yestoday/pages/HomePage.dart';
+import 'file:///D:/IdeaProjects/zaijian/lib/com/yestoday/pages/MePage.dart';
+import 'file:///D:/IdeaProjects/zaijian/lib/com/yestoday/pages/MemoryManagerPage.dart';
 
 void main() {
   runApp(MyApp());

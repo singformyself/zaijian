@@ -1,11 +1,7 @@
-
-
 import 'dart:math';
-
 import 'package:zaijian/com/yestoday/model/AnnouncementVO.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
-
 import '../../../TestData.dart';
 
 class HomepageService {

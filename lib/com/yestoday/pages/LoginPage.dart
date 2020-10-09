@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
+import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
 
 class LoginPage extends StatefulWidget{
   @override
@@ -113,6 +114,7 @@ class LoginState extends State<LoginPage>{
                       height:65.0,
                       child: SizedBox.expand(
                         child: OutlineButton(
+                            onPressed: gotoRegistryPage(context),
                             child: Text("还没账号？注册一个吧0.0",style:TextStyle(fontSize: 16.0,color:Theme.of(context).primaryColor))),
                       )
                   )
@@ -196,6 +198,7 @@ class LoginState extends State<LoginPage>{
                       height:65.0,
                       child: SizedBox.expand(
                         child: OutlineButton(
+                            onPressed: gotoRegistryPage(context),
                             color: Theme.of(context).primaryColor,
                             hoverColor: Theme.of(context).primaryColor,
                             child: Text("还没账号？注册一个吧0.0",style:TextStyle(fontSize: 16.0,color:Theme.of(context).primaryColor))),
@@ -232,5 +235,11 @@ class LoginState extends State<LoginPage>{
       return "获取验证码";
     }
     return countDown.toString()+" 秒后无效";
+  }
+
+  Function gotoRegistryPage(BuildContext context){
+    return (){
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RegistryPage()));
+    };
   }
 }

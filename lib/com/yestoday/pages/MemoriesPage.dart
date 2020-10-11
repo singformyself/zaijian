@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scaling_header/scaling_header.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
 class MemoriesPage extends StatefulWidget {
@@ -25,103 +25,106 @@ class MemoriesState extends State<MemoriesPage> {
 
   MemoriesState(this.id, this.title, this.userIcon, this.userNickName);
 
-  final double overlapContentHeight = 50;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          ScalingHeader(
-            backgroundColor: Theme.of(context).primaryColor,
-            title: Container(
-              padding: EdgeInsets.fromLTRB(20.0,5.0,20.0,5.0),
-              child: TextField(
-                cursorColor: Colors.white,
-                decoration: InputDecoration(
-                    filled: true,
-                    focusColor: Colors.white.withOpacity(0.5),
-                    fillColor: Colors.white.withOpacity(0.5),
-                    disabledBorder: null,
-                    border: null,
-                    suffixIcon: Icon(Icons.search,color: Colors.white,)
-                ),
-              )
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: NetworkImage(userIcon), fit: BoxFit.cover)),
+        child: Scaffold(
+            backgroundColor: Colors.black.withOpacity(0.2),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent, elevation:0.0
             ),
-            flexibleSpace: ZJ_Image.network(
-              'https://zaijian.obs.cn-north-4.myhuaweicloud.com/gfgfdhggjgf0.jpg',
-              color: Colors.black.withOpacity(0.2),
-              colorBlendMode: BlendMode.srcATop,
-            ),
-            overlapContentBackgroundColor: Theme.of(context).primaryColor,
-            overlapContent: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      print('Tap Bio');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.chrome_reader_mode,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Read Bio',
+            body: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 3.0),
+                  padding: EdgeInsets.fromLTRB(10.0, 7.0, 10.0, 7.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          height: 30.0,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: ZJ_Image.network(userIcon,
+                                          width: 30.0, height: 30.0),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(3.0)),
+                                    Text(userNickName,
+                                        overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.white)),
+                                  ],
+                                )
+                              ])),
+                      Text("        " + title,
                           style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    ),
+                          overflow: TextOverflow.clip),
+                      Divider(color: Colors.white.withOpacity(0.5)),
+                      Text('2016-01-01' + " ~ " + 'myFocus.endDate',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 12.0)),
+                    ],
                   ),
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      print('Tap Movies');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.devices,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 8.0),
-                        Text('See Movies',
-                            style: TextStyle(color: Colors.white))
-                      ],
-                    ),
+                  child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(itemBuilder: _itemBuilder,itemCount: 50,)
                   ),
-                )
+                ),
               ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding:
-                  EdgeInsets.only(top: 0, right: 16, left: 16, bottom: 16),
-              child: Text(
-                'James Dean was born on February 8, 1931, in Marion, Indiana. '
-                        'He starred in the film adaptation of the John Steinbeck novel '
-                        'East of Eden, for which he received a posthumous Oscar '
-                        'nomination. Dean\'s next starring role as an emotionally '
-                        'tortured teen in Rebel Without a Cause made him into the '
-                        'embodiment his generation. In early autumn 1955, Dean was killed '
-                        'in a car crash, quickly becoming an enduring film icon whose '
-                        'legacy has endured for decades. His final film Giant, was also '
-                        'released posthumously.\n\n' *
-                    50,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          )
-        ],
-      ),
+            )
+        )
+    );
+  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      body: NestedScrollView(
+//          headerSliverBuilder: sliverBuilder,
+//          body: Container(
+//            child: ListView.builder(
+//              itemBuilder: _itemBuilder,
+//              itemCount: 15,
+//            ),
+//          )),
+//    );
+//  }
+  List<Widget> sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
+    return <Widget>[
+      SliverAppBar(
+          centerTitle: false,
+          //标题居中
+          expandedHeight: 300.0,
+          //展开高度200
+          collapsedHeight: 80.0,
+          floating: false,
+          //不随着滑动隐藏标题
+          pinned: true,
+          //固定在顶部
+          flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              title: Text(title,
+                  overflow: TextOverflow.clip,
+                  style: TextStyle(fontSize: 18.0)),
+              background: ZJ_Image.network(
+                userIcon,
+                color: Colors.black.withOpacity(0.2),
+                colorBlendMode: BlendMode.srcATop,
+              )))
+    ];
+  }
+
+  Widget _itemBuilder(BuildContext context, int index) {
+    return ListTile(
+      leading: Icon(Icons.android),
+      title: Text('无与伦比的标题+$index'),
     );
   }
 }

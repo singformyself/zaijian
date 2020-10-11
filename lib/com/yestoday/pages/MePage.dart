@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
 
@@ -21,11 +22,12 @@ class MePageState extends State<MePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: ZJ_AppBar("我的"),
         body: ListView(children: [
           AspectRatio(
             aspectRatio: 16 / 8.0,
             child: Container(
-              padding: EdgeInsets.fromLTRB(20.0, 30.0, 3.0, 10.0),
+              padding: EdgeInsets.fromLTRB(20.0, 20.0, 3.0, 20.0),
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Row(
                 children: [

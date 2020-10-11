@@ -20,5 +20,5 @@ class ZJ_AppBar extends StatelessWidget implements PreferredSizeWidget{
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(40.0);
+  Size get preferredSize => Size.fromHeight(50.0);
 }

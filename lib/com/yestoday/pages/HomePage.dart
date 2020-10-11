@@ -9,6 +9,7 @@ import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
+import 'MemoriesPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
 
@@ -152,7 +153,9 @@ class MyFocus extends StatelessWidget {
           Container(
             height: 30.0,
             child: FlatButton(
-                onPressed: () => {Toast.show("打开更多页面", context)},
+                onPressed: () => {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MemoriesPage(myFocus.id,myFocus.title,myFocus.userIcon,myFocus.userNickName)))
+                },
                 padding: EdgeInsets.all(0.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

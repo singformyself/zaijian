@@ -8,8 +8,12 @@ class ZJ_Image extends StatelessWidget {
   String url;
   double width;
   double height;
+  Color color;
+  BlendMode colorBlendMode;
+  BoxFit fit;
 
-  ZJ_Image.network(this.url,{this.width, this.height});
+  ZJ_Image.network(this.url,
+      {this.width, this.height, this.color, this.colorBlendMode, this.fit});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,9 @@ class ZJ_Image extends StatelessWidget {
       url,
       width: width,
       height: height,
-      fit: BoxFit.cover,
+      color: color,
+      colorBlendMode: colorBlendMode,
+      fit: fit == null ? BoxFit.cover : fit,
       cache: true,
     );
   }

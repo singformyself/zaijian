@@ -1,6 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
 /**
  * 封装的ExtendedImage组件
  */

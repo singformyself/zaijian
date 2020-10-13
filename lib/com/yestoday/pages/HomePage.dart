@@ -154,7 +154,7 @@ class MyFocus extends StatelessWidget {
             height: 30.0,
             child: FlatButton(
                 onPressed: () => {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MemoriesPage(myFocus.id,myFocus.title,myFocus.userIcon,myFocus.userNickName)))
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MemoriesPage(myFocus)))
                 },
                 padding: EdgeInsets.all(0.0),
                 child: Row(

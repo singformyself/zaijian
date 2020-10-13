@@ -20,6 +20,7 @@ class HomepageService {
       myFocus.add(MyFocusVO(
           "id",
           TestData.titles[r.nextInt(TestData.titles.length)],
+          TestData.images[r.nextInt(TestData.images.length)],
           genShowItems(1+r.nextInt(3)),
           TestData.images[r.nextInt(TestData.images.length)],
           TestData.userNames[r.nextInt(TestData.userNames.length)],
@@ -34,7 +35,7 @@ class HomepageService {
     Random r = Random();
     for (int i = 0; i < max; i++) {
       MediumEnum type = i % 2 == 0 ? MediumEnum.PHOTO : MediumEnum.VIDEO;
-      res.add(MediumVO("id", TestData.images[r.nextInt(TestData.images.length)], type));
+      res.add(MediumVO.short("id", TestData.images[r.nextInt(TestData.images.length)], type));
     }
     return res;
   }

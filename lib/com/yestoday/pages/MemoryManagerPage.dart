@@ -125,7 +125,7 @@ class MemoryItem extends StatelessWidget {
               title: Text("        "+memoryVO.title, overflow: TextOverflow.clip),
               trailing: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: ZJ_Image.network(memoryVO.icon,width:95.0))),
+                  child: ZJ_Image.network(memoryVO.icon,width:95.0,height: 60.0))),
           Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -124,22 +124,21 @@ class MyFocus extends StatelessWidget {
     List<Expanded> sonItems = List();
     for (var medium in myFocus.showItems) {
       var temp = Expanded(
-          child: Stack(alignment: AlignmentDirectional.bottomStart, children: [
-        SizedBox.expand(
-          child: GestureDetector(
-            onTap: () {
-              Toast.show("打开详情页面", context);
-            },
-            child: Container(
-              padding: EdgeInsets.all(1.0),
-              child: ZJ_Image.network(medium.icon),
-            ), //
-          ),
-        ),
-        Icon(
-          medium.type == MediumEnum.VIDEO ? Icons.videocam : Icons.photo,
-          color: Colors.white
-        )
+          child: Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: [
+              SizedBox.expand(
+                child: GestureDetector(
+                  onTap: () {
+                    Toast.show("打开详情页面", context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(1.0),
+                    child: ZJ_Image.network(medium.icon),
+                  ), //
+                ),
+              ),
+            Icon(medium.type == MediumEnum.VIDEO ? Icons.play_circle_outline : Icons.photo,color:Colors.black.withOpacity(0.5))
       ]));
       sonItems.add(temp);
     }

@@ -123,43 +123,37 @@ class MediumItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(5.0, 7.0, 5.0, 7.0),
-        margin: EdgeInsets.only(bottom: 3.0),
-        decoration: BoxDecoration(color: Colors.white),
-        child: Column(children: [
+      padding:EdgeInsets.all(5.0),
+      child: Column(
+        children: [
           ListTile(
-              onTap: () {
-                Toast.show('打开管理页面', context);
-              },
-              onLongPress: () {
-                Toast.show("长按分享", context);
-              },
-              contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-              title: Text("        "+medium.title, overflow: TextOverflow.clip),
-              trailing: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: ZJ_Image.network(medium.icon,width:95.0))),
-          Divider(),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            contentPadding: EdgeInsets.all(0.0),
+            leading: Text(medium.date,style:TextStyle(color:Colors.blue,fontSize: 18.0,fontWeight: FontWeight.bold,fontStyle:FontStyle.italic)),
+            title:Text(medium.title),
+            subtitle: Row(
               children: [
-                Row(
-                  children: [
-                    ClipOval(
-                      child: ZJ_Image.network(medium.icon,
-                          width: 30.0,
-                          height: 30.0),
-                    ),
-                    Padding(padding: EdgeInsets.all(2.0)),
-                    Text(medium.title, overflow: TextOverflow.ellipsis)
-                  ],
+                ClipOval(
+                  child: ZJ_Image.network(medium.creatorIcon,
+                      width: 25.0,
+                      height: 25.0),
                 ),
-                Text(medium.date,style: TextStyle(fontSize: 12.0, color: Colors.black38))
+                Padding(padding: EdgeInsets.all(2.0)),
+                Text(medium.creator, overflow: TextOverflow.ellipsis)
               ],
             ),
-          )
-        ])
+            trailing: Stack(
+              alignment:AlignmentDirectional.center,
+              children: [
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: ZJ_Image.network(medium.icon,width:95.0,height: 60)),
+                Icon(medium.type == MediumEnum.VIDEO ? Icons.play_circle_outline : null,color:Colors.black.withOpacity(0.5))
+              ],
+            ),
+          ),
+          Divider()
+        ],
+      ),
     );
   }
 }
@@ -173,8 +167,18 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 3.0),
+      margin: EdgeInsets.only(bottom: 5.0),
       padding: EdgeInsets.fromLTRB(10.0, 7.0, 10.0, 7.0),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                offset: Offset(0.0, 20.0), //阴影xy轴偏移量
+                blurRadius: 30.0, //阴影模糊程度
+                spreadRadius: 30.0 //阴影扩散程度
+            )
+          ]
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

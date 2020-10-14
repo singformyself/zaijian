@@ -16,7 +16,9 @@ class MemoriesPageService {
           TestData.titles[r.nextInt(TestData.titles.length)],
           TestData.images[r.nextInt(TestData.images.length)],
           type,
-          "2020-10-13"
+          TestData.images[r.nextInt(TestData.images.length)],
+          TestData.userNames[r.nextInt(TestData.userNames.length)],
+          "2020-10-01"
       ));
     }
     return res;

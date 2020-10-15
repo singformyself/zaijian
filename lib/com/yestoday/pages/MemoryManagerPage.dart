@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoryManagerPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -122,7 +123,7 @@ class MemoryItem extends StatelessWidget {
                 Toast.show("长按分享", context);
               },
               contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-              title: Text("        "+memoryVO.title, overflow: TextOverflow.clip),
+              title: Text("        "+memoryVO.title, style:TextStyle(fontSize: FontSize.NORMAL), overflow: TextOverflow.clip),
               trailing: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: ZJ_Image.network(memoryVO.icon,width:95.0,height: 60.0))),
@@ -138,50 +139,14 @@ class MemoryItem extends StatelessWidget {
                       height: 30.0),
                     ),
                   Padding(padding: EdgeInsets.all(2.0)),
-                  Text(memoryVO.creator, overflow: TextOverflow.ellipsis)
+                  Text(memoryVO.creator ,style:TextStyle(fontSize: FontSize.SMALL), overflow: TextOverflow.ellipsis)
                 ],
               ),
               Text(memoryVO.date,
-                  style: TextStyle(fontSize: 12.0, color: Colors.black38))
+                  style: TextStyle(fontSize: FontSize.SMALL, color: Colors.black54))
             ],
           ),
         ]));
   }
 }
-//ListTile(
-//isThreeLine:true,
-//onTap: (){
-//Toast.show('打开管理页面', context);
-//},
-//onLongPress: (){
-//Toast.show("长按分享", context);
-//},
-//trailing: ClipRRect(
-//borderRadius: BorderRadius.circular(5),
-//child: Image(
-//width: 75.0,
-//height:75.0,
-//fit: BoxFit.cover,
-//image: NetworkImage(memoryVO.icon),
-//),
-//),
-//title: Text(memoryVO.title, overflow: TextOverflow.clip),
-//subtitle: Row(
-//mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//children: [
-//Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-//ClipOval(
-//child: Image(
-//width: 24.0,
-//height: 24.0,
-//fit: BoxFit.cover,
-//image: NetworkImage(memoryVO.creatorIcon),
-//)),
-//Padding(padding: EdgeInsets.all(2.0)),
-//Text(memoryVO.creator, overflow: TextOverflow.ellipsis)
-//]),
-//Text(memoryVO.date, style: TextStyle(fontSize: 12.0))
-//],
-//), //Text("2020-10-01   发起人：很傻很天真")
-////trailing: Text("15+"),
-//)
+

@@ -5,6 +5,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/AnnouncementVO.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -166,15 +167,14 @@ class MyFocus extends StatelessWidget {
                           ),
                           Padding(padding: EdgeInsets.all(3.0)),
                           Text(myFocus.userNickName,
-                              overflow: TextOverflow.ellipsis),
+                              overflow: TextOverflow.ellipsis,style:TextStyle(fontSize: FontSize.NORMAL)),
                         ],
                       ),
                       Icon(Icons.more_horiz)
                     ])),
           ),
           Divider(),
-          Text("        " + myFocus.title,
-              textAlign: TextAlign.left, overflow: TextOverflow.clip),
+          Text("        " + myFocus.title,overflow: TextOverflow.clip,style:TextStyle(fontSize: FontSize.NORMAL)),
           Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
           AspectRatio(
             aspectRatio: _getAspectRatio(sonItems.length),
@@ -184,8 +184,7 @@ class MyFocus extends StatelessWidget {
             ),
           ),
           Divider(),
-          Text(myFocus.strDate + " ~ " + myFocus.endDate,
-              style: TextStyle(color: Colors.black38, fontSize: 12.0)),
+          Text(myFocus.strDate + " ~ " + myFocus.endDate, style: TextStyle(color: Colors.black54, fontSize: FontSize.SMALL)),
         ],
       ),
     );

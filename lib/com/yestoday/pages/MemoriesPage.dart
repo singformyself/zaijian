@@ -6,6 +6,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoriesPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
@@ -52,7 +53,7 @@ class MemoriesState extends State<MemoriesPage> {
                         header: WaterDropHeader(waterDropColor: Theme.of(context).primaryColor),
                         footer: ClassicFooter(
                           loadStyle: LoadStyle.ShowWhenLoading,
-                          completeDuration: Duration(milliseconds: 500),
+                          completeDuration: Duration(milliseconds: 200),
                         ),
                         child: ListView.builder(
                           itemBuilder: (context, index) {
@@ -128,17 +129,17 @@ class MediumItem extends StatelessWidget {
         children: [
           ListTile(
             contentPadding: EdgeInsets.all(0.0),
-            leading: Text(medium.date,style:TextStyle(color:Colors.blue,fontSize: 18.0,fontWeight: FontWeight.bold,fontStyle:FontStyle.italic)),
-            title:Text(medium.title),
+            leading: Text(medium.date.substring(2),style:TextStyle(color:Colors.blue,fontSize: FontSize.NORMAL,fontWeight: FontWeight.bold,fontStyle:FontStyle.italic)),
+            title:Text(medium.title,style:TextStyle(fontSize: FontSize.NORMAL)),
             subtitle: Row(
               children: [
                 ClipOval(
                   child: ZJ_Image.network(medium.creatorIcon,
-                      width: 25.0,
-                      height: 25.0),
+                      width: 20.0,
+                      height: 20.0),
                 ),
                 Padding(padding: EdgeInsets.all(2.0)),
-                Text(medium.creator, overflow: TextOverflow.ellipsis)
+                Text(medium.creator,style:TextStyle(fontSize: FontSize.SUPER_SMALL), overflow: TextOverflow.ellipsis)
               ],
             ),
             trailing: Stack(
@@ -191,13 +192,13 @@ class Header extends StatelessWidget {
                       children: [
                         ClipOval(child: ZJ_Image.network(focusVO.userIcon, width: 30.0, height: 30.0)),
                         Padding(padding: EdgeInsets.all(3.0)),
-                        Text(focusVO.userNickName, overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.white)),
+                        Text(focusVO.userNickName, overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.white, fontSize: FontSize.NORMAL)),
                       ],
                     )
                   ])),
           Text("        " + focusVO.title, style: TextStyle(color: Colors.white), overflow: TextOverflow.clip),
           Divider(color: Colors.white.withOpacity(0.5)),
-          Text(focusVO.strDate+ " ~ " + focusVO.endDate, style:TextStyle(color: Colors.white, fontSize: 12.0)),
+          Text(focusVO.strDate+ " ~ " + focusVO.endDate, style:TextStyle(color: Colors.white, fontSize: FontSize.SMALL)),
         ],
       ),
     );

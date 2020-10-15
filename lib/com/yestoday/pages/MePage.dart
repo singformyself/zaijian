@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
@@ -47,15 +48,11 @@ class MePageState extends State<MePage> {
                           child: userInfo != null
                               ? ZJ_Image.network(userInfo.icon,
                                   width: 105.0, height: 105.0)
-                              : Image(
-                                  width: 105.0,
-                                  height: 105.0,
-                                  image: AssetImage("images/defaultHead.jpg"),
-                                ),
+                              : Icon(Icons.person,size: 105, color:Colors.black12),
                         ),
                       ),
                       Text("点击编辑",
-                          style: TextStyle(color: Colors.white, fontSize: 12.0))
+                          style: TextStyle(color: Colors.white, fontSize: FontSize.SMALL))
                     ],
                   ), // 头像
                   Column(
@@ -78,14 +75,14 @@ class MePageState extends State<MePage> {
                                         : "未登陆",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: FontSize.LARGE,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 getRealNameInfo(),
                                 getVipInfo(),
                                 Text("点击编辑基本信息",
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 12.0))
+                                        color: Colors.white, fontSize: FontSize.SMALL))
                               ],
                             ),
                           ))
@@ -96,51 +93,57 @@ class MePageState extends State<MePage> {
             ),
           ),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               Toast.show("VIP", context);
             },
             leading: Icon(Icons.local_offer),
-            title: Text("VIP管理"),
+            title: Text("VIP管理",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               Toast.show("打开密码更换页面", context);
             },
             leading: Icon(Icons.security),
-            title: Text("账号与安全"),
+            title: Text("账号与安全",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               Toast.show("关于再见", context);
             },
             leading: Icon(Icons.info),
-            title: Text("关于再见"),
+            title: Text("关于再见",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               Toast.show("检查版本更新", context);
             },
             leading: Icon(Icons.refresh),
-            title: Text("检查版本更新"),
+            title: Text("检查版本更新",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               Toast.show("帮助", context);
             },
             leading: Icon(Icons.help),
-            title: Text("帮助"),
+            title: Text("帮助",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               if(userInfo!=null){
                 Toast.show("退出登陆了", context);

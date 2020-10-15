@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 
 class LoginPage extends StatefulWidget{
   @override
@@ -99,7 +100,7 @@ class LoginState extends State<LoginPage>{
                           hoverColor: Theme.of(context).primaryColor,
                           disabledColor: Theme.of(context).primaryColor,
                           textColor: Colors.white,
-                          child: Text("登    录",style:TextStyle(color:Colors.white,fontSize: 16.0)),
+                          child: Text("登    录",style:TextStyle(color:Colors.white,fontSize: FontSize.LARGE)),
                           onPressed: (){
                             if (formKey1.currentState.validate()) { // 校验通过则可提交
                               // 通过unameController.text,upasswordController.text获取表单数据
@@ -115,7 +116,7 @@ class LoginState extends State<LoginPage>{
                       child: SizedBox.expand(
                         child: OutlineButton(
                             onPressed: gotoRegistryPage(context),
-                            child: Text("还没账号？注册一个吧0.0",style:TextStyle(fontSize: 16.0,color:Theme.of(context).primaryColor))),
+                            child: Text("还没账号？注册一个吧0.0",style:TextStyle(fontSize: FontSize.LARGE,color:Theme.of(context).primaryColor))),
                       )
                   )
                 ],

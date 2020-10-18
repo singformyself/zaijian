@@ -56,7 +56,6 @@ flutter:
     - images/loadfailed.png
     - images/icons/video.png
     - images/defaultHead.jpg
-    - assets/94b50779c9b83596924599b10ae87f83.mp4
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

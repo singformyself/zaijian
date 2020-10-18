@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:video_player/video_player.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
 class MediumDetailPage extends StatefulWidget {
   MediumVO medium;
@@ -30,12 +31,14 @@ class MediumDetailState extends State<MediumDetailPage> {
             children: <Widget>[
               Container(
                 child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
+                  aspectRatio: 16/9,//_controller.value.aspectRatio,
                   child: Stack(
+                    fit:StackFit.expand,
                     alignment: Alignment.bottomCenter,
                     children: <Widget>[
-                      VideoPlayer(_controller),
-                      _ControlsOverlay(controller: _controller),
+                      ZJ_Image.network(medium.icon),
+//                      VideoPlayer(_controller),
+//                      _ControlsOverlay(controller: _controller),
                       VideoProgressIndicator(_controller, allowScrubbing: true),
                     ],
                   ),
@@ -51,15 +54,6 @@ class MediumDetailState extends State<MediumDetailPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(
-        'assets/94b50779c9b83596924599b10ae87f83.mp4');
-
-    _controller.addListener(() {
-      setState(() {});
-    });
-    _controller.setLooping(true);
-    _controller.initialize().then((_) => setState(() {}));
-    _controller.play();
   }
 
   @override

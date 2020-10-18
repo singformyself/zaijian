@@ -10,9 +10,9 @@ import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
+import 'MediumDetailPage.dart';
 import 'MemoriesPage.dart';
 import 'enum/ListViewActionEnum.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,13 +34,14 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black12,
-        appBar: ZJ_AppBar("再见", actions:[Icon(Icons.menu)]),
+        appBar: ZJ_AppBar("再见", actions: [Icon(Icons.menu)]),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
                 controller: refreshController,
                 enablePullUp: true,
-                header: WaterDropHeader(waterDropColor: Theme.of(context).primaryColor),
+                header: WaterDropHeader(
+                    waterDropColor: Theme.of(context).primaryColor),
                 footer: ClassicFooter(
                   loadStyle: LoadStyle.ShowWhenLoading,
                   completeDuration: Duration(milliseconds: 500),
@@ -125,21 +126,24 @@ class MyFocus extends StatelessWidget {
     List<Expanded> sonItems = List();
     for (var medium in myFocus.showItems) {
       var temp = Expanded(
-          child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-              SizedBox.expand(
-                child: GestureDetector(
-                  onTap: () {
-                    Toast.show("打开详情页面", context);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(1.0),
-                    child: ZJ_Image.network(medium.icon),
-                  ), //
-                ),
-              ),
-            Icon(medium.type == MediumEnum.VIDEO ? Icons.play_circle_outline : Icons.photo,color:Colors.black.withOpacity(0.5))
+          child: Stack(alignment: AlignmentDirectional.bottomStart, children: [
+        SizedBox.expand(
+          child: GestureDetector(
+            onTap: () => {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => MediumDetailPage(medium)))
+            },
+            child: Container(
+              padding: EdgeInsets.all(1.0),
+              child: ZJ_Image.network(medium.icon),
+            ), //
+          ),
+        ),
+        Icon(
+            medium.type == MediumEnum.VIDEO
+                ? Icons.play_circle_outline
+                : Icons.photo,
+            color: Colors.black.withOpacity(0.5))
       ]));
       sonItems.add(temp);
     }
@@ -154,8 +158,10 @@ class MyFocus extends StatelessWidget {
             height: 30.0,
             child: FlatButton(
                 onPressed: () => {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MemoriesPage(myFocus)))
-                },
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              MemoriesPage(myFocus)))
+                    },
                 padding: EdgeInsets.all(0.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,18 +169,22 @@ class MyFocus extends StatelessWidget {
                       Row(
                         children: [
                           ClipOval(
-                              child: ZJ_Image.network(myFocus.userIcon,width: 30.0,height: 30.0),
+                            child: ZJ_Image.network(myFocus.userIcon,
+                                width: 30.0, height: 30.0),
                           ),
                           Padding(padding: EdgeInsets.all(3.0)),
                           Text(myFocus.userNickName,
-                              overflow: TextOverflow.ellipsis,style:TextStyle(fontSize: FontSize.NORMAL)),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: FontSize.NORMAL)),
                         ],
                       ),
                       Icon(Icons.more_horiz)
                     ])),
           ),
           Divider(),
-          Text("        " + myFocus.title,overflow: TextOverflow.clip,style:TextStyle(fontSize: FontSize.NORMAL)),
+          Text("        " + myFocus.title,
+              overflow: TextOverflow.clip,
+              style: TextStyle(fontSize: FontSize.NORMAL)),
           Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 7.0)),
           AspectRatio(
             aspectRatio: _getAspectRatio(sonItems.length),
@@ -184,7 +194,9 @@ class MyFocus extends StatelessWidget {
             ),
           ),
           Divider(),
-          Text(myFocus.strDate + " ~ " + myFocus.endDate, style: TextStyle(color: Colors.black54, fontSize: FontSize.SMALL)),
+          Text(myFocus.strDate + " ~ " + myFocus.endDate,
+              style:
+                  TextStyle(color: Colors.black54, fontSize: FontSize.SMALL)),
         ],
       ),
     );

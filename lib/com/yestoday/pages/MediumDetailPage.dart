@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:video_player/video_player.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
@@ -26,22 +27,90 @@ class MediumDetailState extends State<MediumDetailPage> {
     return Scaffold(
       appBar: ZJ_AppBar(""),
       body: Material(
-        child: SingleChildScrollView(
+        child:
+        SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Container(
-                child: AspectRatio(
-                  aspectRatio: 16/9,//_controller.value.aspectRatio,
-                  child: Stack(
-                    fit:StackFit.expand,
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      ZJ_Image.network(medium.icon),
+                child: Stack(
+                  //fit:StackFit.expand,
+                  alignment: AlignmentDirectional.bottomCenter,
+                  children: <Widget>[
+                    AspectRatio(
+                      aspectRatio:medium.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
+                    Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: Row(//播放按钮，时长，进度条，倍速，全屏
+                        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(_controller.value.isPlaying?Icons.play_arrow:Icons.pause,color: Colors.white),
+                            onPressed: (){
+                                this.setState(() {
+                                  _controller.value.isPlaying?_controller.pause():_controller.play();
+                                  print(_controller.value.aspectRatio);
+                                });
+                            },
+                          ),
+                          Text(getDuration(),style:TextStyle(color:Colors.white,fontSize: FontSize.SUPER_SMALL)),
+                          Padding(padding: EdgeInsets.all(5.0)),
+                          Expanded(
+                            //width: 200.0,
+                            child: VideoProgressIndicator(
+                                _controller,
+                                allowScrubbing: true,
+                                padding:EdgeInsets.all(0.0),
+                                colors: VideoProgressColors(playedColor: Colors.blue),
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.all(5.0)),
+                          PopupMenuButton<double>(
+                            initialValue: _controller.value.playbackSpeed,
+                            padding:EdgeInsets.all(2.0),
+                            color: Colors.black.withOpacity(0.5),
+                            tooltip: '倍速',
+                            onSelected: (speed) {
+                              _controller.setPlaybackSpeed(speed);
+                            },
+                            itemBuilder: (context) {
+                              return [
+                                  PopupMenuItem(
+                                    textStyle: TextStyle(fontSize: FontSize.NORMAL),
+                                    value: 0.5,
+                                    child: Text('0.5x'),
+                                  ),
+                                PopupMenuItem(
+                                  textStyle: TextStyle(fontSize: FontSize.NORMAL),
+                                  value: 1.0,
+                                  child: Text('1.0x'),
+                                ),
+                                PopupMenuItem(
+                                  textStyle: TextStyle(fontSize: FontSize.NORMAL),
+                                  value: 1.5,
+                                  child: Text('1.5x'),
+                                ),
+                                PopupMenuItem(
+                                  textStyle: TextStyle(fontSize: FontSize.NORMAL),
+                                  value: 2.0,
+                                  child: Text('2.0x'),
+                                ),
+                              ];
+                            },
+                            child: Text(_controller.value.playbackSpeed.toString()+'x',style:TextStyle(color:Colors.white)),
+                          ),
+                          IconButton(
+                              icon: Icon(Icons.fullscreen,color: Colors.white)
+                          )
+                        ],
+                      ),
+                    ),
+
 //                      VideoPlayer(_controller),
 //                      _ControlsOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: true),
-                    ],
-                  ),
+//                       VideoProgressIndicator(_controller, allowScrubbing: true),
+                  ],
                 ),
               ),
             ],
@@ -54,12 +123,28 @@ class MediumDetailState extends State<MediumDetailPage> {
   @override
   void initState() {
     super.initState();
+    _controller = VideoPlayerController.network(medium.url);
+
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(true);
+    _controller.initialize().then((_) => setState(() {
+      _controller.setPlaybackSpeed(1.0);
+      _controller.play();
+    }));
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  String getDuration() {
+    String position = _controller.value.position.toString();
+    String duration = _controller.value.duration.toString();
+    return position.substring(0,position.lastIndexOf("."))+"/"+duration.substring(0,position.lastIndexOf("."));
   }
 }
 

@@ -6,14 +6,13 @@ class MediumVO {
   String title;
   String icon;
   String url;
+  double aspectRatio; // 媒体比例
   MediumEnum type;
   String creatorIcon;
   String creator;
   String date;
-  MediumVO.short(this.id, this.icon, this.type);
 
-
-  MediumVO(this.id, this.title, this.icon, this.url, this.type,this.creatorIcon,this.creator, this.date);
+  MediumVO(this.id, this.title, this.icon, this.url, this.aspectRatio, this.type,this.creatorIcon,this.creator, this.date);
 }
 
 enum MediumEnum {

@@ -16,6 +16,7 @@ class MemoriesPageService {
           TestData.titles[r.nextInt(TestData.titles.length)],
           TestData.images[r.nextInt(TestData.images.length)],
           'https://zaijian.obs.cn-north-4.myhuaweicloud.com/3ad13a13a27bc2a951e68e91ecc1f60a.mp4',
+          0.56,
           type,
           TestData.images[r.nextInt(TestData.images.length)],
           TestData.userNames[r.nextInt(TestData.userNames.length)],

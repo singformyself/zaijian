@@ -32,9 +32,8 @@ dependencies:
   pull_to_refresh: ^1.6.1
   toast: ^0.1.5
   extended_image: ^1.1.2
-  cached_network_image: ^2.3.2+1
   shared_preferences: ^0.5.12
-  timeline_list: ^0.0.5
+  video_player: ^0.11.1+2
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +56,7 @@ flutter:
     - images/loadfailed.png
     - images/icons/video.png
     - images/defaultHead.jpg
+    - assets/94b50779c9b83596924599b10ae87f83.mp4
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

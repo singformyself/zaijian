@@ -6,6 +6,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
+import 'package:zaijian/com/yestoday/pages/MediumDetailPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoriesPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -128,6 +129,9 @@ class MediumItem extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            onTap: () => {
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MediumDetailPage(medium)))
+            },
             contentPadding: EdgeInsets.all(0.0),
             leading: Text(medium.date.substring(2),style:TextStyle(color:Colors.blue,fontSize: FontSize.NORMAL,fontWeight: FontWeight.bold,fontStyle:FontStyle.italic)),
             title:Text(medium.title,style:TextStyle(fontSize: FontSize.NORMAL)),

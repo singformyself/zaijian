@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class TestData {
   static final List<String> images = [
     "https://zaijian.obs.cn-north-4.myhuaweicloud.com/iouutyrtyt.jpg",
@@ -25,4 +27,25 @@ class TestData {
     "超拉风！木工爷爷为孙子手制礼炮车",
     "阿塞拜疆摧毁亚美尼亚8台“冰雹”火箭炮 行动录像曝光"
   ];
+
+  static final List<String> videos = [
+    "https://zaijian.obs.cn-north-4.myhuaweicloud.com/bcc7f2147c4fc6dccb256a46776bc2c7.mp4",
+    "https://zaijian.obs.cn-north-4.myhuaweicloud.com/3ad13a13a27bc2a951e68e91ecc1f60a.mp4"
+  ];
+  static final List<List<double>> ratio = [
+    [960.0,544.0],
+    [544.0,960.0],
+  ];
+
+  static List<String> getPhotos(int max) {
+    if (max==0) {
+      max=5;
+    }
+    Random r = Random();
+    List<String> res=[];
+    for(int i=0;i<max;i++) {
+      res.add(TestData.images[r.nextInt(TestData.images.length)]);
+    }
+    return res;
+  }
 }

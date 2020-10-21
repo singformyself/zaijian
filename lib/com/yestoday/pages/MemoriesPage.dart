@@ -2,15 +2,13 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
-import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
-import 'package:zaijian/com/yestoday/pages/MediumDetailPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoriesPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
+import 'VideoPlayPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
 // ignore: must_be_immutable
@@ -130,7 +128,7 @@ class MediumItem extends StatelessWidget {
         children: [
           ListTile(
             onTap: () => {
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MediumDetailPage(medium)))
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => VideoPlayPage(medium)))
             },
             contentPadding: EdgeInsets.all(0.0),
             leading: Text(medium.date.substring(2),style:TextStyle(color:Colors.blue,fontSize: FontSize.NORMAL,fontWeight: FontWeight.bold,fontStyle:FontStyle.italic)),

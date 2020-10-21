@@ -13,7 +13,7 @@ class ZJ_AppBar extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context) {
     return PreferredSize(
         child: AppBar(
-          title: Text(title),
+          title: Text(title,overflow: TextOverflow.ellipsis),
           actions: actions,
           bottom: bottom,
         ));

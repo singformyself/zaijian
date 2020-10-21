@@ -10,8 +10,9 @@ import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
-import 'MediumDetailPage.dart';
+import 'PhotoDetailPage.dart';
 import 'MemoriesPage.dart';
+import 'VideoPlayPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
 class HomePage extends StatefulWidget {
@@ -130,8 +131,13 @@ class MyFocus extends StatelessWidget {
         SizedBox.expand(
           child: GestureDetector(
             onTap: () => {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => MediumDetailPage(medium)))
+              if (medium.type==MediumEnum.VIDEO) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => VideoPlayPage(medium)))
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => PhotoDetailPage(medium)))
+              }
             },
             child: Container(
               padding: EdgeInsets.all(1.0),

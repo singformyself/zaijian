@@ -8,6 +8,7 @@ import 'package:zaijian/com/yestoday/service/MemoryManagerPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 
+import 'AddMemoryPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
 
@@ -29,11 +30,11 @@ class MemoryManagerPageState extends State<MemoryManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black12,
-      appBar: ZJ_AppBar("列表"),
+      appBar: ZJ_AppBar("回忆主题列表"),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Toast.show("添加新的回忆录", context);
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddMemoryPage()));
         },
       ),
       body: items.length == 0

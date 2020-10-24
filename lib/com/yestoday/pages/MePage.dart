@@ -148,7 +148,6 @@ class MePageState extends State<MePage> {
               if(userInfo!=null){
                 Toast.show("退出登陆了", context);
               }else{
-                Toast.show("登陆页面", context);
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
               }
             },

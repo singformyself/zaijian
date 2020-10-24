@@ -91,7 +91,7 @@ class PhotoSwiperPageState extends State<PhotoSwiperPage> with TickerProviderSta
             );
           },
           itemCount: medium.photos.length,
-          pagination: FractionPaginationBuilder(activeColor:Colors.white,fontSize: FontSize.LARGE,activeFontSize: FontSize.SUPER_LARGE)),
+          pagination: FractionPaginationBuilder(activeColor:Colors.white,fontSize: 18,activeFontSize: 25.0)),
     );
   }
 

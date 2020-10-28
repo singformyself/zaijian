@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
-import 'com/yestoday/pages/MemoryManagerPage.dart';
+import 'com/yestoday/pages/MemoryListPage.dart';
 
 
 void main() {
@@ -34,7 +34,7 @@ class NavigationFrame extends StatefulWidget {
 
 class NavigationFrameState extends State<NavigationFrame> {
   int currentTabIndex = 0;
-  List<Widget> pages = [HomePage(), MemoryManagerPage(), MePage()];
+  List<Widget> pages = [HomePage(), MemoryListPage(), MePage()];
 
   @override
   Widget build(BuildContext context) {

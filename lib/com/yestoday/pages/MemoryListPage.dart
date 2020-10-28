@@ -12,14 +12,14 @@ import 'AddMemoryPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
 
-class MemoryManagerPage extends StatefulWidget {
+class MemoryListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MemoryManagerPageState();
+    return MemoryListPageState();
   }
 }
 
-class MemoryManagerPageState extends State<MemoryManagerPage> {
+class MemoryListPageState extends State<MemoryListPage> {
   MemoryManagerPageService service = new MemoryManagerPageService();
 
   // 下拉刷新上拉加载控制器

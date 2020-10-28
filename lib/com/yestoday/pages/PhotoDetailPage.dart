@@ -37,7 +37,7 @@ class PhotoDetailState extends State<PhotoDetailPage>{
             },
           ),
           staggeredTileBuilder: (int index) =>
-          new StaggeredTile.count(2, index.isEven ? 2 : 2),
+          new StaggeredTile.count(2, index.isEven ? 2 : 1.3),
           mainAxisSpacing: 2.0,
           crossAxisSpacing: 2.0,
         )

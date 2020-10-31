@@ -8,4 +8,7 @@ class UserVO {
   String identityCard; // 身份证号
   String email; // 邮箱
   String vip;
+
+  UserVO(this.id, this.nickName, this.name, this.icon, this.phone,
+      this.identityCard, this.email, this.vip);
 }

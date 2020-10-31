@@ -21,7 +21,6 @@ class AddMemoryState extends State<AddMemoryPage> {
   final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   String openValue;
-  Uint8List imageBytes;
   File image;
   final ImagePicker imagePicker = ImagePicker();
 
@@ -89,7 +88,7 @@ class AddMemoryState extends State<AddMemoryPage> {
                     child: PopupMenuButton<String>(
                         initialValue: "fromCamera",
                         padding: EdgeInsets.all(2.0),
-                        tooltip: '倍速',
+                        tooltip: '设置封面',
                         onSelected: (value) {
                           if (value == "fromCamera") {
                             imagePicker

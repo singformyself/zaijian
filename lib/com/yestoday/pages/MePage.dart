@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zaijian/TestData.dart';
 import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -39,9 +41,9 @@ class MePageState extends State<MePage> {
                       GestureDetector(
                         onTap: () {
                           if (userInfo != null) {
-                            Toast.show("进入头像编辑页面", context);
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditHeadIconPage(userInfo)));
                           } else {
-                            Toast.show("进入登陆页面", context);
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
                           }
                         },
                         child: ClipOval(
@@ -61,7 +63,11 @@ class MePageState extends State<MePage> {
                     children: [
                       FlatButton(
                           onPressed: () {
-                            Toast.show("打开基本信息编辑页面", context);
+                            if (userInfo != null) {
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                            } else {
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                            }
                           },
                           child: Container(
                             height: 120.0,
@@ -165,7 +171,8 @@ class MePageState extends State<MePage> {
   void getLoginUser() {
     SharedPreferences.getInstance().then((pfs) => {
           this.setState(() {
-            this.userInfo = pfs.get(UserVO.LOGIN_KEY);
+            //this.userInfo = pfs.get(UserVO.LOGIN_KEY);
+            this.userInfo = TestData.getUser("neal");
           })
         });
   }

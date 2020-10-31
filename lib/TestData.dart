@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'com/yestoday/model/UserVO.dart';
+
 class TestData {
   static final List<String> images = [
     "https://zaijian.obs.cn-north-4.myhuaweicloud.com/iouutyrtyt.jpg",
@@ -47,5 +49,10 @@ class TestData {
       res.add(TestData.images[r.nextInt(TestData.images.length)]);
     }
     return res;
+  }
+
+  static UserVO getUser(String id){
+    Random r = Random();
+    return UserVO(id, userNames[r.nextInt(userNames.length)], "neal", images[r.nextInt(images.length)], "17767209594", "450721198702104438", "singformyself@yeah.net", "vip");
   }
 }

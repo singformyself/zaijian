@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toast/toast.dart';
@@ -11,6 +11,7 @@ import 'package:zaijian/com/yestoday/model/UserVO.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
+import 'package:zaijian/com/yestoday/utils/crop_editor_helper.dart';
 
 import 'config/Font.dart';
 
@@ -100,7 +101,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                               PopupMenuItem<String>(
                                 value: "fromGallery",
                                 child: Row(
-                                  children: [Icon(Icons.camera), Text("从相册选择")],
+                                  children: [Icon(Icons.photo), Text("从相册选择")],
                                 ),
                               )
                             ]),
@@ -150,20 +151,30 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                   mainAxisAlignment:MainAxisAlignment.center,
                   children: [
                     FlatButtonWithIcon(
-                      icon: const Icon(Icons.rotate_left),
-                      label: const Text("左旋",style:TextStyle(fontSize: FontSize.SUPER_SMALL)),
+                      icon: Icon(Icons.rotate_left, color: Theme.of(context).primaryColor),
+                      label: Text("左旋",style:TextStyle(fontSize: FontSize.SUPER_SMALL, color: Theme.of(context).primaryColor)),
+                      onPressed: () {
+                        editorKey.currentState.rotate(right: false);
+                      },
                     ),
                     FlatButtonWithIcon(
-                      icon: const Icon(Icons.rotate_right),
-                      label: const Text("右旋",style:TextStyle(fontSize: FontSize.SUPER_SMALL)),
+                      icon: Icon(Icons.rotate_right, color: Theme.of(context).primaryColor),
+                      label: Text("右旋",style:TextStyle(fontSize: FontSize.SUPER_SMALL, color: Theme.of(context).primaryColor)),
+                      onPressed: () {
+                        editorKey.currentState.rotate(right: true);
+                      },
                     ),
                     FlatButtonWithIcon(
-                      icon: const Icon(Icons.restore),
-                      label: const Text("重置",style:TextStyle(fontSize: FontSize.SUPER_SMALL)),
+                      icon: Icon(Icons.restore, color: Theme.of(context).primaryColor),
+                      label: Text("重置",style:TextStyle(fontSize: FontSize.SUPER_SMALL, color: Theme.of(context).primaryColor)),
+                      onPressed: () {
+                        editorKey.currentState.reset();
+                      },
                     ),
                     FlatButtonWithIcon(
-                      icon: const Icon(Icons.crop),
-                      label: const Text("剪裁",style:TextStyle(fontSize: FontSize.SUPER_SMALL)),
+                      icon: Icon(Icons.crop, color: Theme.of(context).primaryColor),
+                      label: Text("剪裁",style:TextStyle(fontSize: FontSize.SUPER_SMALL, color: Theme.of(context).primaryColor)),
+                      onPressed: _cropImage,
                     ),
                   ],
                 ),
@@ -174,11 +185,13 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                     hoverColor: Theme.of(context).primaryColor,
                     disabledColor: Theme.of(context).primaryColor,
                     textColor: Colors.white,
-                    child: Text("确   定",
+                    child: Text("确定",
                         style: TextStyle(
                             color: Colors.white, fontSize: FontSize.LARGE)),
                     onPressed: () {
-                      Toast.show("提交成功", context);
+                      submitData().then((success) => {
+                        Navigator.of(context).pop()
+                      });
                     },
                   ),
                 ),
@@ -191,12 +204,31 @@ class EditHeadIconState extends State<EditHeadIconPage> {
     super.initState();
   }
 
-  Future<void> cropImage() async {
+  Future<void> _cropImage() async {
     if (_cropping) {
       return;
     }
-    this.setState(() {
-      cropImageDate = editorKey.currentState.rawImageData;
-    });
+    String msg = '';
+    try {
+      _cropping = true;
+
+      Uint8List fileData= Uint8List.fromList(await cropImageDataWithNativeLibrary(
+          state: editorKey.currentState));
+      this.setState(() {
+        cropImageDate = fileData;
+      });
+    } catch (e, stack) {
+      msg = '_cropImage failed: $e\n $stack';
+      print(msg);
+    }
+    _cropping = false;
+  }
+
+  Future<bool> submitData() async {
+    String base64Img = base64Encode(cropImageDate);
+    print(base64Img);
+    Toast.show("设置成功", context);
+    await Future.delayed(Duration(seconds: 1));
+    return true;
   }
 }

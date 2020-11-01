@@ -106,18 +106,18 @@ class AddMemoryState extends State<AddMemoryPage> {
                                     }));
                           }
                         },
-                        child: Text("设置封面"),
+                        child: Text("设置封面",style:TextStyle(color: Theme.of(context).primaryColor)),
                         itemBuilder: (context) => <PopupMenuItem<String>>[
                               PopupMenuItem<String>(
                                 value: "fromCamera",
                                 child: Row(
-                                  children: [Icon(Icons.camera), Text("拍照获取")],
+                                  children: [Icon(Icons.camera), Text("拍照上传")],
                                 ),
                               ),
                               PopupMenuItem<String>(
                                 value: "fromGallery",
                                 child: Row(
-                                  children: [Icon(Icons.camera), Text("从相册选择")],
+                                  children: [Icon(Icons.photo), Text("从相册选择")],
                                 ),
                               )
                             ])),

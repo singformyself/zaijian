@@ -94,7 +94,7 @@ class HomePageState extends State<HomePage> {
         child: Swiper(
             autoplay: true,
             itemBuilder: (context, index) {
-              return ZJ_Image.network(announcements[index].imageUrl);
+              return ZJ_Image.network(announcements[index].icon);
             },
             itemCount: announcements.length,
             pagination: SwiperPagination())));

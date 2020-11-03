@@ -18,5 +18,5 @@ class MediumVO {
 }
 
 enum MediumEnum {
-  VIDEO, PHOTO
+  VIDEO, PHOTO, PICTURE
 }

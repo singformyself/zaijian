@@ -8,7 +8,13 @@ class HomepageService {
   Future<List<AnnouncementVO>> getAnnouncements() async {
     List<AnnouncementVO> res = [];
     for (int i = 0; i < 3; i++) {
-      res.add(AnnouncementVO("id", TestData.images[Random().nextInt(TestData.images.length)]));
+      res.add(AnnouncementVO(
+          "id",
+          TestData.images[Random().nextInt(TestData.images.length)],
+          TestData.videos[Random().nextInt(TestData.videos.length)],
+          MediumEnum.VIDEO
+      )
+      );
     }
     return res;
   }

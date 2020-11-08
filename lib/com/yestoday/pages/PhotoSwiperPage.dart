@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 typedef DoubleClickAnimationListener = void Function();
 class PhotoSwiperPage extends StatefulWidget {
   MediumVO medium;
@@ -31,6 +32,7 @@ class PhotoSwiperPageState extends State<PhotoSwiperPage> with TickerProviderSta
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: ZJ_AppBar(""),
       backgroundColor: Colors.black,
       body: Swiper(
           autoplay: false,

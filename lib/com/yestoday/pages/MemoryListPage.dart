@@ -31,7 +31,7 @@ class MemoryListPageState extends State<MemoryListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black12,
-      appBar: ZJ_AppBar("回忆主题列表"),
+      appBar: ZJ_AppBar("回忆列表"),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {

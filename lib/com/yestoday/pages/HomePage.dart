@@ -5,6 +5,7 @@ import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/AnnouncementVO.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
+import 'package:zaijian/com/yestoday/pages/AnnouncementPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
@@ -94,7 +95,13 @@ class HomePageState extends State<HomePage> {
         child: Swiper(
             autoplay: true,
             itemBuilder: (context, index) {
-              return ZJ_Image.network(announcements[index].icon);
+              return GestureDetector(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => AnnouncementPage(announcements[index])));
+                },
+                child: ZJ_Image.network(announcements[index].icon)
+              );
             },
             itemCount: announcements.length,
             pagination: SwiperPagination())));

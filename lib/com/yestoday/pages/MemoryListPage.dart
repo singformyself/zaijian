@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
+import 'package:zaijian/com/yestoday/pages/MemoryManagementPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoryManagerPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
@@ -118,7 +119,7 @@ class MemoryItem extends StatelessWidget {
         child: Column(children: [
           ListTile(
               onTap: () {
-                Toast.show('打开管理页面', context);
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MemoryManagementPage(memoryVO)));
               },
               onLongPress: () {
                 Toast.show("长按分享", context);

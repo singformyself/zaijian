@@ -26,6 +26,7 @@ class MemoryManagementPage extends StatefulWidget {
 
 class MemoryManagementState extends State<MemoryManagementPage> with SingleTickerProviderStateMixin{
   MemoryVO memory;
+  List<Eyewitness> eyewitness=[Eyewitness(),Eyewitness(),Eyewitness()];
   Animation<double> _animation;
   AnimationController _animationController;
 
@@ -43,6 +44,28 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
             body: Column(
               children: [
                 Header(memory),
+                Container(
+                  padding:EdgeInsets.all(10.0),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Text("见证人：10",style:TextStyle(fontSize: FontSize.LARGE)),
+                      Padding(padding: EdgeInsets.all(20),),
+                      Text("作品：100",style:TextStyle(fontSize: FontSize.LARGE)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return eyewitness[index];
+                        },
+                        itemCount: eyewitness.length,
+                      )
+                  ),
+                )
               ],
             ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -105,6 +128,39 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
     super.initState();
 
 
+  }
+}
+
+class Eyewitness extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.black12))
+      ),
+      padding:EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          ClipOval(
+            child: ZJ_Image.network("https://zaijian.obs.cn-north-4.myhuaweicloud.com/kjhjhhgfsgg.jpg",
+                width: 30.0, height: 30.0),
+          ),
+          Padding(padding: EdgeInsets.all(3.0)),
+          Text("myFocus.userNickName",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: FontSize.NORMAL)),
+          Expanded(
+            child: Container(
+                alignment: Alignment.centerRight,
+                child: Text("20",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: FontSize.NORMAL))
+            )
+          )
+        ],
+      )
+    );
   }
 }
 

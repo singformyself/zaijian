@@ -153,7 +153,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
               ),
             ),
             Row(
-              mainAxisAlignment:MainAxisAlignment.start,
+              mainAxisAlignment:MainAxisAlignment.center,
               children: [
                 FlatButtonWithIcon(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -38,12 +38,12 @@ class AddMemoryState extends State<AddMemoryPage> {
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: TextFormField(
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.text,
                   controller: nameController,
                   maxLines: 3,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return "请输入手机号";
+                      return "请输入主题名称";
                     }
                     return null;
                   },

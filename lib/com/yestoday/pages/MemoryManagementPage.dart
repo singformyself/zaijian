@@ -51,7 +51,7 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
                     children: [
                       Text("见证人：10",style:TextStyle(fontSize: FontSize.LARGE)),
                       Padding(padding: EdgeInsets.all(20),),
-                      Text("作品：100",style:TextStyle(fontSize: FontSize.LARGE)),
+                      Text("回忆：100",style:TextStyle(fontSize: FontSize.LARGE)),
                     ],
                   ),
                 ),
@@ -74,7 +74,7 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
             items: <Bubble>[
               // Floating action menu item
               Bubble(
-                title:"图片",
+                title:"照片",
                 iconColor :Colors.white,
                 bubbleColor : Theme.of(context).primaryColor,
                 icon:Icons.file_upload,

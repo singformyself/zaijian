@@ -3,6 +3,7 @@ import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zaijian/com/yestoday/model/MemoryVO.dart';
+import 'package:zaijian/com/yestoday/pages/UploadPhotoPage.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
 
@@ -81,6 +82,8 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
                 titleStyle:TextStyle(fontSize: FontSize.NORMAL  , color: Colors.white),
                 onPress: () {
                   _animationController.reverse();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => UploadPhotoPage()));
                 },
               ),
               //Floating action menu item

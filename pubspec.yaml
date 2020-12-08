@@ -36,6 +36,7 @@ dependencies:
   fijkplayer: ^0.8.7
   flutter_staggered_grid_view: ^0.3.2
   image_picker: ^0.6.7+12
+  multi_image_picker: ^4.7.14
   image: ^2.1.4
   image_editor: ^0.1.2
   isolate: ^2.0.2

@@ -28,6 +28,9 @@ class AddMemoryState extends State<AddMemoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ZJ_AppBar("新增主题"),
+      floatingActionButton: FloatingActionButton(child: Text("确定"),onPressed: (){
+        //TODO
+      }),
       body: Form(
           key: formKey1,
           child: Column(
@@ -135,28 +138,28 @@ class AddMemoryState extends State<AddMemoryPage> {
                               borderRadius: BorderRadius.circular(7.0),
                               child: ExtendedImage.asset("assets/default.jpg",
                                   fit: BoxFit.cover)))),
-              Container(
-                  margin: EdgeInsets.only(top: 20.0),
-                  padding: EdgeInsets.all(10.0),
-                  height: 65.0,
-                  child: SizedBox.expand(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      hoverColor: Theme.of(context).primaryColor,
-                      disabledColor: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      child: Text("确    定",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: FontSize.LARGE)),
-                      onPressed: () {
-                        if (formKey1.currentState.validate()) {
-                          // 校验通过则可提交
-                          // 通过unameController.text,upasswordController.text获取表单数据
-                          Toast.show("提交成功", context);
-                        }
-                      },
-                    ),
-                  )),
+//              Container(
+//                  margin: EdgeInsets.only(top: 20.0),
+//                  padding: EdgeInsets.all(10.0),
+//                  height: 65.0,
+//                  child: SizedBox.expand(
+//                    child: RaisedButton(
+//                      color: Theme.of(context).primaryColor,
+//                      hoverColor: Theme.of(context).primaryColor,
+//                      disabledColor: Theme.of(context).primaryColor,
+//                      textColor: Colors.white,
+//                      child: Text("确    定",
+//                          style: TextStyle(
+//                              color: Colors.white, fontSize: FontSize.LARGE)),
+//                      onPressed: () {
+//                        if (formKey1.currentState.validate()) {
+//                          // 校验通过则可提交
+//                          // 通过unameController.text,upasswordController.text获取表单数据
+//                          Toast.show("提交成功", context);
+//                        }
+//                      },
+//                    ),
+//                  )),
             ],
           )),
     );

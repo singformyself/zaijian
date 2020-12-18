@@ -37,6 +37,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: Colors.black12,
         appBar: ZJ_AppBar("再见", actions: [Icon(Icons.menu)]),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.camera_alt)),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
@@ -156,7 +157,7 @@ class MyFocus extends StatelessWidget {
             medium.type == MediumEnum.VIDEO
                 ? Icons.play_circle_outline
                 : Icons.photo,
-            color: Colors.black.withOpacity(0.5))
+            color: Colors.white.withOpacity(0.5))
       ]));
       sonItems.add(temp);
     }

@@ -37,6 +37,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: Colors.black12,
         appBar: ZJ_AppBar("再见", actions: [Icon(Icons.menu)]),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.camera_alt)),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(

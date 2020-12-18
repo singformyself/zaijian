@@ -21,6 +21,12 @@ class UploadPhotoState extends State<UploadPhotoPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ZJ_AppBar("上传照片"),
+      floatingActionButton: FloatingActionButton(
+        child: Text("确定"),
+        onPressed: () {
+          // TODO submit
+        },
+      ),
       body:Form(
         key:formKey1,
         child: Column(
@@ -48,7 +54,10 @@ class UploadPhotoState extends State<UploadPhotoPage>{
               onPressed: loadAssets,
             ),
             Expanded(
-              child: buildGridView(),
+              child: Container(
+                padding:EdgeInsets.all(10),
+                child: buildGridView(),
+              )
             )
           ],
         ),
@@ -61,10 +70,28 @@ class UploadPhotoState extends State<UploadPhotoPage>{
       crossAxisCount: 3,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
-        return AssetThumb(
-          asset: asset,
-          width: 300,
-          height: 300,
+        return Container(
+          padding:EdgeInsets.all(0.5),
+          child: Stack(
+            alignment: AlignmentDirectional.topEnd,
+            children: [
+              AssetThumb(
+                asset: asset,
+                width: 300,
+                height: 300,
+              ),
+              IconButton(
+                padding:EdgeInsets.all(0.5),
+                alignment: Alignment.topRight,
+                icon: Icon(Icons.delete,color:Colors.white.withOpacity(0.5)),
+                onPressed: ()=>{
+                  this.setState(() {
+                    images.removeAt(index);
+                  })
+                },
+              )
+            ],
+          )
         );
       }),
     );
@@ -75,7 +102,7 @@ class UploadPhotoState extends State<UploadPhotoPage>{
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 2,
+        maxImages: 50,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),

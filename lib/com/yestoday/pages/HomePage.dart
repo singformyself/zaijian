@@ -157,7 +157,7 @@ class MyFocus extends StatelessWidget {
             medium.type == MediumEnum.VIDEO
                 ? Icons.play_circle_outline
                 : Icons.photo,
-            color: Colors.white.withOpacity(0.5))
+            color: Colors.white.withOpacity(0.7))
       ]));
       sonItems.add(temp);
     }

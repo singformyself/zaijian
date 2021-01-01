@@ -3,6 +3,8 @@ import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/TestData.dart';
 import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
+import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
@@ -111,7 +113,7 @@ class MePageState extends State<MePage> {
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
-              Toast.show("打开密码更换页面", context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AccountAndSecurityPage()));
             },
             leading: Icon(Icons.security),
             title: Text("账号与安全",style:TextStyle(fontSize: FontSize.NORMAL)),
@@ -121,30 +123,10 @@ class MePageState extends State<MePage> {
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
-              Toast.show("关于再见", context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AboutZaiJianPage()));
             },
             leading: Icon(Icons.info),
             title: Text("关于再见",style:TextStyle(fontSize: FontSize.NORMAL)),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          Divider(),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-            onTap: () {
-              Toast.show("检查版本更新", context);
-            },
-            leading: Icon(Icons.refresh),
-            title: Text("检查版本更新",style:TextStyle(fontSize: FontSize.NORMAL)),
-            trailing: Icon(Icons.chevron_right),
-          ),
-          Divider(),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-            onTap: () {
-              Toast.show("帮助", context);
-            },
-            leading: Icon(Icons.help),
-            title: Text("帮助",style:TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),

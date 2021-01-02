@@ -154,7 +154,7 @@ class MePageState extends State<MePage> {
     SharedPreferences.getInstance().then((pfs) => {
           this.setState(() {
             //this.userInfo = pfs.get(UserVO.LOGIN_KEY);
-            this.userInfo = TestData.getUser("neal");
+            // this.userInfo = TestData.getUser("neal");
           })
         });
   }

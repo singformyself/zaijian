@@ -5,6 +5,7 @@ import 'package:zaijian/TestData.dart';
 import 'package:zaijian/com/yestoday/model/UserVO.dart';
 import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
 import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
+import 'package:zaijian/com/yestoday/pages/EditBaseInfoPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
@@ -66,7 +67,7 @@ class MePageState extends State<MePage> {
                       FlatButton(
                           onPressed: () {
                             if (userInfo != null) {
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditBaseInfoPage()));
                             } else {
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
                             }
@@ -154,7 +155,7 @@ class MePageState extends State<MePage> {
     SharedPreferences.getInstance().then((pfs) => {
           this.setState(() {
             //this.userInfo = pfs.get(UserVO.LOGIN_KEY);
-            // this.userInfo = TestData.getUser("neal");
+            this.userInfo = TestData.getUser("neal");
           })
         });
   }

@@ -184,7 +184,7 @@ class MePageState extends State<MePage> {
     }
     return Row(
       children: [
-        Icon(Icons.local_offer, color: color),
+        Icon(Icons.person_pin, color: color),
         Text(text, style: TextStyle(color: color)),
       ],
     );

@@ -42,6 +42,8 @@ dependencies:
   isolate: ^2.0.2
   photo_manager: 0.5.7
   floating_action_bubble: ^1.1.2
+  date_format: ^1.0.9
+  flutter_my_picker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

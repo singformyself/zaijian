@@ -124,7 +124,7 @@ class MemoryManagementState extends State<MemoryManagementPage> with SingleTicke
   void initState(){
 
     _animationController = AnimationController(
-      vsync: this,
+      value: this,
       duration: Duration(milliseconds: 260),
     );
 

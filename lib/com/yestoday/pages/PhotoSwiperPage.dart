@@ -100,7 +100,7 @@ class PhotoSwiperPageState extends State<PhotoSwiperPage> with TickerProviderSta
   @override
   void initState() {
     _doubleClickAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 150), vsync: this);
+        duration: const Duration(milliseconds: 150), value: this);
     super.initState();
   }
 

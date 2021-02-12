@@ -1,14 +1,19 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
+import 'package:fijkplayer/fijkplayer.dart';
 
 class UploadVideoPage extends StatefulWidget{
+  PickedFile pickedFile;
+  UploadVideoPage(this.pickedFile);
+
   @override
   State<StatefulWidget> createState() {
-    return UploadVideoState();
+    return UploadVideoState(File(this.pickedFile.path));
   }
 }
 
@@ -16,9 +21,13 @@ class UploadVideoState extends State<UploadVideoPage>{
   final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   File video;
+  Uint8List snapshotData;
   final ImagePicker imagePicker = ImagePicker();
+  UploadVideoState(this.video);
+  final FijkPlayer player = FijkPlayer();
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: ZJ_AppBar("上传视频"),
       floatingActionButton: FloatingActionButton(
@@ -91,11 +100,37 @@ class UploadVideoState extends State<UploadVideoPage>{
             ),
             Container(
               padding:EdgeInsets.all(10),
-              child: video==null?Text("未选择任何视频"):Image.file(video),
+              width: 300,
+              height: 300,
+//              child: FijkView(
+//                player: player,
+//                color: Colors.black,
+//              ),
+              child: snapshotData==null?Text("未选择任何视频"):Image.memory(snapshotData),
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+
+      super.initState();
+      if (video!=null) {
+        takeSnapShot();
+      }
+  }
+
+  Future<void> takeSnapShot() async {
+    player.setDataSource(video.path, autoPlay: false);
+    player.setVolume(0);
+    player.seekTo(10);
+    await Future.delayed(Duration(milliseconds: 1000));
+    player.takeSnapShot().then((value) => this.setState(() {
+      print(value);
+      snapshotData = value;
+    }));
   }
 }

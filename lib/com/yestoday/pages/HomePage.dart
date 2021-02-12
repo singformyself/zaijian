@@ -10,9 +10,11 @@ import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/HomepageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'PhotoDetailPage.dart';
 import 'MemoriesPage.dart';
+import 'UploadVideoPage.dart';
 import 'VideoPlayPage.dart';
 import 'enum/ListViewActionEnum.dart';
 
@@ -27,7 +29,8 @@ class HomePageState extends State<HomePage> {
   // 获取服务器数据的service
   HomepageService service = new HomepageService();
   List<Widget> items = [];
-
+  File video;
+  final ImagePicker imagePicker = ImagePicker();
   // 下拉刷新上拉加载控制器
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
@@ -37,7 +40,19 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: Colors.black12,
         appBar: ZJ_AppBar("再见", actions: [Icon(Icons.menu)]),
-        floatingActionButton: FloatingActionButton(child: Icon(Icons.camera_alt)),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.camera_alt),
+            onPressed: () => {
+                  imagePicker
+                      .getVideo(source: ImageSource.camera)
+                      .then((value) {
+                    if (value != null) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              UploadVideoPage(value)));
+                    }
+                  })
+                }),
         body: items.length == 0
             ? Center(child: CircularProgressIndicator())
             : SmartRefresher(
@@ -97,12 +112,12 @@ class HomePageState extends State<HomePage> {
             autoplay: true,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AnnouncementPage(announcements[index])));
-                },
-                child: ZJ_Image.network(announcements[index].icon)
-              );
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            AnnouncementPage(announcements[index])));
+                  },
+                  child: ZJ_Image.network(announcements[index].icon));
             },
             itemCount: announcements.length,
             pagination: SwiperPagination())));
@@ -139,13 +154,17 @@ class MyFocus extends StatelessWidget {
         SizedBox.expand(
           child: GestureDetector(
             onTap: () => {
-              if (medium.type==MediumEnum.VIDEO) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => VideoPlayPage(medium)))
-              } else {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => PhotoDetailPage(medium)))
-              }
+              if (medium.type == MediumEnum.VIDEO)
+                {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => VideoPlayPage(medium)))
+                }
+              else
+                {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          PhotoDetailPage(medium)))
+                }
             },
             child: Container(
               padding: EdgeInsets.all(1.0),

@@ -43,9 +43,6 @@ class VideoPlayState extends State<VideoPlayPage>{
   @override
   void initState() {
     super.initState();
-    if (medium.width>medium.height) {
-      player.enterFullScreen();
-    }
     player.setDataSource(medium.url, autoPlay: true);
   }
   @override

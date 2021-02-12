@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:dio/dio.dart';
-import 'package:zaijian/com/yestoday/config/BaseConfig.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
+import 'package:zaijian/com/yestoday/common/DioFactory.dart';
 
 /**
  * 登陆注册服务器接口操作类
+ * 带login路径的请求都不需要携带token
  */
 class LoginApi {
   static const String PATH_NP = "/login/byNamePassword";
@@ -13,9 +16,9 @@ class LoginApi {
 
   static Future<LoginRsp> byNamePassword(String name, String password) async {
     try {
-      Response response = await Dio().post(BaseConfig.HOST + PATH_NP,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + PATH_NP,
           data: {"name": name, "password": password});
-      if (response.statusCode == BaseConfig.HTTP_STATUS_SUCCESS) {
+      if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);
       }
     } catch (e) {
@@ -26,9 +29,9 @@ class LoginApi {
 
   static Future<LoginRsp> byPhoneCode(String phone, String code) async {
     try {
-      Response response = await Dio().post(BaseConfig.HOST + PATH_PC,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + PATH_PC,
           data: {"phone": phone, "code": code});
-      if (response.statusCode == BaseConfig.HTTP_STATUS_SUCCESS) {
+      if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);
       }
     } catch (e) {
@@ -40,9 +43,9 @@ class LoginApi {
   // 注册
   static Future<LoginRsp> signup(String phone) async {
     try {
-      Response response = await Dio().post(BaseConfig.HOST + SIGNUP,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + SIGNUP,
           data: {"phone": phone});
-      if (response.statusCode == BaseConfig.HTTP_STATUS_SUCCESS) {
+      if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);
       }
     } catch (e) {
@@ -66,6 +69,9 @@ class LoginRsp {
 class UserDTO {
   String id;
   String nickName; // 昵称
+  String phone;
+  int sex;  // 1：男   0 ：女   2：秘密
+  String birthDay;
   String icon; // base64Encode(List<int> bytes)
   String vip;
 }

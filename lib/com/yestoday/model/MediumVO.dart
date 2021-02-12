@@ -1,3 +1,4 @@
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 /**
  * 媒体对象
  */
@@ -15,8 +16,4 @@ class MediumVO {
   List<String> photos;
 
   MediumVO(this.id, this.title, this.icon, this.url, this.width,this.height, this.type,this.creatorIcon,this.creator, this.date,this.photos);
-}
-
-enum MediumEnum {
-  VIDEO, PHOTO, PICTURE
 }

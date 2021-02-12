@@ -3,7 +3,7 @@ import 'package:zaijian/com/yestoday/model/AnnouncementVO.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
 import '../../../TestData.dart';
-
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 class HomepageService {
   Future<List<AnnouncementVO>> getAnnouncements() async {
     List<AnnouncementVO> res = [];

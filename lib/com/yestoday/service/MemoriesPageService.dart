@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 
 import '../../../TestData.dart';
-
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 class MemoriesPageService {
   Future<List<MediumVO>> genMediumItems(String id) async {
     List<MediumVO> res = List();

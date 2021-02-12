@@ -7,7 +7,7 @@ import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MemoriesPageService.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'VideoPlayPage.dart';
 import 'enum/ListViewActionEnum.dart';
 

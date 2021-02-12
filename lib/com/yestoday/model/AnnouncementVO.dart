@@ -1,5 +1,5 @@
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
-
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 /**
  * 首页公告栏实体对象
  */

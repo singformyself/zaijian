@@ -10,13 +10,13 @@ import 'package:zaijian/com/yestoday/common/DioFactory.dart';
  * 带login路径的请求都不需要携带token
  */
 class LoginApi {
-  static const String PATH_NP = "/login/byNamePassword";
-  static const String PATH_PC = "/login/byPhoneCode";
-  static const String SIGNUP = "/login/signup";
+  static const String POST_LOGIN_NP = "/login/byNamePassword";
+  static const String POST_LOGIN_PC = "/login/byPhoneCode";
+  static const String POST_SIGNUP = "/login/signup";
 
   static Future<LoginRsp> byNamePassword(String name, String password) async {
     try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + PATH_NP,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_NP,
           data: {"name": name, "password": password});
       if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);
@@ -29,7 +29,7 @@ class LoginApi {
 
   static Future<LoginRsp> byPhoneCode(String phone, String code) async {
     try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + PATH_PC,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_PC,
           data: {"phone": phone, "code": code});
       if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);
@@ -43,7 +43,7 @@ class LoginApi {
   // 注册
   static Future<LoginRsp> signup(String phone) async {
     try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + SIGNUP,
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_SIGNUP,
           data: {"phone": phone});
       if (response.statusCode == HttpStatus.ok) {
         return json.decode(response.data);

@@ -17,6 +17,7 @@ import 'MemoriesPage.dart';
 import 'UploadVideoPage.dart';
 import 'VideoPlayPage.dart';
 import 'enum/ListViewActionEnum.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 
 class HomePage extends StatefulWidget {
   @override

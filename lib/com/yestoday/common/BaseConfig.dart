@@ -5,7 +5,7 @@ class BaseConfig {
   /*服务器地址*/
   static const String HOST = "http://localhost:8080";
   static const String REQUEST_SERVER_ERROR = "请求服务器异常";
-
+  static var COMMON_FAIL = {'success':false,'msg':BaseConfig.REQUEST_SERVER_ERROR};
 }
 enum MediumEnum {
   VIDEO, PHOTO, PICTURE

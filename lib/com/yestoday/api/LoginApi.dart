@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:dio/dio.dart';
@@ -10,54 +9,52 @@ import 'package:zaijian/com/yestoday/common/DioFactory.dart';
  * 带login路径的请求都不需要携带token
  */
 class LoginApi {
-  static const String POST_LOGIN_NP = "/login/byNamePassword";
-  static const String POST_LOGIN_PC = "/login/byPhoneCode";
-  static const String POST_SIGNUP = "/login/signup";
+  static const String POST_LOGIN_NP = '/login/byNamePassword';
+  static const String POST_LOGIN_PC = '/login/byPhoneCode';
+  static const String POST_SIGNUP = '/login/signup';
 
-  static Future<LoginRsp> byNamePassword(String name, String password) async {
+  static Future<dynamic> byNamePassword(String name, String password) async {
     try {
       Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_NP,
-          data: {"name": name, "password": password});
+          data: {'name': name, 'password': password});
       if (response.statusCode == HttpStatus.ok) {
-        return json.decode(response.data);
+        return response.data;
       }
     } catch (e) {
       print(e);
     }
-    return LoginRsp.FAIL;
+    return BaseConfig.COMMON_FAIL;
   }
 
-  static Future<LoginRsp> byPhoneCode(String phone, String code) async {
+  static Future<dynamic> byPhoneCode(String phone, String code) async {
     try {
       Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_PC,
-          data: {"phone": phone, "code": code});
+          data: {'phone': phone, 'code': code});
       if (response.statusCode == HttpStatus.ok) {
-        return json.decode(response.data);
+        return response.data;
       }
     } catch (e) {
       print(e);
     }
-    return LoginRsp.FAIL;
+    return BaseConfig.COMMON_FAIL;
   }
 
   // 注册
-  static Future<LoginRsp> signup(String phone) async {
+  static Future<dynamic> signup(String phone) async {
     try {
       Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_SIGNUP,
-          data: {"phone": phone});
+          data: {'phone': phone});
       if (response.statusCode == HttpStatus.ok) {
-        return json.decode(response.data);
+        return response.data;
       }
     } catch (e) {
       print(e);
     }
-    return LoginRsp.FAIL;
+    return BaseConfig.COMMON_FAIL;
   }
 }
 
 class LoginRsp {
-  // ignore: non_constant_identifier_names
-  static LoginRsp FAIL = LoginRsp(false, BaseConfig.REQUEST_SERVER_ERROR, "");
   bool success;
   String msg;
   String token;

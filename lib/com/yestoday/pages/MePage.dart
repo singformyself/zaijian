@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +12,7 @@ import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-
+import 'package:zaijian/com/yestoday/common/BaseRsp.dart';
 
 import 'LoginPage.dart';
 
@@ -154,8 +156,8 @@ class MePageState extends State<MePage> {
   void getLoginUser() {
     SharedPreferences.getInstance().then((pfs) => {
           this.setState(() {
-            //this.userInfo = pfs.get(UserVO.LOGIN_KEY);
-            this.userInfo = TestData.getUser("neal");
+            this.userInfo = pfs.get(UserVO.LOGIN_KEY);
+            //this.userInfo = TestData.getUser("neal");
           })
         });
   }

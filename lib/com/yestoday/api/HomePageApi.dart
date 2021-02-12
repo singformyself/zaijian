@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:dio/dio.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/common/DioFactory.dart';
 import 'package:zaijian/com/yestoday/common/BaseRsp.dart';
-import 'package:zaijian/com/yestoday/model/MediumVO.dart';
 
 class HomePageApi {
   // 获取首页公告
@@ -14,31 +12,31 @@ class HomePageApi {
   // 获取关注列表
   static const String GET_INTERESTS = '/home/interests';
 
-  static Future<AnnouncementRsp> getAnnouncement() async {
+  static Future<dynamic> getAnnouncement() async {
     try {
       Response response =
           await DioFactory.defaultDio().get(BaseConfig.HOST + GET_ANNOUNCEMENT);
       if (response.statusCode == HttpStatus.ok) {
-        return json.decode(response.data);
+        return response.data;
       }
     } catch (e) {
       print(e);
     }
-    return BaseRsp.FAIL;
+    return BaseConfig.COMMON_FAIL;
   }
 
   // 获取我的关注信息
-  static Future<InterestsRsp> getInterests(String uid) async {
+  static Future<dynamic> getInterests(String uid) async {
     try {
       Response response = await DioFactory.tokenDio()
           .get(BaseConfig.HOST + GET_INTERESTS + '?uid=' + uid);
       if (response.statusCode == HttpStatus.ok) {
-        return json.decode(response.data);
+        return response.data;
       }
     } catch (e) {
       print(e);
     }
-    return BaseRsp.FAIL;
+    return BaseConfig.COMMON_FAIL;
   }
 }
 
@@ -60,7 +58,7 @@ class InterestsDTO {
   String strDate;
   String endDate;
 }
-
+// 媒体对象
 class MediumDTO {
   String id;
   String title;
@@ -73,9 +71,6 @@ class MediumDTO {
   String creator;
   String date;
   List<String> photos;
-
-  MediumDTO(this.id, this.title, this.icon, this.url, this.width, this.height,
-      this.type, this.creatorIcon, this.creator, this.date, this.photos);
 }
 
 class AnnouncementRsp extends BaseRsp {

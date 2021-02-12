@@ -5,7 +5,6 @@ import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
 import 'com/yestoday/pages/MemoryListPage.dart';
 
-
 void main() {
   runApp(MyApp());
   SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
@@ -23,6 +22,7 @@ class MyApp extends StatelessWidget {
       home: NavigationFrame(),
     );
   }
+
 }
 
 class NavigationFrame extends StatefulWidget {

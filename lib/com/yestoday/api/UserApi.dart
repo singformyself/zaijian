@@ -42,6 +42,8 @@ class UpdateInfoReq {
   int sex; // 1：男   0 ：女   2：秘密
   String birthDay;
 
+  UpdateInfoReq(this.uid, this.nickName, this.sex, this.birthDay);
+
   dynamic toJson() {
     return {'uid': uid, 'nickName': nickName, 'sex': sex, 'birthDay': birthDay};
   }

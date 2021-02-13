@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_my_picker/flutter_my_picker.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
+import 'package:zaijian/com/yestoday/api/UserApi.dart';
+import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class EditBaseInfoPage extends StatefulWidget {
   @override
@@ -13,9 +19,11 @@ class EditBaseInfoPage extends StatefulWidget {
 }
 
 class EditBaseInfoState extends State<EditBaseInfoPage> {
-  String sex = "男";
-  String birthDay = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
-  TextEditingController unameController = TextEditingController(text: "很傻很天真");
+  dynamic user;
+  static const int sex = 2;
+  TextEditingController nameController;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,93 +31,131 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
       floatingActionButton: FloatingActionButton(
         child: Text("确定"),
         onPressed: () {
-          // TODO submit
+          submit(nameController.text, context);
         },
       ),
       body: Form(
+          key: formKey,
           child: Container(
-        padding: EdgeInsets.all(10),
-        child: ListView(
-          children: [
-            Row(
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 100),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("昵称："),
-                Expanded(
-                    child: TextFormField(
-                  autofocus: false,
-                  controller: unameController,
-                )),
-              ],
-            ),
-            Row(
-              children: [
-                Text("性别："),
-                Radio(
-                  value: "男",
-                  groupValue: sex,
-                  onChanged: (value) {
-                    this.setState(() {
-                      this.sex = value;
-                    });
-                  },
+                Container(
+                  child: TextFormField(
+                    autofocus: true,
+                    controller: nameController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "请输入昵称";
+                      }
+                      if (value.length > 16) {
+                        return "不能超过16个字符";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      icon: Text('昵称'),
+                      hintText: '请输入昵称',
+                    ),
+                  ),
                 ),
-                Text("男"),
-                Radio(
-                  value: "女",
-                  groupValue: sex,
-                  onChanged: (value) {
-                    this.setState(() {
-                      this.sex = value;
-                    });
-                  },
-                ),
-                Text("女"),
-                Radio(
-                  value: "秘密",
-                  groupValue: sex,
-                  onChanged: (value) {
-                    this.setState(() {
-                      this.sex = value;
-                    });
-                  },
-                ),
-                Text("秘密"),
-              ],
-            ),
-            Row(
-              children: [
-                Text("生日："),
-                FlatButton(
-                  padding: EdgeInsets.all(0),
-                  child: Text(birthDay,
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: FontSize.NORMAL)),
-                  onPressed: () {
-                    MyPicker.showPicker(
-                      context: context,
-                      current: DateTime.now(),
-                      mode: MyPickerMode.date,
-                      onConfirm: (val) => {
+                Row(
+                  children: [
+                    Text("性别"),
+                    Radio(
+                      value: 1,
+                      groupValue: user != null ? user['sex'] : sex,
+                      onChanged: (value) {
                         this.setState(() {
-                          birthDay = formatDate(val, [yyyy, '-', mm, '-', dd]);
-                          ;
-                        })
+                          this.user['sex'] = value;
+                        });
                       },
-                    );
-                  },
+                    ),
+                    Text("男"),
+                    Radio(
+                      value: 0,
+                      groupValue: user != null ? user['sex'] : sex,
+                      onChanged: (value) {
+                        this.setState(() {
+                          this.user['sex'] = value;
+                        });
+                      },
+                    ),
+                    Text("女"),
+                    Radio(
+                      value: 2,
+                      groupValue: user != null ? user['sex'] : sex,
+                      onChanged: (value) {
+                        this.setState(() {
+                          this.user['sex'] = value;
+                        });
+                      },
+                    ),
+                    Text("秘密"),
+                  ],
                 ),
-                // Expanded(child: DateTime),
+                Row(
+                  children: [
+                    Text("生日"),
+                    FlatButton(
+                      padding: EdgeInsets.fromLTRB(14, 12, 0, 10),
+                      child: Text(user['birthDay'],
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: FontSize.LARGE)),
+                      onPressed: () {
+                        MyPicker.showPicker(
+                          context: context,
+                          current: DateTime.now(),
+                          mode: MyPickerMode.date,
+                          onConfirm: (val) => {
+                            this.setState(() {
+                              user['birthDay'] = formatDate(val, [yyyy, '-', mm, '-', dd]);
+                            })
+                          },
+                        );
+                      },
+                    ),
+                    // Expanded(child: DateTime),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 
   @override
   void initState() {
-    birthDay = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
+    SharedPreferences.getInstance().then((stg) {
+      String userJson = stg.get(MyKeys.USER);
+      if (userJson != null) {
+        this.setState(() {
+          user = json.decode(userJson);
+          nameController = TextEditingController(text: user['nickName']);
+        });
+      }
+    });
+  }
+
+  void submit(String nickName, BuildContext context) {
+    UpdateInfoReq req = UpdateInfoReq(user['id'],nickName,user['sex'],user['birthDay']);
+    UserApi.updateInfo(req).then((rsp)  {
+      if(rsp[MyKeys.SUCCESS]){
+        Msg.tip('修改成功', context);
+        // 更新个人存储信息
+        SharedPreferences.getInstance().then((storage) async {
+          storage.setString(MyKeys.TOKEN, rsp[MyKeys.TOKEN]);
+          dynamic user = rsp[MyKeys.USER];
+          storage.setString(MyKeys.USER, json.encode(user));
+          storage.setString(MyKeys.USER_ID, user[MyKeys.USER_ID]);
+          await Future.delayed(Duration(milliseconds: 1000));
+          while (Navigator.canPop(context)) {
+            Navigator.pop(context, rsp[MyKeys.USER]);
+          }
+        });
+      }
+    });
   }
 }

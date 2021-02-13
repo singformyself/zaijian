@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toast/toast.dart';
-import 'package:zaijian/com/yestoday/model/UserVO.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
@@ -16,7 +16,7 @@ import 'package:zaijian/com/yestoday/utils/crop_editor_helper.dart';
 import 'config/Font.dart';
 
 class EditHeadIconPage extends StatefulWidget {
-  UserVO user;
+  dynamic user;
 
   EditHeadIconPage(this.user);
 
@@ -27,7 +27,7 @@ class EditHeadIconPage extends StatefulWidget {
 }
 
 class EditHeadIconState extends State<EditHeadIconPage> {
-  UserVO user;
+  dynamic user;
   File image;
   Uint8List cropImageDate;
   final ImagePicker imagePicker = ImagePicker();
@@ -58,7 +58,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                         fit:BoxFit.cover
                     )
                         : ZJ_Image.network(
-                      user.icon,
+                      BaseConfig.OBS_HOST+user['icon'],
                       width: 90,
                       height: 90,
                     ),

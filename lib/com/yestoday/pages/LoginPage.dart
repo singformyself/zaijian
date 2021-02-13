@@ -38,7 +38,7 @@ class LoginState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
                   keyboardType: TextInputType.phone,
                   controller: phoneController,

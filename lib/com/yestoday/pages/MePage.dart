@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
 import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
@@ -44,27 +44,28 @@ class MePageState extends State<MePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          if (user != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        EditHeadIconPage(user)));
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        LoginPage()));
+                        onTap: () async {
+                          if (user == null) {
+                            Msg.tip('请先登陆', context);
+                            return;
+                          }
+                          dynamic result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      EditHeadIconPage(user)));
+                          if (result != null) {
+                            this.setState(() {
+                              user = result;
+                            });
                           }
                         },
                         child: ClipOval(
                           child: user != null && user['icon'] != null
-                              ? ZJ_Image.network(user['icon'],
+                              ? ZJ_Image.network(BaseConfig.OBS_HOST+user['icon'],
                                   width: 105.0, height: 105.0)
-                              : Icon(Icons.person,
-                                  size: 105, color: Colors.black12),
+                              : ExtendedImage.asset('assets/default.jpg',
+                              width: 105.0, height: 105.0),
                         ),
                       ),
                       Text("点击编辑",
@@ -77,19 +78,20 @@ class MePageState extends State<MePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FlatButton(
-                          onPressed: () {
-                            if (user != null) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          EditBaseInfoPage()));
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          LoginPage()));
+                          onPressed: () async {
+                            if (user == null) {
+                              Msg.tip('请先登陆', context);
+                              return;
+                            }
+                            dynamic result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EditBaseInfoPage()));
+                            if (result!=null) {
+                              this.setState(() {
+                                user = result;
+                              });
                             }
                           },
                           child: Container(
@@ -104,7 +106,6 @@ class MePageState extends State<MePage> {
                                         fontSize: FontSize.LARGE,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
-                                getRealNameInfo(),
                                 getVipInfo(),
                                 Text("点击编辑基本信息",
                                     style: TextStyle(
@@ -122,7 +123,10 @@ class MePageState extends State<MePage> {
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
-              Toast.show("VIP", context);
+              if (user == null) {
+                Msg.tip('请先登陆', context);
+                return;
+              }
             },
             leading: Icon(Icons.local_offer),
             title: Text("VIP管理", style: TextStyle(fontSize: FontSize.NORMAL)),
@@ -220,26 +224,12 @@ class MePageState extends State<MePage> {
     });
   }
 
-  Widget getRealNameInfo() {
-    String text = "未实名";
-    Color color = Colors.white;
-    if (user != null && user['name'] != null) {
-      text = "已实名";
-      color = Colors.amber;
-    }
-    return Row(
-      children: [
-        Icon(Icons.verified_user, color: color),
-        Text(text, style: TextStyle(color: color)),
-      ],
-    );
-  }
 
   Widget getVipInfo() {
     String text = "普通";
     Color color = Colors.white;
     if (user != null && user['vip'] != null) {
-      text = user['vip'];
+      text = Vip.getVip(user['vip']);
       color = Colors.amber;
     }
     return Row(

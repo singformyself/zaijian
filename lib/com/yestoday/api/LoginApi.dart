@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
@@ -9,26 +9,15 @@ import 'package:zaijian/com/yestoday/common/DioFactory.dart';
  * 带login路径的请求都不需要携带token
  */
 class LoginApi {
-  static const String POST_LOGIN_NP = '/login/byNamePassword';
-  static const String POST_LOGIN_PC = '/login/byPhoneCode';
+  static const String POST_LOGIN_PC = '/login/phoneCode';
   static const String POST_SIGNUP = '/login/signup';
+  static const String POST_SEND_SMS = '/sms/send';
 
-  static Future<dynamic> byNamePassword(String name, String password) async {
-    try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_NP,
-          data: {'name': name, 'password': password});
-      if (response.statusCode == HttpStatus.ok) {
-        return response.data;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return BaseConfig.COMMON_FAIL;
-  }
 
-  static Future<dynamic> byPhoneCode(String phone, String code) async {
+  static Future<dynamic> login(String phone, String code) async {
     try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_LOGIN_PC,
+      Response response = await DioFactory.defaultDio().post(
+          BaseConfig.HOST + POST_LOGIN_PC,
           data: {'phone': phone, 'code': code});
       if (response.statusCode == HttpStatus.ok) {
         return response.data;
@@ -40,9 +29,24 @@ class LoginApi {
   }
 
   // 注册
-  static Future<dynamic> signup(String phone) async {
+  static Future<dynamic> signup(String phone, String code) async {
     try {
-      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_SIGNUP,
+      Response response = await DioFactory.defaultDio().post(
+          BaseConfig.HOST + POST_SIGNUP,
+          data: {'phone': phone, 'code': code});
+      if (response.statusCode == HttpStatus.ok) {
+        return response.data;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return BaseConfig.COMMON_FAIL;
+  }
+
+  // 注册
+  static Future<dynamic> sendSms(String phone) async {
+    try {
+      Response response = await DioFactory.defaultDio().post(BaseConfig.HOST + POST_SEND_SMS,
           data: {'phone': phone});
       if (response.statusCode == HttpStatus.ok) {
         return response.data;
@@ -67,7 +71,7 @@ class UserDTO {
   String id;
   String nickName; // 昵称
   String phone;
-  int sex;  // 1：男   0 ：女   2：秘密
+  int sex; // 1：男   0 ：女   2：秘密
   String birthDay;
   String icon; // base64Encode(List<int> bytes)
   String vip;

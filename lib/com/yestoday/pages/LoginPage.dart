@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
+import 'package:zaijian/com/yestoday/api/LoginApi.dart';
+import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,6 +23,7 @@ class LoginState extends State<LoginPage> {
   static final int COUNT_TIME = 60;
   int countDown = COUNT_TIME;
   bool canSend = true;
+  bool stopCount = false;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   TextEditingController codeController = TextEditingController();
@@ -40,6 +45,9 @@ class LoginState extends State<LoginPage> {
                   validator: (value) {
                     if (value.isEmpty) {
                       return "请输入手机号";
+                    }
+                    if (!BaseConfig.phoneExp.hasMatch(value)) {
+                      return "手机号填写错误";
                     }
                     return null;
                   },
@@ -70,7 +78,7 @@ class LoginState extends State<LoginPage> {
                       ),
                       OutlineButton(
                         onPressed: () {
-                          sendValidateNumber();
+                          sendValidateNumber(phoneController.text,context);
                         },
                         child: Text(getCountDownText(),
                             style: TextStyle(
@@ -93,13 +101,14 @@ class LoginState extends State<LoginPage> {
                               color: Colors.white, fontSize: FontSize.LARGE)),
                       onPressed: () {
                         if (formKey.currentState.validate()) {
-                          // 校验通过则可提交
-                          // 通过unameController.text,upasswordController.text获取表单数据
-                          Toast.show("提交成功", context);
+                          doLogin(phoneController.text, codeController.text, context);
                         }
                       },
                     ),
                   )),
+              Padding(
+                padding: EdgeInsets.only(top: 30),
+              ),
               Container(
                   padding: EdgeInsets.all(5.0),
                   height: 65.0,
@@ -116,20 +125,38 @@ class LoginState extends State<LoginPage> {
         ));
   }
 
-  void sendValidateNumber() async {
+  @override
+  void dispose() {
+    super.dispose();
+    stopCount = true;
+  }
+
+  void sendValidateNumber(String phone, BuildContext context) async {
+    if (!BaseConfig.phoneExp.hasMatch(phone)) {
+      Msg.alert('手机号填写错误', context);
+      return;
+    }
     if (canSend) {
-      this.countDown = COUNT_TIME;
-      this.canSend = false;
-      // TODO 请求后台发送短信
-      while (countDown >= 0) {
-        await Future.delayed(Duration(milliseconds: 1000));
-        this.setState(() {
-          countDown--;
-          if (countDown <= 0) {
-            this.canSend = true;
+      // 调用接口发送短信
+      LoginApi.sendSms(phone).then((rsp) async {
+        if (rsp[MyKeys.SUCCESS]) {
+          // 发送成功，执行倒计时
+          Msg.tip(rsp[MyKeys.MSG], context);
+          this.countDown = COUNT_TIME;
+          this.canSend = false;
+          while (countDown >= 0 && !stopCount) {
+            await Future.delayed(Duration(milliseconds: 1000));
+            this.setState(() {
+              countDown--;
+              if (countDown <= 0) {
+                this.canSend = true;
+              }
+            });
           }
-        });
-      }
+        } else {
+          Msg.alert(rsp['msg'], context);
+        }
+      });
     }
   }
 
@@ -138,6 +165,26 @@ class LoginState extends State<LoginPage> {
       return "获取验证码";
     }
     return countDown.toString() + " 秒后无效";
+  }
+
+  void doLogin(String phone, String code, BuildContext context) {
+    LoginApi.login(phone, code).then((rsp) {
+      if (rsp[MyKeys.SUCCESS]) {
+        Msg.tip('登陆成功', context);
+        // 注册成功将用户数据存入storage，然后跳转到我的页面
+        SharedPreferences.getInstance().then((storage) async {
+          dynamic user = rsp[MyKeys.USER];
+          storage.setString(MyKeys.USER, json.encode(user));
+          storage.setString(MyKeys.USER_ID, user[MyKeys.USER_ID]);
+          await Future.delayed(Duration(milliseconds: 1000));
+          while (Navigator.canPop(context)) {
+            Navigator.pop(context, rsp[MyKeys.USER]);
+          }
+        });
+      } else {
+        Msg.alert(rsp[MyKeys.MSG], context);
+      }
+    });
   }
 
   Function gotoRegistryPage(BuildContext context) {

@@ -20,16 +20,7 @@ class AccountAndSecurityPage extends StatelessWidget{
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ChangePhonePage()));
             },
           ),
-          Divider(),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-            title: Text("更换密码"),
-            trailing: Icon(Icons.chevron_right),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ChangePasswordPage()));
-            },
-          ),
-          Divider(),
+          Divider()
         ],
       ),
     );

@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/TestData.dart';
-import 'package:zaijian/com/yestoday/model/UserVO.dart';
 import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
 import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditBaseInfoPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
+import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-import 'package:zaijian/com/yestoday/common/BaseRsp.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
+import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 import 'LoginPage.dart';
 
@@ -24,7 +24,7 @@ class MePage extends StatefulWidget {
 }
 
 class MePageState extends State<MePage> {
-  UserVO userInfo;
+  dynamic user; // 用户数据从存储系统里获取
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +45,31 @@ class MePageState extends State<MePage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (userInfo != null) {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditHeadIconPage(userInfo)));
+                          if (user != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EditHeadIconPage(user)));
                           } else {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        LoginPage()));
                           }
                         },
                         child: ClipOval(
-                          child: userInfo != null
-                              ? ZJ_Image.network(userInfo.icon,
+                          child: user != null && user['icon'] != null
+                              ? ZJ_Image.network(user['icon'],
                                   width: 105.0, height: 105.0)
-                              : Icon(Icons.person,size: 105, color:Colors.black12),
+                              : Icon(Icons.person,
+                                  size: 105, color: Colors.black12),
                         ),
                       ),
                       Text("点击编辑",
-                          style: TextStyle(color: Colors.white, fontSize: FontSize.SMALL))
+                          style: TextStyle(
+                              color: Colors.white, fontSize: FontSize.SMALL))
                     ],
                   ), // 头像
                   Column(
@@ -68,10 +78,18 @@ class MePageState extends State<MePage> {
                     children: [
                       FlatButton(
                           onPressed: () {
-                            if (userInfo != null) {
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditBaseInfoPage()));
+                            if (user != null) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          EditBaseInfoPage()));
                             } else {
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          LoginPage()));
                             }
                           },
                           child: Container(
@@ -80,10 +98,7 @@ class MePageState extends State<MePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    userInfo != null
-                                        ? userInfo.nickName
-                                        : "未登陆",
+                                Text(user != null ? user['nickName'] : "未登陆",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: FontSize.LARGE,
@@ -93,7 +108,8 @@ class MePageState extends State<MePage> {
                                 getVipInfo(),
                                 Text("点击编辑基本信息",
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: FontSize.SMALL))
+                                        color: Colors.white,
+                                        fontSize: FontSize.SMALL))
                               ],
                             ),
                           ))
@@ -109,63 +125,105 @@ class MePageState extends State<MePage> {
               Toast.show("VIP", context);
             },
             leading: Icon(Icons.local_offer),
-            title: Text("VIP管理",style:TextStyle(fontSize: FontSize.NORMAL)),
+            title: Text("VIP管理", style: TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AccountAndSecurityPage()));
+              if (user == null) {
+                Msg.tip('请先登陆', context);
+                return;
+              }
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          AccountAndSecurityPage()));
             },
             leading: Icon(Icons.security),
-            title: Text("账号与安全",style:TextStyle(fontSize: FontSize.NORMAL)),
+            title: Text("账号与安全", style: TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
           ),
           Divider(),
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AboutZaiJianPage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => AboutZaiJianPage()));
             },
             leading: Icon(Icons.info),
-            title: Text("关于再见",style:TextStyle(fontSize: FontSize.NORMAL)),
+            title: Text("关于再见", style: TextStyle(fontSize: FontSize.NORMAL)),
             trailing: Icon(Icons.chevron_right),
+          ),
+          Divider(),
+          Padding(padding: EdgeInsets.only(top: 60)),
+          Divider(),
+          ListTile(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+            onTap: () async {
+              if (user != null) {
+                loginOut(context);
+              } else {
+                dynamic result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => LoginPage()));
+                if (result != null) {
+                  this.setState(() {
+                    user = result;
+                  });
+                }
+              }
+            },
+            title: Center(
+                child: Text(user != null ? "退出登陆" : "登陆",
+                    style: TextStyle(color: Theme.of(context).primaryColor))),
           ),
           Divider(),
           ListTile(
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-            onTap: () {
-              if(userInfo!=null){
-                Toast.show("退出登陆了", context);
-              }else{
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+            onTap: () async {
+              if (user != null) {
+                return;
+              }
+              dynamic result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => RegistryPage()));
+              if (result != null) {
+                this.setState(() {
+                  user = result;
+                });
               }
             },
-            title: Center(child: Text(userInfo!=null?"退出登陆":"点击登陆")),
-          ),
-          Divider()
+            title: Center(
+                child: Text(user == null ? "注册" : "",
+                    style: TextStyle(color: Theme.of(context).primaryColor))),
+          )
         ]));
   }
 
   @override
   void initState() {
-    getLoginUser();
-  }
-
-  void getLoginUser() {
-    SharedPreferences.getInstance().then((pfs) => {
-          this.setState(() {
-            this.userInfo = pfs.get(UserVO.LOGIN_KEY);
-            //this.userInfo = TestData.getUser("neal");
-          })
+    super.initState();
+    SharedPreferences.getInstance().then((stg) {
+      String userJson = stg.get(MyKeys.USER);
+      if (userJson != null) {
+        this.setState(() {
+          user = json.decode(userJson);
         });
+      }
+    });
   }
 
   Widget getRealNameInfo() {
     String text = "未实名";
     Color color = Colors.white;
-    if (userInfo != null && userInfo.name != null) {
+    if (user != null && user['name'] != null) {
       text = "已实名";
       color = Colors.amber;
     }
@@ -180,8 +238,8 @@ class MePageState extends State<MePage> {
   Widget getVipInfo() {
     String text = "普通";
     Color color = Colors.white;
-    if (userInfo != null && userInfo.vip != null) {
-      text = userInfo.vip;
+    if (user != null && user['vip'] != null) {
+      text = user['vip'];
       color = Colors.amber;
     }
     return Row(
@@ -190,5 +248,15 @@ class MePageState extends State<MePage> {
         Text(text, style: TextStyle(color: color)),
       ],
     );
+  }
+
+  void loginOut(BuildContext context) {
+    SharedPreferences.getInstance().then((stg) {
+      stg.clear();
+      this.setState(() {
+        user = null;
+      });
+      Msg.tip("已退出登陆", context);
+    });
   }
 }

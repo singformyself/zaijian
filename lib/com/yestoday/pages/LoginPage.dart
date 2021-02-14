@@ -168,19 +168,13 @@ class LoginState extends State<LoginPage> {
   }
 
   void doLogin(String phone, String code, BuildContext context) {
-    LoginApi.login(phone, code).then((rsp) {
+    LoginApi.login(phone, code).then((rsp) async {
       if (rsp[MyKeys.SUCCESS]) {
         Msg.tip('登陆成功', context);
-        // 注册成功将用户数据存入storage，然后跳转到我的页面
-        SharedPreferences.getInstance().then((storage) async {
-          dynamic user = rsp[MyKeys.USER];
-          storage.setString(MyKeys.USER, json.encode(user));
-          storage.setString(MyKeys.USER_ID, user[MyKeys.USER_ID]);
-          await Future.delayed(Duration(milliseconds: 1000));
-          while (Navigator.canPop(context)) {
-            Navigator.pop(context, rsp[MyKeys.USER]);
-          }
-        });
+        await Future.delayed(Duration(milliseconds: 1000));
+        while (Navigator.canPop(context)) {
+          Navigator.pop(context, rsp[MyKeys.USER]);
+        }
       } else {
         Msg.alert(rsp[MyKeys.MSG], context);
       }

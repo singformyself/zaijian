@@ -25,19 +25,19 @@ class HomePageApi {
     return BaseConfig.COMMON_FAIL;
   }
 
-  // 获取我的关注信息
-  static Future<dynamic> getInterests(String uid) async {
-    try {
-      Response response = await DioFactory.tokenDio()
-          .get(BaseConfig.HOST + GET_INTERESTS + '?uid=' + uid);
-      if (response.statusCode == HttpStatus.ok) {
-        return response.data;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return BaseConfig.COMMON_FAIL;
-  }
+//  // 获取我的关注信息
+//  static Future<dynamic> getInterests(String uid) async {
+//    try {
+//      Response response = await DioFactory.tokenDio()
+//          .get(BaseConfig.HOST + GET_INTERESTS + '?uid=' + uid);
+//      if (response.statusCode == HttpStatus.ok) {
+//        return response.data;
+//      }
+//    } catch (e) {
+//      print(e);
+//    }
+//    return BaseConfig.COMMON_FAIL;
+//  }
 }
 
 class InterestsRsp extends BaseRsp {

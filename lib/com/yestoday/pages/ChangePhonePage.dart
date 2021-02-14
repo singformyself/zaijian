@@ -152,14 +152,8 @@ class ChangePhoneState extends State<ChangePhonePage> {
     UserApi.changePhone(user['id'], phone, code).then((rsp) {
       if (rsp[MyKeys.SUCCESS]) {
         Msg.tip("修改成功", context);
-        // 更新本地数据
-        SharedPreferences.getInstance().then((storage) {
-          storage.setString(MyKeys.TOKEN, rsp[MyKeys.TOKEN]);
-          dynamic user = rsp[MyKeys.USER];
-          storage.setString(MyKeys.USER, json.encode(user));
-          this.setState(() {
-            nowPhone = user['phone'];
-          });
+        this.setState(() {
+          nowPhone = user['phone'];
         });
       } else {
         Msg.alert(rsp[MyKeys.MSG], context);

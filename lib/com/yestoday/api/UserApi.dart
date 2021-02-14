@@ -10,9 +10,11 @@ class UserApi {
 
   static Future<dynamic> updateInfo(UpdateInfoReq req) async {
     try {
-      Response response = await DioFactory.tokenDio()
-          .post(BaseConfig.HOST + POST_UPDATE_INFO, data: req.toJson());
+      Dio dio = await DioFactory.tokenDio();
+      Response response = await dio.post(BaseConfig.HOST + POST_UPDATE_INFO,
+          data: req.toJson());
       if (response.statusCode == HttpStatus.ok) {
+        LoginApi.refreshUserData(response.data);
         return response.data;
       }
     } catch (e) {
@@ -23,10 +25,11 @@ class UserApi {
 
   static Future<dynamic> changePhone(String uid, String phone, String code) async {
     try {
-      Response response = await DioFactory.tokenDio().post(
-          BaseConfig.HOST + POST_CHANGE_PHONE,
+      Dio dio = await DioFactory.tokenDio();
+      Response response = await dio.post(BaseConfig.HOST + POST_CHANGE_PHONE,
           data: {'uid': uid, 'phone': phone, 'code': code});
       if (response.statusCode == HttpStatus.ok) {
+        LoginApi.refreshUserData(response.data);
         return response.data;
       }
     } catch (e) {

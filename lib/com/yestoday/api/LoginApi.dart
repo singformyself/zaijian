@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/common/DioFactory.dart';
 
@@ -20,6 +22,7 @@ class LoginApi {
           BaseConfig.HOST + POST_LOGIN_PC,
           data: {'phone': phone, 'code': code});
       if (response.statusCode == HttpStatus.ok) {
+        refreshUserData(response.data);
         return response.data;
       }
     } catch (e) {
@@ -35,6 +38,7 @@ class LoginApi {
           BaseConfig.HOST + POST_SIGNUP,
           data: {'phone': phone, 'code': code});
       if (response.statusCode == HttpStatus.ok) {
+        refreshUserData(response.data);
         return response.data;
       }
     } catch (e) {
@@ -55,6 +59,16 @@ class LoginApi {
       print(e);
     }
     return BaseConfig.COMMON_FAIL;
+  }
+
+  static void refreshUserData(rsp) {
+    // 将用户数据存入storage
+    SharedPreferences.getInstance().then((stg)  {
+      stg.setString(MyKeys.TOKEN, rsp[MyKeys.TOKEN]);
+      dynamic user = rsp[MyKeys.USER];
+      stg.setString(MyKeys.USER, json.encode(user));
+      stg.setString(MyKeys.USER_ID, user[MyKeys.USER_ID]);
+    });
   }
 }
 

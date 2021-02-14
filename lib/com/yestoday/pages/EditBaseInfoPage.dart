@@ -100,7 +100,7 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
                     Text("生日"),
                     FlatButton(
                       padding: EdgeInsets.fromLTRB(14, 12, 0, 10),
-                      child: Text(user['birthDay'],
+                      child: Text(user==null?"":user['birthDay'],
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: FontSize.LARGE)),
@@ -141,20 +141,13 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
 
   void submit(String nickName, BuildContext context) {
     UpdateInfoReq req = UpdateInfoReq(user['id'],nickName,user['sex'],user['birthDay']);
-    UserApi.updateInfo(req).then((rsp)  {
+    UserApi.updateInfo(req).then((rsp) async {
       if(rsp[MyKeys.SUCCESS]){
         Msg.tip('修改成功', context);
-        // 更新个人存储信息
-        SharedPreferences.getInstance().then((storage) async {
-          storage.setString(MyKeys.TOKEN, rsp[MyKeys.TOKEN]);
-          dynamic user = rsp[MyKeys.USER];
-          storage.setString(MyKeys.USER, json.encode(user));
-          storage.setString(MyKeys.USER_ID, user[MyKeys.USER_ID]);
-          await Future.delayed(Duration(milliseconds: 1000));
-          while (Navigator.canPop(context)) {
-            Navigator.pop(context, rsp[MyKeys.USER]);
-          }
-        });
+        await Future.delayed(Duration(milliseconds: 1000));
+        while (Navigator.canPop(context)) {
+          Navigator.pop(context, rsp[MyKeys.USER]);
+        }
       }
     });
   }

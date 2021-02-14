@@ -147,12 +147,14 @@ class RegistryState extends State<RegistryPage> {
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
             await Future.delayed(Duration(milliseconds: 1000));
-            this.setState(() {
-              countDown--;
-              if (countDown <= 0) {
-                this.canSend = true;
-              }
-            });
+            if (!stopCount) {
+              this.setState(() {
+                countDown--;
+                if (countDown <= 0) {
+                  this.canSend = true;
+                }
+              });
+            }
           }
         } else {
           Msg.alert(rsp['msg'], context);

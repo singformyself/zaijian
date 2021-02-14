@@ -40,7 +40,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
           },
         ),
         body: Container(
-            padding: EdgeInsets.fromLTRB(5,0,5,5),
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               ListTile(
@@ -127,12 +127,14 @@ class ChangePhoneState extends State<ChangePhonePage> {
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
             await Future.delayed(Duration(milliseconds: 1000));
-            this.setState(() {
-              countDown--;
-              if (countDown <= 0) {
-                this.canSend = true;
-              }
-            });
+            if (!stopCount) {// 页面关闭了就不再setState了
+              this.setState(() {
+                countDown--;
+                if (countDown <= 0) {
+                  this.canSend = true;
+                }
+              });
+            }
           }
         } else {
           Msg.alert(rsp['msg'], context);

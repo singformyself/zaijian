@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zaijian/com/yestoday/api/TokenApi.dart';
 
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
@@ -9,6 +10,8 @@ void main() {
   runApp(MyApp());
   SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  // 每次启动都会刷新一次token
+  TokenApi.refresh();
 }
 
 class MyApp extends StatelessWidget {

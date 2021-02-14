@@ -2,9 +2,12 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zaijian/com/yestoday/api/MemoryApi.dart';
+import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:zaijian/com/yestoday/utils/Msg.dart';
 import 'config/Font.dart';
 
 class AddMemoryPage extends StatefulWidget {
@@ -15,35 +18,38 @@ class AddMemoryPage extends StatefulWidget {
 }
 
 class AddMemoryState extends State<AddMemoryPage> {
-  final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
-  String openValue;
+  bool openValue;
   File image;
   final ImagePicker imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ZJ_AppBar("新增主题"),
-      floatingActionButton: FloatingActionButton(child: Text("确定"),onPressed: (){
-        //TODO
-      }),
+      appBar: ZJ_AppBar("创建主题"),
+      floatingActionButton: FloatingActionButton(
+          child: Text("确定"),
+          onPressed: () {
+            submit(nameController.text, context);
+          }),
       body: Form(
-          key: formKey1,
+          key: formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                height: 50.0,
-              ),
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: TextFormField(
                   keyboardType: TextInputType.text,
                   controller: nameController,
-                  maxLines: 3,
+                  maxLines: 2,
                   validator: (value) {
                     if (value.isEmpty) {
                       return "请输入主题名称";
+                    }
+                    if (value.length > 128) {
+                      return "主题名称不能超过128个字符";
                     }
                     return null;
                   },
@@ -56,11 +62,11 @@ class AddMemoryState extends State<AddMemoryPage> {
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("可见状态", style: TextStyle(fontSize: FontSize.NORMAL)),
-                    Radio<String>(
-                      value: "public",
+                    Radio<bool>(
+                      value: true,
                       groupValue: openValue,
                       onChanged: (value) {
                         this.setState(() {
@@ -68,9 +74,9 @@ class AddMemoryState extends State<AddMemoryPage> {
                         });
                       },
                     ),
-                    Text("所有人可见", style: TextStyle(fontSize: FontSize.NORMAL)),
-                    Radio<String>(
-                      value: "private",
+                    Text("公开", style: TextStyle(fontSize: FontSize.NORMAL)),
+                    Radio<bool>(
+                      value: false,
                       groupValue: openValue,
                       onChanged: (value) {
                         this.setState(() {
@@ -78,7 +84,7 @@ class AddMemoryState extends State<AddMemoryPage> {
                         });
                       },
                     ),
-                    Text("仅自己可见", style: TextStyle(fontSize: FontSize.NORMAL)),
+                    Text("私有", style: TextStyle(fontSize: FontSize.NORMAL)),
                   ],
                 ),
               ),
@@ -106,7 +112,9 @@ class AddMemoryState extends State<AddMemoryPage> {
                                     }));
                           }
                         },
-                        child: Text("设置封面",style:TextStyle(color: Theme.of(context).primaryColor)),
+                        child: Text("设置封面",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
                         itemBuilder: (context) => <PopupMenuItem<String>>[
                               PopupMenuItem<String>(
                                 value: "fromCamera",
@@ -160,5 +168,26 @@ class AddMemoryState extends State<AddMemoryPage> {
             ],
           )),
     );
+  }
+
+  Future<void> submit(String text, BuildContext context) async {
+    // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
+    SharedPreferences stg = await SharedPreferences.getInstance();
+    String uid = stg.get(MyKeys.USER_ID);
+    dynamic data = {
+      'title': nameController.text,
+      'publicity': openValue,
+      'creator': uid,
+      'icon': ''
+    };
+    MemoryApi.create(data).then((rsp) async {
+      if (rsp[MyKeys.SUCCESS]) {
+        Msg.tip("创建成功", context);
+        await Future.delayed(Duration(milliseconds: 1000));
+        Navigator.pop(context, true);
+      } else {
+        Msg.alert(rsp[MyKeys.MSG], context);
+      }
+    });
   }
 }

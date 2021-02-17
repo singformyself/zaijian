@@ -8,7 +8,7 @@ import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_my_picker/flutter_my_picker.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
-import 'package:zaijian/com/yestoday/api/UserApi.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class EditBaseInfoPage extends StatefulWidget {
@@ -129,7 +129,7 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
   @override
   void initState() {
     SharedPreferences.getInstance().then((stg) {
-      String userJson = stg.get(MyKeys.USER);
+      String userJson = stg.get(KEY.USER);
       if (userJson != null) {
         this.setState(() {
           user = json.decode(userJson);
@@ -140,13 +140,12 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
   }
 
   void submit(String nickName, BuildContext context) {
-    UpdateInfoReq req = UpdateInfoReq(user['id'],nickName,user['sex'],user['birthDay']);
-    UserApi.updateInfo(req).then((rsp) async {
-      if(rsp[MyKeys.SUCCESS]){
+    UserApi.updateInfo(user['id'],nickName,user['sex'],user['birthDay']).then((rsp) async {
+      if(rsp[KEY.SUCCESS]){
         Msg.tip('修改成功', context);
         await Future.delayed(Duration(milliseconds: 1000));
         while (Navigator.canPop(context)) {
-          Navigator.pop(context, rsp[MyKeys.USER]);
+          Navigator.pop(context, rsp[KEY.USER]);
         }
       }
     });

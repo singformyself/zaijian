@@ -6,8 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
-import 'package:zaijian/com/yestoday/api/LoginApi.dart';
-import 'package:zaijian/com/yestoday/api/UserApi.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class ChangePhonePage extends StatefulWidget {
@@ -100,7 +99,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
     super.initState();
     SharedPreferences.getInstance().then((stg) {
       this.setState(() {
-        user = json.decode(stg.get(MyKeys.USER));
+        user = json.decode(stg.get(KEY.USER));
         nowPhone = user['phone'];
       });
     });
@@ -120,9 +119,9 @@ class ChangePhoneState extends State<ChangePhonePage> {
     if (canSend) {
       // 调用接口发送短信
       LoginApi.sendSms(phone).then((rsp) async {
-        if (rsp[MyKeys.SUCCESS]) {
+        if (rsp[KEY.SUCCESS]) {
           // 发送成功，执行倒计时
-          Msg.tip(rsp[MyKeys.MSG], context);
+          Msg.tip(rsp[KEY.MSG], context);
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
@@ -152,13 +151,13 @@ class ChangePhoneState extends State<ChangePhonePage> {
 
   void submit(String phone, String code, BuildContext context) {
     UserApi.changePhone(user['id'], phone, code).then((rsp) {
-      if (rsp[MyKeys.SUCCESS]) {
+      if (rsp[KEY.SUCCESS]) {
         Msg.tip("修改成功", context);
         this.setState(() {
           nowPhone = user['phone'];
         });
       } else {
-        Msg.alert(rsp[MyKeys.MSG], context);
+        Msg.alert(rsp[KEY.MSG], context);
       }
     });
   }

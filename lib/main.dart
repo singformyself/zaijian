@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zaijian/com/yestoday/api/TokenApi.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '再见',
-      theme: ThemeData(brightness: Brightness.light),
+      theme: ThemeData(brightness: Brightness.light,backgroundColor:Colors.white),
       home: NavigationFrame(),
     );
   }

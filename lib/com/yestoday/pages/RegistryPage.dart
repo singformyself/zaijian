@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
-import 'package:zaijian/com/yestoday/api/LoginApi.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class RegistryPage extends StatefulWidget {
@@ -140,9 +137,9 @@ class RegistryState extends State<RegistryPage> {
     if (canSend) {
       // 调用接口发送短信
       LoginApi.sendSms(phone).then((rsp) async {
-        if (rsp[MyKeys.SUCCESS]) {
+        if (rsp[KEY.SUCCESS]) {
           // 发送成功，执行倒计时
-          Msg.tip(rsp[MyKeys.MSG], context);
+          Msg.tip(rsp[KEY.MSG], context);
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
@@ -172,14 +169,14 @@ class RegistryState extends State<RegistryPage> {
 
   void doSignup(String phone, String code, BuildContext context) {
     LoginApi.signup(phone, code).then((rsp) async {
-      if (rsp[MyKeys.SUCCESS]) {
+      if (rsp[KEY.SUCCESS]) {
         Msg.tip('注册成功', context);
         await Future.delayed(Duration(milliseconds: 1000));
         while (Navigator.canPop(context)) {
-          Navigator.pop(context, rsp[MyKeys.USER]);
+          Navigator.pop(context, rsp[KEY.USER]);
         }
       } else {
-        Msg.alert(rsp[MyKeys.MSG], context);
+        Msg.alert(rsp[KEY.MSG], context);
       }
     });
   }

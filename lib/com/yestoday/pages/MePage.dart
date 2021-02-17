@@ -9,6 +9,7 @@ import 'package:zaijian/com/yestoday/pages/EditBaseInfoPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
@@ -215,7 +216,7 @@ class MePageState extends State<MePage> {
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then((stg) {
-      String userJson = stg.get(MyKeys.USER);
+      String userJson = stg.get(KEY.USER);
       if (userJson != null) {
         this.setState(() {
           user = json.decode(userJson);

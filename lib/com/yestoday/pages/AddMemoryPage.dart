@@ -3,7 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/com/yestoday/api/MemoryApi.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,23 +11,31 @@ import 'package:zaijian/com/yestoday/utils/Msg.dart';
 import 'config/Font.dart';
 
 class AddMemoryPage extends StatefulWidget {
+  dynamic memory;
+
+  AddMemoryPage({this.memory});
+
   @override
   State<StatefulWidget> createState() {
-    return AddMemoryState();
+    return AddMemoryState(memory: memory);
   }
 }
 
 class AddMemoryState extends State<AddMemoryPage> {
+  dynamic memory;
+
+  AddMemoryState({this.memory});
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  bool openValue;
+  TextEditingController nameController;
+  bool openValue = true;
   File image;
   final ImagePicker imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ZJ_AppBar("创建主题"),
+      appBar: ZJ_AppBar(memory != null ? "修改主题" : "创建主题"),
       floatingActionButton: FloatingActionButton(
           child: Text("确定"),
           onPressed: () {
@@ -142,51 +150,38 @@ class AddMemoryState extends State<AddMemoryPage> {
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(7.0),
                               child: ExtendedImage.asset("assets/default.jpg",
-                                  fit: BoxFit.cover)))),
-//              Container(
-//                  margin: EdgeInsets.only(top: 20.0),
-//                  padding: EdgeInsets.all(10.0),
-//                  height: 65.0,
-//                  child: SizedBox.expand(
-//                    child: RaisedButton(
-//                      color: Theme.of(context).primaryColor,
-//                      hoverColor: Theme.of(context).primaryColor,
-//                      disabledColor: Theme.of(context).primaryColor,
-//                      textColor: Colors.white,
-//                      child: Text("确    定",
-//                          style: TextStyle(
-//                              color: Colors.white, fontSize: FontSize.LARGE)),
-//                      onPressed: () {
-//                        if (formKey1.currentState.validate()) {
-//                          // 校验通过则可提交
-//                          // 通过unameController.text,upasswordController.text获取表单数据
-//                          Toast.show("提交成功", context);
-//                        }
-//                      },
-//                    ),
-//                  )),
+                                  fit: BoxFit.cover))))
             ],
           )),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    nameController =
+        TextEditingController(text: memory != null ? memory['title'] : '');
+    openValue=memory != null ? memory['publicity'] : true;
+  }
+
   Future<void> submit(String text, BuildContext context) async {
     // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
     SharedPreferences stg = await SharedPreferences.getInstance();
-    String uid = stg.get(MyKeys.USER_ID);
+    String uid = stg.get(KEY.USER_ID);
     dynamic data = {
+      'id': memory != null ? memory['id'] : '',
       'title': nameController.text,
       'publicity': openValue,
       'creator': uid,
       'icon': ''
     };
-    MemoryApi.create(data).then((rsp) async {
-      if (rsp[MyKeys.SUCCESS]) {
-        Msg.tip("创建成功", context);
+    MemoryApi.save(data).then((rsp) async {
+      if (rsp[KEY.SUCCESS]) {
+        Msg.tip(memory != null ? "修改成功" : "创建成功", context);
         await Future.delayed(Duration(milliseconds: 1000));
         Navigator.pop(context, true);
       } else {
-        Msg.alert(rsp[MyKeys.MSG], context);
+        Msg.alert(rsp[KEY.MSG], context);
       }
     });
   }

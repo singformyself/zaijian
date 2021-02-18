@@ -160,7 +160,7 @@ class EyewitnessItem extends StatelessWidget {
         child: Row(
           children: [
             ClipOval(
-                child: ZJ_Image.network(BaseConfig.OBS_HOST + user['icon'],
+                child: ZJ_Image.network(MyApi.OBS_HOST + user['icon'],
                     width: 30.0, height: 30.0)),
             Padding(padding: EdgeInsets.all(3.0)),
             Expanded(

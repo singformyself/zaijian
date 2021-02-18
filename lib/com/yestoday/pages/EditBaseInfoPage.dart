@@ -37,13 +37,12 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
       body: Form(
           key: formKey,
           child: Container(
-            padding: EdgeInsets.fromLTRB(5, 0, 5, 100),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            padding: EdgeInsets.fromLTRB(5, 50, 5, 100),
+            child: ListView(
               children: [
                 Container(
                   child: TextFormField(
-                    autofocus: true,
+                    autofocus: false,
                     controller: nameController,
                     validator: (value) {
                       if (value.isEmpty) {

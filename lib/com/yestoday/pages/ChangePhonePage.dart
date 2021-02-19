@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
@@ -40,7 +37,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
         body: Container(
             padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               ListTile(
                   leading:
                       Text("当前手机号", style: TextStyle(fontSize: FontSize.LARGE)),
@@ -96,12 +93,13 @@ class ChangePhoneState extends State<ChangePhonePage> {
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((stg) {
-      this.setState(() {
-        user = json.decode(stg.get(KEY.USER));
-        nowPhone = user['phone'];
-      });
-    });
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    user = await MyUtil.getUser();
+    nowPhone = user['phone'];
+    this.setState(() {});
   }
 
   @override
@@ -125,7 +123,8 @@ class ChangePhoneState extends State<ChangePhonePage> {
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
             await Future.delayed(Duration(milliseconds: 1000));
-            if (!stopCount) {// 页面关闭了就不再setState了
+            if (!stopCount) {
+              // 页面关闭了就不再setState了
               this.setState(() {
                 countDown--;
                 if (countDown <= 0) {

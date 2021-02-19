@@ -1,40 +1,33 @@
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-import 'package:uuid/uuid.dart';
-import 'package:date_format/date_format.dart';
 import 'package:file_picker/file_picker.dart';
 
 class UploadVideoPage extends StatefulWidget {
   dynamic memory;
-  PickedFile pickedFile;
 
-  UploadVideoPage({this.memory, this.pickedFile});
+  UploadVideoPage({this.memory});
 
   @override
   State<StatefulWidget> createState() {
-    return UploadVideoState(this.memory, this.pickedFile);
+    return UploadVideoState(this.memory);
   }
 }
 
 class UploadVideoState extends State<UploadVideoPage> {
-  final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
-  PickedFile pickedFile;
   dynamic memory;
   Uint8List snapshotData;
+
 //  final ImagePicker imagePicker = ImagePicker();
 
-  UploadVideoState(this.memory, this.pickedFile);
+  UploadVideoState(this.memory);
 
   FijkPlayer player = FijkPlayer();
 
@@ -49,7 +42,7 @@ class UploadVideoState extends State<UploadVideoPage> {
         },
       ),
       body: Form(
-        key: formKey1,
+        key: formKey,
         child: ListView(
           children: [
             Container(
@@ -75,6 +68,9 @@ class UploadVideoState extends State<UploadVideoPage> {
                   if (value.isEmpty) {
                     return "请输入回忆名称";
                   }
+                  if (value.length > 128) {
+                    return "名称不能超过128个字符";
+                  }
                   return null;
                 },
                 decoration: InputDecoration(
@@ -89,15 +85,17 @@ class UploadVideoState extends State<UploadVideoPage> {
                 Container(
                     width: 160,
                     height: 100,
-                    child: player.dataSource==null?Center(child: Text("未选择文件")):Material(
-                      child: FijkView(
-                        fit: FijkFit.cover,
-                        fs: false,
-                        player: player,
-                        panelBuilder: null,// 不提供操作界面
-                        color: Colors.white,
-                      ),
-                    )),
+                    child: player.dataSource == null
+                        ? Center(child: Text("未选择文件"))
+                        : Material(
+                            child: FijkView(
+                              fit: FijkFit.cover,
+                              fs: false,
+                              player: player,
+                              panelBuilder: null, // 不提供操作界面
+                              color: Colors.white,
+                            ),
+                          )),
                 Padding(padding: EdgeInsets.all(10)),
                 OutlineButton(
                     child: Text("选择视频...",
@@ -105,15 +103,18 @@ class UploadVideoState extends State<UploadVideoPage> {
                             TextStyle(color: Theme.of(context).primaryColor)),
                     onPressed: () {
                       player.reset();
-                      FilePicker.platform.pickFiles(type: FileType.custom,
-                          allowedExtensions: ['mp4', 'flv', 'wmv', 'avi'],
-                      onFileLoading:(st){
-                        if (st==FilePickerStatus.picking) {
-                          EasyLoading.show(status: "加载中...");
-                        } else {
-                          EasyLoading.dismiss();
-                        }
-                      } ).then((result) {
+                      FilePicker.platform
+                          .pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['mp4', 'flv', 'wmv', 'avi'],
+                              onFileLoading: (st) {
+                                if (st == FilePickerStatus.picking) {
+                                  EasyLoading.show(status: "加载中...");
+                                } else {
+                                  EasyLoading.dismiss();
+                                }
+                              })
+                          .then((result) {
                         if (result != null) {
                           player.setDataSource(result.files.single.path,
                               autoPlay: false, showCover: true);
@@ -147,17 +148,35 @@ class UploadVideoState extends State<UploadVideoPage> {
   }
 
   Future<void> takeSnapShot() async {
-    if (player.dataSource==null) {
+    if (player.dataSource == null) {
       EasyLoading.showInfo("请选择要上传的视频");
       return;
     }
-    var imageData = await player.takeSnapShot();
-    if (imageData != null) {
-      print(imageData);
+    if (!formKey.currentState.validate()) {
+      return;
     }
+    var imageData = await player.takeSnapShot();
     // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
-//    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
-//    String name = "cover/" + month + "/" + Uuid().v4() + ".jpg";
-//    bool success = await OBSApi.uploadObsBytes(name, imageData);
+    String icon = MyUtil.genCoverName();
+    bool success = await OBSApi.uploadObsBytes(icon, imageData);
+    if (!success) {
+      EasyLoading.showError('初始化封面失败，请重试');
+      return;
+    }
+    var data = {
+      'mid': memory['id'],
+      'creator': await MyUtil.getUserId(),
+      'title': nameController.text,
+      'type': 0, //视频
+      'icon': '/' + icon,
+    };
+    dynamic rsp = await MemoryApi.put(MemoryApi.PUT_MEMORY_ITEM, data);
+    if (!rsp[KEY.SUCCESS]) {
+      EasyLoading.showError(rsp[KEY.MSG]);
+      return;
+    }
+    EasyLoading.showSuccess('创建成功');
+    await Future.delayed(Duration(milliseconds: 2000));
+    Navigator.pop(context, true);
   }
 }

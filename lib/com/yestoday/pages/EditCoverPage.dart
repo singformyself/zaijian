@@ -4,11 +4,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
 import 'package:zaijian/com/yestoday/utils/crop_editor_helper.dart';
-
-import 'config/Font.dart';
 
 class EditCoverPage extends StatefulWidget {
   String defaultCover;

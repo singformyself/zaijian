@@ -6,6 +6,8 @@ import 'package:okhttp_kit/okhttp3/form_body.dart';
 import 'package:okhttp_kit/okhttp3/okhttp_client.dart';
 import 'package:okhttp_kit/okhttp_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+import 'package:date_format/date_format.dart';
 
 class KEY {
   static const String TOKEN = "token";
@@ -13,6 +15,41 @@ class KEY {
   static const String USER_ID = "id";
   static const String SUCCESS = "success";
   static const String MSG = "msg";
+}
+class FontSize {
+  static const double SUPER_LARGE = 18.0;
+  static const double LARGE = 16.0;
+  static const double NORMAL = 14.0;
+  static const double SMALL = 12.0;
+  static const double SUPER_SMALL = 10.0;
+}
+class MyUtil{
+  static void cleanStorage() {
+    SharedPreferences.getInstance().then((stg) {
+      stg.clear();
+    });
+  }
+  static Future<dynamic> getUser() async {
+    SharedPreferences stg = await SharedPreferences.getInstance();
+    String user = stg.getString(KEY.USER);
+    return json.decode(user);
+  }
+  static Future<dynamic> getUserId() async {
+    SharedPreferences stg = await SharedPreferences.getInstance();
+    return stg.getString(KEY.USER_ID);
+  }
+  static String genCoverName(){
+    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
+    return "cover/" + month + "/" + Uuid().v4().replaceAll('-', '') + ".jpg";
+  }
+  static String genVideoName(String filePath){
+    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
+    return "video/" + month + "/" + Uuid().v4().replaceAll('-', '') + filePath.substring(filePath.lastIndexOf('.'), filePath.length);
+  }
+  static String genPhotoName(String filePath){
+    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
+    return "photo/" + month + "/" + Uuid().v4().replaceAll('-', '') + filePath.substring(filePath.lastIndexOf('.'), filePath.length);
+  }
 }
 
 class MyApi {
@@ -201,25 +238,25 @@ class OBSApi {
   static const String POST_UPLOAD_AUTH = "/obs/uploadAuth";
 
   static Future<bool> uploadObs(String objectId, File file) async {
-      FormBody formBody = FormBodyBuilder().add('objectId', objectId).build();
-      Request authReq = RequestBuilder()
-          .url(HttpUrl.parse(MyApi.HOST + POST_UPLOAD_AUTH))
-          .post(formBody)
-          .build();
+    FormBody formBody = FormBodyBuilder().add('objectId', objectId).build();
+    Request authReq = RequestBuilder()
+        .url(HttpUrl.parse(MyApi.HOST + POST_UPLOAD_AUTH))
+        .post(formBody)
+        .build();
 
-      Response authRsp = await MyApi.defaultClient.newCall(authReq).enqueue();
-      if (authRsp.isSuccessful()) {
-        RequestBody requestBody =
-            RequestBody.fileBody(MediaType.parse("text/plain"), file);
-        String rsp = await authRsp.body().string();
-        dynamic res = json.decode(rsp);
-        Request request = RequestBuilder()
-            .url(HttpUrl.parse(res['authUrl']))
-            .put(requestBody)
-            .build();
-        Response obsRsp = await MyApi.obsClient.newCall(request).enqueue();
-        return obsRsp.isSuccessful();
-      }
+    Response authRsp = await MyApi.defaultClient.newCall(authReq).enqueue();
+    if (authRsp.isSuccessful()) {
+      RequestBody requestBody =
+          RequestBody.fileBody(MediaType.parse("text/plain"), file);
+      String rsp = await authRsp.body().string();
+      dynamic res = json.decode(rsp);
+      Request request = RequestBuilder()
+          .url(HttpUrl.parse(res['authUrl']))
+          .put(requestBody)
+          .build();
+      Response obsRsp = await MyApi.obsClient.newCall(request).enqueue();
+      return obsRsp.isSuccessful();
+    }
     return false;
   }
 
@@ -249,9 +286,12 @@ class OBSApi {
 class MemoryApi {
   static const String PUT_SAVE = "/memory/save";
   static const String DELETE = "/memory/delete";
+  static const String DELETE_ITEM = "/memory/deleteItem";
   static const String GET_PAGE_LIST = "/memory/pageList";
+  static const String GET_ITEM_UPLOAD_HIS_PAGE_LIST = "/memory/itemUploadHispageList";
   static const String GET_EYEWITNESS_PAGE_LIST = "/memory/eyewitnessPageList";
   static const String DELETE_EYEWITNESS = "/memory/deleteEyewitness";
+  static const String PUT_MEMORY_ITEM = "/memory/addMemoryItem";
 
   static Future<dynamic> call(Request request) async {
     Response rsp = await MyApi.defaultClient.newCall(request).enqueue();
@@ -262,11 +302,11 @@ class MemoryApi {
     return MyApi.COMMON_FAIL;
   }
 
-  static Future<dynamic> save(dynamic data) {
+  static Future<dynamic> put(String url, dynamic data) {
     RequestBody body = RequestBody.textBody(
         MediaType.parse("application/json"), json.encode(data));
     Request request = RequestBuilder()
-        .url(HttpUrl.parse(MyApi.HOST + PUT_SAVE))
+        .url(HttpUrl.parse(MyApi.HOST + url))
         .put(body)
         .build();
     return call(request);
@@ -281,6 +321,16 @@ class MemoryApi {
     return call(request);
   }
 
+  // 懒人写法
+  static Future<dynamic> deleteById(String url,String id) {
+    RequestBody body = FormBodyBuilder().add('id', id).build();
+    Request request = RequestBuilder()
+            .url(HttpUrl.parse(MyApi.HOST + url))
+            .delete(body)
+            .build();
+    return call(request);
+  }
+
   static Future<dynamic> pageList(String uid, int curPage, int length) {
     String param = "?uid=" +
         uid +
@@ -292,6 +342,19 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + GET_PAGE_LIST + param))
         .get()
         .build();
+    return call(request);
+  }
+  // 懒人get接口
+  static Future<dynamic> getList(String url, Map params) {
+    String param = '';
+    for(int i=0;i<params.entries.length;i++){
+      MapEntry item = params.entries.elementAt(i);
+      param+=(i==0?'?':'&')+item.key+'='+item.value.toString();
+    }
+    Request request = RequestBuilder()
+            .url(HttpUrl.parse(MyApi.HOST + url + param))
+            .get()
+            .build();
     return call(request);
   }
 
@@ -310,12 +373,12 @@ class MemoryApi {
   }
 
   static Future<dynamic> deleteEyewitness(String mid, String uid) {
-      RequestBody body =
-          FormBodyBuilder().add('mid', mid).add('uid', uid).build();
-      Request request = RequestBuilder()
-          .url(HttpUrl.parse(MyApi.HOST + DELETE_EYEWITNESS))
-          .delete(body)
-          .build();
-      return call(request);
+    RequestBody body =
+        FormBodyBuilder().add('mid', mid).add('uid', uid).build();
+    Request request = RequestBuilder()
+        .url(HttpUrl.parse(MyApi.HOST + DELETE_EYEWITNESS))
+        .delete(body)
+        .build();
+    return call(request);
   }
 }

@@ -12,8 +12,6 @@ import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
 import 'package:zaijian/com/yestoday/utils/crop_editor_helper.dart';
 
-import 'config/Font.dart';
-
 class EditHeadIconPage extends StatefulWidget {
   dynamic user;
 

@@ -1,10 +1,8 @@
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 typedef DoubleClickAnimationListener = void Function();
 class PhotoSwiperPage extends StatefulWidget {

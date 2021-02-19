@@ -4,8 +4,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zaijian/com/yestoday/model/AnnouncementVO.dart';
 import 'package:zaijian/com/yestoday/model/MyFocusVO.dart';
 import 'package:zaijian/com/yestoday/pages/AnnouncementPage.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/HomepageService.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'dart:io';
@@ -48,7 +48,7 @@ class HomePageState extends State<HomePage> {
                     if (value != null) {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              UploadVideoPage(pickedFile: value)));
+                              UploadVideoPage()));
                     }
                   })
                 }),

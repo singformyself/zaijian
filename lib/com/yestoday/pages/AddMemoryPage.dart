@@ -3,12 +3,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zaijian/com/yestoday/pages/EditCoverPage.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
-import 'config/Font.dart';
 
 class AddMemoryPage extends StatefulWidget {
   @override
@@ -136,8 +134,7 @@ class AddMemoryState extends State<AddMemoryPage> {
     DefaultAssetBundle.of(context).load("assets/default_cover.jpg").then((bytes) => this.setState(() {
       coverBytes=bytes.buffer.asUint8List();
     }));
-    SharedPreferences.getInstance()
-        .then((stg) => memory['creator'] = stg.getString(KEY.USER_ID));
+    memory['creator'] = MyUtil.getUserId();
   }
 
   Future<void> submit(String text, BuildContext context) async {
@@ -149,7 +146,7 @@ class AddMemoryState extends State<AddMemoryPage> {
       memory['icon'] = "/" + name;
     }
     memory['title'] = nameController.text;
-    MemoryApi.save(memory).then((rsp) async {
+    MemoryApi.put(MemoryApi.PUT_SAVE, memory).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess("创建成功");
         await Future.delayed(Duration(milliseconds: 2000));

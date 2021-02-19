@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_my_picker/flutter_my_picker.dart';
@@ -124,18 +121,15 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
   }
 
   @override
-  void initState() {
-    SharedPreferences.getInstance().then((stg) {
-      String userJson = stg.get(KEY.USER);
-      if (userJson != null) {
-        this.setState(() {
-          user = json.decode(userJson);
-          nameController = TextEditingController(text: user['nickName']);
-        });
-      }
-    });
+  Future<void> initState() {
+    super.initState();
+    getUser();
   }
-
+  Future<void> getUser() async {
+    user = await MyUtil.getUser();
+    nameController = TextEditingController(text: user['nickName']);
+    this.setState(() {});
+  }
   void submit(String nickName, BuildContext context) {
     UserApi.updateInfo(user['id'],nickName,user['sex'],user['birthDay']).then((rsp) async {
       if(rsp[KEY.SUCCESS]){

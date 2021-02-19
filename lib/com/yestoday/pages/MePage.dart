@@ -1,15 +1,11 @@
-import 'dart:convert';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
 import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditBaseInfoPage.dart';
 import 'package:zaijian/com/yestoday/pages/EditHeadIconPage.dart';
 import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
-import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -62,10 +58,10 @@ class MePageState extends State<MePage> {
                         },
                         child: ClipOval(
                           child: user != null && user['icon'] != null
-                              ? ZJ_Image.network(MyApi.OBS_HOST+user['icon'],
+                              ? ZJ_Image.network(MyApi.OBS_HOST + user['icon'],
                                   width: 105.0, height: 105.0)
                               : ExtendedImage.asset('assets/default.jpg',
-                              width: 105.0, height: 105.0),
+                                  width: 105.0, height: 105.0),
                         ),
                       ),
                       Text("点击编辑",
@@ -88,7 +84,7 @@ class MePageState extends State<MePage> {
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         EditBaseInfoPage()));
-                            if (result!=null) {
+                            if (result != null) {
                               this.setState(() {
                                 user = result;
                               });
@@ -212,18 +208,15 @@ class MePageState extends State<MePage> {
   }
 
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
-    SharedPreferences.getInstance().then((stg) {
-      String userJson = stg.get(KEY.USER);
-      if (userJson != null) {
-        this.setState(() {
-          user = json.decode(userJson);
-        });
-      }
-    });
+    getUser();
   }
 
+  Future<void> getUser() async {
+    user = await MyUtil.getUser();
+    this.setState(() {});
+  }
 
   Widget getVipInfo() {
     String text = "普通";
@@ -241,12 +234,10 @@ class MePageState extends State<MePage> {
   }
 
   void loginOut(BuildContext context) {
-    SharedPreferences.getInstance().then((stg) {
-      stg.clear();
-      this.setState(() {
-        user = null;
-      });
-      EasyLoading.showInfo("已退出登陆");
+    MyUtil.cleanStorage();
+    this.setState(() {
+      user = null;
     });
+    EasyLoading.showInfo("已退出登陆");
   }
 }

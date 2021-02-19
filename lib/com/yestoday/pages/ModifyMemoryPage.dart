@@ -8,7 +8,6 @@ import 'package:zaijian/com/yestoday/pages/EditCoverPage.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-import 'config/Font.dart';
 
 class ModifyMemoryPage extends StatefulWidget {
   dynamic memory;
@@ -148,7 +147,7 @@ class ModifyMemoryState extends State<ModifyMemoryPage> {
       }
     }
     memory['title'] = nameController.text;
-    MemoryApi.save(memory).then((rsp) async {
+    MemoryApi.put(MemoryApi.PUT_SAVE, memory).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess("修改成功");
         await Future.delayed(Duration(milliseconds: 2000));

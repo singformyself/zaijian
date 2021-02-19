@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:zaijian/com/yestoday/model/MediumVO.dart';
-import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-
-import 'config/Font.dart';
 
 class VideoPlayPage extends StatefulWidget{
   MediumVO medium;

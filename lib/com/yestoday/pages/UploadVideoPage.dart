@@ -89,13 +89,13 @@ class UploadVideoState extends State<UploadVideoPage> {
                 Container(
                     width: 160,
                     height: 100,
-                    child: Material(
+                    child: player.dataSource==null?Center(child: Text("未选择文件")):Material(
                       child: FijkView(
                         fit: FijkFit.cover,
                         fs: false,
                         player: player,
                         panelBuilder: null,// 不提供操作界面
-                        color: Colors.grey,
+                        color: Colors.white,
                       ),
                     )),
                 Padding(padding: EdgeInsets.all(10)),
@@ -117,6 +117,7 @@ class UploadVideoState extends State<UploadVideoPage> {
                         if (result != null) {
                           player.setDataSource(result.files.single.path,
                               autoPlay: false, showCover: true);
+                          this.setState(() {});
                         }
                       });
                     }),
@@ -135,32 +136,25 @@ class UploadVideoState extends State<UploadVideoPage> {
   }
 
   Future<void> initPlayer() async {
-    player.addListener(_fijkValueListener);
     player.setOption(FijkOption.playerCategory, "cover-after-prepared", [0, 1]);
+    player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
   }
 
-  void _fijkValueListener() {
-    FijkValue value = player.value;
-    if (value.prepared) {
-
-    }
-  }
   @override
   void dispose() {
     super.dispose();
-    player.removeListener(_fijkValueListener);
     player.release();
   }
 
   Future<void> takeSnapShot() async {
-//    await player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
-//    var imageData = await player.takeSnapShot();
-//    if (imageData != null) {
-//      print(imageData);
-//    }
-    EasyLoading.show(status: "加载中...");
-    await Future.delayed(Duration(seconds: 5));
-    EasyLoading.dismiss();
+    if (player.dataSource==null) {
+      EasyLoading.showInfo("请选择要上传的视频");
+      return;
+    }
+    var imageData = await player.takeSnapShot();
+    if (imageData != null) {
+      print(imageData);
+    }
     // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
 //    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
 //    String name = "cover/" + month + "/" + Uuid().v4() + ".jpg";

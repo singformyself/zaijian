@@ -130,7 +130,7 @@ class RegistryState extends State<RegistryPage> {
 
   void sendValidateNumber(String phone, BuildContext context) async {
     if (!BaseConfig.phoneExp.hasMatch(phone)) {
-      EasyLoading.showToast('手机号填写错误');
+      EasyLoading.showInfo('手机号填写错误');
       return;
     }
     if (canSend) {

@@ -120,7 +120,7 @@ class EyewitnessState extends State<EyewitnessPage> {
             icon: Icons.delete,
             onTap: () {
               if (!canDelete) {
-                EasyLoading.showToast('只有回忆创建者才能解除见证人');
+                EasyLoading.showInfo('只有回忆创建者才能解除见证人');
                 return;
               }
               MemoryApi.deleteEyewitness(mid, user['id']).then((rsp) {

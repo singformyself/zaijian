@@ -76,8 +76,9 @@ class NavigationFrameState extends State<NavigationFrame> {
       ..displayDuration = const Duration(milliseconds: 2000)
       ..indicatorType = EasyLoadingIndicatorType.fadingFour
       ..loadingStyle = EasyLoadingStyle.custom
+      ..radius = 3
       ..progressColor = Colors.blue
-      ..backgroundColor = Colors.white
+      ..backgroundColor = Colors.white.withOpacity(0.8)
       ..indicatorColor = Colors.blue
       ..textColor = Colors.blue
       ..maskColor = Colors.blue.withOpacity(0.5);

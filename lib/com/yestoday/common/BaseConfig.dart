@@ -3,10 +3,6 @@
  */
 class BaseConfig {
   /*服务器地址*/
-  static const String HOST = "http://192.168.145.103:80";
-  static const String OBS_HOST = "https://zaijian.obs.cn-north-4.myhuaweicloud.com";
-  static const String REQUEST_SERVER_ERROR = "请求服务器异常";
-  static var COMMON_FAIL = {'success':false,'msg':BaseConfig.REQUEST_SERVER_ERROR};
   static RegExp phoneExp = RegExp(r'^1[3|4|5|6|7|8|9][0-9]{9}$');
 }
 enum MediumEnum {

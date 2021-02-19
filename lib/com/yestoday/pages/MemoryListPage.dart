@@ -1,13 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
+import 'package:zaijian/com/yestoday/pages/ModifyMemoryPage.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/pages/MemoryManagementPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
@@ -84,7 +83,11 @@ class MemoryListPageState extends State<MemoryListPage> {
     curPage = 0;
     this.items = [];
     SharedPreferences stg = await SharedPreferences.getInstance();
-    user = json.decode(stg.get(KEY.USER));
+    String userString = stg.getString(KEY.USER);
+    if(userString==null){
+      return;
+    }
+    user = json.decode(userString);
     MemoryApi.pageList(user[KEY.USER_ID], curPage, length).then((rsp) {
       this.refreshController.refreshCompleted();
       if (rsp[KEY.SUCCESS] && rsp['memories'].length > 0) {
@@ -127,13 +130,13 @@ class MemoryListPageState extends State<MemoryListPage> {
             icon: Icons.edit,
             onTap: () async {
               if (user['id'] != memoryVO['creator']) {
-                Msg.alert('只有创建人才能编辑', context);
+                EasyLoading.showToast('只有创建人才能编辑');
                 return;
               }
               bool result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => AddMemoryPage(memory: memoryVO)));
+                      builder: (BuildContext context) => ModifyMemoryPage(memoryVO)));
               // 如果新增了记录，则刷新列表
               if (result == true) {
                 loadData();
@@ -146,17 +149,17 @@ class MemoryListPageState extends State<MemoryListPage> {
             icon: Icons.delete,
             onTap: () {
               if (user['id'] != memoryVO['creator']) {
-                Msg.alert('只有创建人才能删除', context);
+                EasyLoading.showToast('只有创建人才能删除');
                 return;
               }
               MemoryApi.delete(memoryVO['id']).then((rsp) {
                 if (rsp[KEY.SUCCESS]) {
-                  Msg.tip('删除成功', context);
+                  EasyLoading.showSuccess('删除成功');
                   this.setState(() {
                     this.items.removeWhere((element) => element.key == key);
                   });
                 } else {
-                  Msg.alert(rsp[KEY.MSG], context);
+                  EasyLoading.showError(rsp[KEY.MSG]);
                 }
               });
             },
@@ -199,7 +202,7 @@ class MemoryItem extends StatelessWidget {
                   overflow: TextOverflow.clip),
               trailing: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: ZJ_Image.network(BaseConfig.OBS_HOST + memory['icon'],
+                  child: ZJ_Image.network(MyApi.OBS_HOST + memory['icon'],
                       width: 95.0, height: 60.0))),
           Divider(indent: 50),
           Row(
@@ -232,7 +235,7 @@ class UserIcon extends StatelessWidget {
         children: [
           ClipOval(
             child: ZJ_Image.network(
-                BaseConfig.OBS_HOST+user['icon'],
+                MyApi.OBS_HOST+user['icon'],
                 width: 22.0,
                 height: 22.0),
           ),

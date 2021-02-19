@@ -1,13 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class ChangePhonePage extends StatefulWidget {
   @override
@@ -113,7 +112,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
 
   void sendValidateNumber(String phone, BuildContext context) async {
     if (!BaseConfig.phoneExp.hasMatch(phone)) {
-      Msg.alert('手机号填写错误', context);
+      EasyLoading.showToast('手机号填写错误');
       return;
     }
     if (canSend) {
@@ -121,7 +120,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
       LoginApi.sendSms(phone).then((rsp) async {
         if (rsp[KEY.SUCCESS]) {
           // 发送成功，执行倒计时
-          Msg.tip(rsp[KEY.MSG], context);
+          EasyLoading.showToast(rsp[KEY.MSG]);
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
@@ -136,7 +135,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
             }
           }
         } else {
-          Msg.alert(rsp['msg'], context);
+          EasyLoading.showError(rsp[KEY.MSG]);
         }
       });
     }
@@ -152,12 +151,12 @@ class ChangePhoneState extends State<ChangePhonePage> {
   void submit(String phone, String code, BuildContext context) {
     UserApi.changePhone(user['id'], phone, code).then((rsp) {
       if (rsp[KEY.SUCCESS]) {
-        Msg.tip("修改成功", context);
+        EasyLoading.showSuccess("修改成功");
         this.setState(() {
           nowPhone = user['phone'];
         });
       } else {
-        Msg.alert(rsp[KEY.MSG], context);
+        EasyLoading.showError(rsp[KEY.MSG]);
       }
     });
   }

@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:zaijian/com/yestoday/pages/RegistryPage.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -130,7 +130,7 @@ class LoginState extends State<LoginPage> {
 
   void sendValidateNumber(String phone, BuildContext context) async {
     if (!BaseConfig.phoneExp.hasMatch(phone)) {
-      Msg.alert('手机号填写错误', context);
+      EasyLoading.showToast('手机号填写错误');
       return;
     }
     if (canSend) {
@@ -138,7 +138,7 @@ class LoginState extends State<LoginPage> {
       LoginApi.sendSms(phone).then((rsp) async {
         if (rsp[KEY.SUCCESS]) {
           // 发送成功，执行倒计时
-          Msg.tip(rsp[KEY.MSG], context);
+          EasyLoading.showSuccess(rsp[KEY.MSG]);
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
@@ -153,7 +153,7 @@ class LoginState extends State<LoginPage> {
             }
           }
         } else {
-          Msg.alert(rsp['msg'], context);
+          EasyLoading.showError(rsp[KEY.MSG]);
         }
       });
     }
@@ -169,13 +169,13 @@ class LoginState extends State<LoginPage> {
   void doLogin(String phone, String code, BuildContext context) {
     LoginApi.login(phone, code).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
-        Msg.tip('登陆成功', context);
+        EasyLoading.showSuccess('登陆成功');
         await Future.delayed(Duration(milliseconds: 1000));
         while (Navigator.canPop(context)) {
           Navigator.pop(context, rsp[KEY.USER]);
         }
       } else {
-        Msg.alert(rsp[KEY.MSG], context);
+        EasyLoading.showError(rsp[KEY.MSG]);
       }
     });
   }

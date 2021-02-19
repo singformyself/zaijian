@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class EyewitnessPage extends StatefulWidget {
@@ -121,17 +120,17 @@ class EyewitnessState extends State<EyewitnessPage> {
             icon: Icons.delete,
             onTap: () {
               if (!canDelete) {
-                Msg.alert('只有回忆创建者才能解除见证人', context);
+                EasyLoading.showToast('只有回忆创建者才能解除见证人');
                 return;
               }
               MemoryApi.deleteEyewitness(mid, user['id']).then((rsp) {
                 if (rsp[KEY.SUCCESS]) {
-                  Msg.tip('解除成功', context);
+                  EasyLoading.showSuccess('解除成功');
                   this.setState(() {
                     this.items.removeWhere((item) => item.key == key);
                   });
                 } else {
-                  Msg.tip(rsp[KEY.MSG], context);
+                  EasyLoading.showError(rsp[KEY.MSG]);
                 }
               });
             },

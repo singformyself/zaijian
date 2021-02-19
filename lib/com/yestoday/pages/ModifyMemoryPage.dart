@@ -3,30 +3,33 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zaijian/com/yestoday/pages/EditCoverPage.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'config/Font.dart';
 
-class AddMemoryPage extends StatefulWidget {
+class ModifyMemoryPage extends StatefulWidget {
+  dynamic memory;
+  ModifyMemoryPage(this.memory);
   @override
   State<StatefulWidget> createState() {
-    return AddMemoryState();
+    return ModifyMemoryState(memory);
   }
 }
 
-class AddMemoryState extends State<AddMemoryPage> {
+class ModifyMemoryState extends State<ModifyMemoryPage> {
   dynamic memory;
+  ModifyMemoryState(this.memory);
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController;
   List<int> coverBytes;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ZJ_AppBar("创建主题"),
+      appBar: ZJ_AppBar("修改主题"),
       floatingActionButton: FloatingActionButton(
           child: Text("确定"),
           onPressed: () {
@@ -93,19 +96,25 @@ class AddMemoryState extends State<AddMemoryPage> {
                     Padding(padding: EdgeInsets.all(10)),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: ExtendedImage.memory(coverBytes,
-                              width: 95, height: 60, fit: BoxFit.cover)
+                      child: coverBytes != null
+                          ? ExtendedImage.memory(coverBytes,
+                          width: 95, height: 60, fit: BoxFit.cover)
+                          : ZJ_Image.network(MyApi.OBS_HOST + memory['icon'],
+                        width: 95,
+                        height: 60,
+                      ),
                     ),
                     Padding(padding: EdgeInsets.all(10)),
                     OutlineButton(
                       child: Text("设置封面",
                           style:
-                              TextStyle(color: Theme.of(context).primaryColor)),
+                          TextStyle(color: Theme.of(context).primaryColor)),
                       onPressed: () async {
                         List<int> bytes = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (BuildContext context) => EditCoverPage()));
+                                builder: (BuildContext context) =>
+                                    EditCoverPage(defaultCover:MyApi.OBS_HOST + memory['icon'])));
                         if (bytes != null) {
                           this.setState(() {
                             coverBytes = bytes;
@@ -125,33 +134,23 @@ class AddMemoryState extends State<AddMemoryPage> {
   @override
   void initState() {
     super.initState();
-    memory = {
-      'id': null,
-      'title': null,
-      'publicity': true,
-      'icon': MyApi.DEFAULT_COVER,
-      'creator': ''
-    };
-    // 加载默认封面数据
-    DefaultAssetBundle.of(context).load("assets/default_cover.jpg").then((bytes) => this.setState(() {
-      coverBytes=bytes.buffer.asUint8List();
-    }));
-    SharedPreferences.getInstance()
-        .then((stg) => memory['creator'] = stg.getString(KEY.USER_ID));
+    nameController = TextEditingController(text: memory['title']);
   }
 
   Future<void> submit(String text, BuildContext context) async {
     // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
-    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
-    String name = "cover/" + month + "/" + Uuid().v4() + ".jpg";
-    bool success = await OBSApi.uploadObsBytes(name, coverBytes);
-    if (success) {
-      memory['icon'] = "/" + name;
+    if (coverBytes!=null) {
+      String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
+      String name = "cover/"+month+"/"+Uuid().v4() + ".jpg";
+      bool success = await OBSApi.uploadObsBytes(name, coverBytes);
+      if (success) {
+        memory['icon']="/"+name;
+      }
     }
     memory['title'] = nameController.text;
     MemoryApi.save(memory).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
-        EasyLoading.showSuccess("创建成功");
+        EasyLoading.showSuccess("修改成功");
         await Future.delayed(Duration(milliseconds: 2000));
         Navigator.pop(context, true);
       } else {

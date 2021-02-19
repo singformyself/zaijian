@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:uuid/uuid.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
@@ -60,52 +59,55 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                           ? ExtendedImage.memory(cropImageDate,
                               width: 60, height: 60, fit: BoxFit.cover)
                           : ZJ_Image.network(
-                              BaseConfig.OBS_HOST + user['icon'],
+                              MyApi.OBS_HOST + user['icon'],
                               width: 90,
                               height: 90,
                             ),
                     ),
                     Padding(padding: EdgeInsets.all(10)),
-                    OutlineButton(
-                        child: PopupMenuButton<String>(
-                            initialValue: "fromCamera",
-                            padding: EdgeInsets.all(2.0),
-                            tooltip: '选择图片',
-                            onSelected: (value) {
-                              imagePicker
-                                  .getImage(
-                                      source: value == "fromCamera"
-                                          ? ImageSource.camera
-                                          : ImageSource.gallery,
-                                      maxWidth: 800,
-                                      maxHeight: 800)
-                                  .then((value) => this.setState(() {
-                                        image = File(value.path);
-                                      }));
-                            },
-                            child: Text("选择图片...",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor)),
-                            itemBuilder: (context) => <PopupMenuItem<String>>[
-                                  PopupMenuItem<String>(
-                                    value: "fromCamera",
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.camera),
-                                        Text("拍照上传")
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem<String>(
-                                    value: "fromGallery",
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.photo),
-                                        Text("从相册选择")
-                                      ],
-                                    ),
-                                  )
-                                ])),
+                    PopupMenuButton<String>(
+                        initialValue: "fromCamera",
+                        padding: EdgeInsets.all(2.0),
+                        tooltip: '选择图片',
+                        onSelected: (value) {
+                          imagePicker
+                              .getImage(
+                              source: value == "fromCamera"
+                                  ? ImageSource.camera
+                                  : ImageSource.gallery,
+                              maxWidth: 800,
+                              maxHeight: 800)
+                              .then((value) {
+                            if (value != null) {
+                              this.setState(() {
+                                image = File(value.path);
+                              });
+                            }
+                          });
+                        },
+                        child: OutlineButton(child: Text("选择图片...",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),),
+                        itemBuilder: (context) => <PopupMenuItem<String>>[
+                          PopupMenuItem<String>(
+                            value: "fromCamera",
+                            child: Row(
+                              children: [
+                                Icon(Icons.camera),
+                                Text("拍照上传")
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<String>(
+                            value: "fromGallery",
+                            child: Row(
+                              children: [
+                                Icon(Icons.photo),
+                                Text("从相册选择")
+                              ],
+                            ),
+                          )
+                        ]),
                   ],
                 )),
             Container(
@@ -134,7 +136,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
                       },
                     )
                   : ExtendedImage.network(
-                      BaseConfig.OBS_HOST + user['icon'],
+                      MyApi.OBS_HOST + user['icon'],
                       fit: BoxFit.contain,
                       mode: ExtendedImageMode.editor,
                       enableLoadState: true,
@@ -235,14 +237,14 @@ class EditHeadIconState extends State<EditHeadIconPage> {
     }
     String name = Uuid().v4() + ".jpg";
     bool success =
-        await OBSApi.uploadObsBytes(name, cropImageDate); //.then((rsp) {
+        await OBSApi.uploadObsBytes(name, cropImageDate);
     if (success) {
-      dynamic rsp =await UserApi.updateIcon(user['id'], name);//.then((rsp) {
+      dynamic rsp =await UserApi.updateIcon(user['id'], name);
       if (rsp[KEY.SUCCESS]) {
-        Msg.tip('更新成功', context);
+        EasyLoading.showSuccess('更新成功');
         return rsp[KEY.USER];
       } else {
-        Msg.alert('更新失败', context);
+        EasyLoading.showError('更新失败');
       }
     }
     return null;

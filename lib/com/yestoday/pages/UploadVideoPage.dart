@@ -3,18 +3,26 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zaijian/com/yestoday/pages/config/Font.dart';
+import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:fijkplayer/fijkplayer.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
+import 'package:uuid/uuid.dart';
+import 'package:date_format/date_format.dart';
+import 'package:file_picker/file_picker.dart';
 
 class UploadVideoPage extends StatefulWidget {
+  dynamic memory;
   PickedFile pickedFile;
 
-  UploadVideoPage(this.pickedFile);
+  UploadVideoPage({this.memory, this.pickedFile});
 
   @override
   State<StatefulWidget> createState() {
-    return UploadVideoState(this.pickedFile);
+    return UploadVideoState(this.memory, this.pickedFile);
   }
 }
 
@@ -22,13 +30,13 @@ class UploadVideoState extends State<UploadVideoPage> {
   final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   PickedFile pickedFile;
-  File video;
+  dynamic memory;
   Uint8List snapshotData;
-  final ImagePicker imagePicker = ImagePicker();
+//  final ImagePicker imagePicker = ImagePicker();
 
-  UploadVideoState(this.pickedFile);
+  UploadVideoState(this.memory, this.pickedFile);
 
-  FijkPlayer player;
+  FijkPlayer player = FijkPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +45,32 @@ class UploadVideoState extends State<UploadVideoPage> {
       floatingActionButton: FloatingActionButton(
         child: Text("确定"),
         onPressed: () {
-          // TODO submit
+          takeSnapShot();
         },
       ),
       body: Form(
         key: formKey1,
-        child: Column(
+        child: ListView(
           children: [
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: ListTile(
+                  contentPadding: EdgeInsets.all(0),
+                  leading: Icon(Icons.theaters),
+                  title: Text(memory['title'],
+                      style: TextStyle(fontSize: FontSize.NORMAL),
+                      overflow: TextOverflow.clip),
+                  trailing: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: ZJ_Image.network(MyApi.OBS_HOST + memory['icon'],
+                          width: 95.0, height: 60.0))),
+            ),
             Container(
               padding: EdgeInsets.all(10.0),
               child: TextFormField(
                 keyboardType: TextInputType.text,
                 controller: nameController,
-                maxLines: 3,
+                maxLines: 2,
                 validator: (value) {
                   if (value.isEmpty) {
                     return "请输入回忆名称";
@@ -57,79 +78,50 @@ class UploadVideoState extends State<UploadVideoPage> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  icon: Icon(Icons.camera),
-                  hintText: '编辑回忆名称',
+                  icon: Icon(Icons.drive_file_rename_outline),
+                  hintText: '起个名吧',
                 ),
               ),
             ),
             Container(
-              //padding: EdgeInsets.all(10.0),
-              child: OutlineButton(
-                  child: PopupMenuButton<String>(
-                      initialValue: "fromCamera",
-                      padding: EdgeInsets.all(2.0),
-                      tooltip: '选择视频',
-                      onSelected: (value) {
-                        if (value == "fromCamera") {
-                          imagePicker
-                              .getVideo(source: ImageSource.camera)
-                              .then((value) => this.setState(() {
-                                    video = File(value.path);
-                                  }));
+              padding: EdgeInsets.all(10.0),
+              child: Row(children: [
+                Container(
+                    width: 160,
+                    height: 100,
+                    child: Material(
+                      child: FijkView(
+                        fit: FijkFit.cover,
+                        fs: false,
+                        player: player,
+                        panelBuilder: null,// 不提供操作界面
+                        color: Colors.grey,
+                      ),
+                    )),
+                Padding(padding: EdgeInsets.all(10)),
+                OutlineButton(
+                    child: Text("选择视频...",
+                        style:
+                            TextStyle(color: Theme.of(context).primaryColor)),
+                    onPressed: () {
+                      player.reset();
+                      FilePicker.platform.pickFiles(type: FileType.custom,
+                          allowedExtensions: ['mp4', 'flv', 'wmv', 'avi'],
+                      onFileLoading:(st){
+                        if (st==FilePickerStatus.picking) {
+                          EasyLoading.show(status: "加载中...");
                         } else {
-                          imagePicker
-                              .getVideo(source: ImageSource.gallery)
-                              .then((value) => this.setState(() {
-                                    video = File(value.path);
-                                  }));
+                          EasyLoading.dismiss();
                         }
-                      },
-                      child: Text("选择视频",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor)),
-                      itemBuilder: (context) => <PopupMenuItem<String>>[
-                            PopupMenuItem<String>(
-                              value: "fromCamera",
-                              child: Row(
-                                children: [Icon(Icons.camera), Text("拍摄上传")],
-                              ),
-                            ),
-                            PopupMenuItem<String>(
-                              value: "fromGallery",
-                              child: Row(
-                                children: [Icon(Icons.photo), Text("从相册选择")],
-                              ),
-                            )
-                          ])),
+                      } ).then((result) {
+                        if (result != null) {
+                          player.setDataSource(result.files.single.path,
+                              autoPlay: false, showCover: true);
+                        }
+                      });
+                    }),
+              ]),
             ),
-            Container(
-              padding:EdgeInsets.all(2),
-              child: pickedFile == null
-                  ? Text("未选择任何视频"):Text("")
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Container(
-                      width: 300,
-                      height: 300,
-                      child: Stack(
-                        children: [
-                          FijkView(
-                            player: player,
-                            color: Colors.black,
-                          ),
-                          Icon(Icons.lens_outlined,size: 300,)
-                        ],
-                      )),
-                  snapshotData == null
-                      ? Text("未选择任何视频")
-                      : Image.memory(snapshotData,width: 95,height: 60,fit: BoxFit.cover),
-                ],
-              ),
-              // child: snapshotData==null?Text("未选择任何视频"):Image.memory(snapshotData),
-            )
           ],
         ),
       ),
@@ -139,34 +131,39 @@ class UploadVideoState extends State<UploadVideoPage> {
   @override
   void initState() {
     super.initState();
-    player = FijkPlayer();
-    player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
-    if (pickedFile != null) {
-      takeSnapShot();
-    }
+    initPlayer();
   }
 
+  Future<void> initPlayer() async {
+    player.addListener(_fijkValueListener);
+    player.setOption(FijkOption.playerCategory, "cover-after-prepared", [0, 1]);
+  }
 
+  void _fijkValueListener() {
+    FijkValue value = player.value;
+    if (value.prepared) {
+
+    }
+  }
   @override
   void dispose() {
-    player.dispose();
+    super.dispose();
+    player.removeListener(_fijkValueListener);
+    player.release();
   }
 
   Future<void> takeSnapShot() async {
-    player.setDataSource(pickedFile.path, autoPlay: true);
-    player.setVolume(0);
-    while(true){
-      await Future.delayed(Duration(seconds: 1));
-      if (player.state.index>=FijkState.prepared.index) {
-        break;
-      }
-    }
-    player.stop();
-    var imageData = await player.takeSnapShot();
-    if (imageData != null) {
-      this.setState(() {
-        snapshotData = imageData;
-      });
-    }
+//    await player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
+//    var imageData = await player.takeSnapShot();
+//    if (imageData != null) {
+//      print(imageData);
+//    }
+    EasyLoading.show(status: "加载中...");
+    await Future.delayed(Duration(seconds: 5));
+    EasyLoading.dismiss();
+    // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
+//    String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
+//    String name = "cover/" + month + "/" + Uuid().v4() + ".jpg";
+//    bool success = await OBSApi.uploadObsBytes(name, imageData);
   }
 }

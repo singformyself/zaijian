@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/pages/EyewitnessPage.dart';
 import 'package:zaijian/com/yestoday/pages/UploadPhotoPage.dart';
 import 'package:zaijian/com/yestoday/pages/UploadVideoPage.dart';
@@ -47,7 +46,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
             image: DecorationImage(
                 alignment: Alignment.topCenter,
                 image: ExtendedNetworkImageProvider(
-                    BaseConfig.OBS_HOST + memory['icon'],
+                    MyApi.OBS_HOST + memory['icon'],
                     cache: true),
                 fit: BoxFit.fitWidth)),
         child: Scaffold(
@@ -92,7 +91,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
                   _animationController.reverse();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          UploadVideoPage(null)));
+                          UploadVideoPage(memory: memory)));
                 },
               ),
             ],
@@ -282,7 +281,7 @@ class Header extends StatelessWidget {
                       children: [
                         ClipOval(
                             child: ZJ_Image.network(
-                                BaseConfig.OBS_HOST + user['icon'],
+                                MyApi.OBS_HOST + user['icon'],
                                 width: 30.0,
                                 height: 30.0)),
                         Padding(padding: EdgeInsets.all(3.0)),
@@ -331,7 +330,7 @@ class UserIcon extends StatelessWidget {
         children: [
           ClipOval(
             child: ZJ_Image.network(
-                BaseConfig.OBS_HOST+user['icon'],
+                MyApi.OBS_HOST+user['icon'],
                 width: 30.0,
                 height: 30.0),
           ),

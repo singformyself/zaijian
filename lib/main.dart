@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
 import 'com/yestoday/pages/MemoryListPage.dart';
@@ -18,11 +18,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '再见',
       theme: ThemeData(brightness: Brightness.light,backgroundColor:Colors.white),
       home: NavigationFrame(),
+      builder: EasyLoading.init()
     );
   }
 
@@ -65,5 +67,19 @@ class NavigationFrameState extends State<NavigationFrame> {
         currentTabIndex = index;
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 2000)
+      ..indicatorType = EasyLoadingIndicatorType.fadingFour
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..progressColor = Colors.blue
+      ..backgroundColor = Colors.white
+      ..indicatorColor = Colors.blue
+      ..textColor = Colors.blue
+      ..maskColor = Colors.blue.withOpacity(0.5);
   }
 }

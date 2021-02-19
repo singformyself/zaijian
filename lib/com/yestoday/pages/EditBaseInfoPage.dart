@@ -1,15 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/config/Font.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_my_picker/flutter_my_picker.dart';
-import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
 
 class EditBaseInfoPage extends StatefulWidget {
   @override
@@ -141,11 +139,9 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
   void submit(String nickName, BuildContext context) {
     UserApi.updateInfo(user['id'],nickName,user['sex'],user['birthDay']).then((rsp) async {
       if(rsp[KEY.SUCCESS]){
-        Msg.tip('修改成功', context);
-        await Future.delayed(Duration(milliseconds: 1000));
-        while (Navigator.canPop(context)) {
-          Navigator.pop(context, rsp[KEY.USER]);
-        }
+        EasyLoading.showSuccess('修改成功');
+        await Future.delayed(Duration(milliseconds: 2000));
+        Navigator.pop(context, rsp[KEY.USER]);
       }
     });
   }

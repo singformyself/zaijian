@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zaijian/com/yestoday/pages/AboutZaiJianPage.dart';
 import 'package:zaijian/com/yestoday/pages/AccountAndSecurityPage.dart';
@@ -13,8 +14,6 @@ import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/common/BaseConfig.dart';
-import 'package:zaijian/com/yestoday/utils/Msg.dart';
-
 import 'LoginPage.dart';
 
 class MePage extends StatefulWidget {
@@ -47,7 +46,7 @@ class MePageState extends State<MePage> {
                       GestureDetector(
                         onTap: () async {
                           if (user == null) {
-                            Msg.tip('请先登陆', context);
+                            EasyLoading.showToast('请先登陆');
                             return;
                           }
                           dynamic result = await Navigator.push(
@@ -63,7 +62,7 @@ class MePageState extends State<MePage> {
                         },
                         child: ClipOval(
                           child: user != null && user['icon'] != null
-                              ? ZJ_Image.network(BaseConfig.OBS_HOST+user['icon'],
+                              ? ZJ_Image.network(MyApi.OBS_HOST+user['icon'],
                                   width: 105.0, height: 105.0)
                               : ExtendedImage.asset('assets/default.jpg',
                               width: 105.0, height: 105.0),
@@ -81,7 +80,7 @@ class MePageState extends State<MePage> {
                       FlatButton(
                           onPressed: () async {
                             if (user == null) {
-                              Msg.tip('请先登陆', context);
+                              EasyLoading.showToast('请先登陆');
                               return;
                             }
                             dynamic result = await Navigator.push(
@@ -125,7 +124,7 @@ class MePageState extends State<MePage> {
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               if (user == null) {
-                Msg.tip('请先登陆', context);
+                EasyLoading.showToast('请先登陆');
                 return;
               }
             },
@@ -138,7 +137,7 @@ class MePageState extends State<MePage> {
             contentPadding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
             onTap: () {
               if (user == null) {
-                Msg.tip('请先登陆', context);
+                EasyLoading.showToast('请先登陆');
                 return;
               }
               Navigator.push(
@@ -247,7 +246,7 @@ class MePageState extends State<MePage> {
       this.setState(() {
         user = null;
       });
-      Msg.tip("已退出登陆", context);
+      EasyLoading.showInfo("已退出登陆");
     });
   }
 }

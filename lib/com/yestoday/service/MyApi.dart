@@ -18,6 +18,8 @@ class KEY {
 class MyApi {
   static const String HOST = "http://192.168.145.103:80";
   static const String OBS_HOST = "https://zaijian.obs.cn-north-4.myhuaweicloud.com";
+  static const String DEFAULT_ICON = "/icon/default.jpg";
+  static const String DEFAULT_COVER = "/cover/default.jpg";
   static var COMMON_FAIL = {'success': false, 'msg': '请求服务器异常'};
   // 访问服务器用默认的
   static OkHttpClient defaultClient = OkHttpClientBuilder()
@@ -67,7 +69,13 @@ class TokenCookieJar extends CookieJar {
   @override
   Future<List<Cookie>> loadForRequest(HttpUrl url) {
     // ignore: missing_return
-    return SharedPreferences.getInstance().then((stg) => [Cookie(KEY.TOKEN, stg.get(KEY.TOKEN))]);
+    return SharedPreferences.getInstance().then((stg) {
+      String value = stg.getString(KEY.TOKEN);
+      if (value != null) {
+        return [Cookie(KEY.TOKEN, value)];
+      }
+      return [];
+    });
   }
 }
 

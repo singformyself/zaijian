@@ -1,9 +1,4 @@
-import 'dart:typed_data';
-
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 ///
 ///  create by zmtzawqlp on 2020/1/31
@@ -26,17 +21,4 @@ double initScale({Size imageSize, Size size, double initialScale}) {
   }
 
   return initialScale;
-}
-
-///save netwrok image to photo
-Future<bool> saveNetworkImageToPhoto(String url, {bool useCache = true}) async {
-  if (kIsWeb) {
-    return false;
-  }
-  final Uint8List data = await getNetworkImageData(url, useCache: useCache);
-  // var filePath = await ImagePickerSaver.saveFile(fileData: data);
-  // return filePath != null && filePath != '';
-  final AssetEntity imageEntity = await PhotoManager.editor.saveImage(data);
-
-  return imageEntity != null;
 }

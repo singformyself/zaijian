@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:date_format/date_format.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -11,9 +9,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zaijian/com/yestoday/pages/EyewitnessPage.dart';
 import 'package:zaijian/com/yestoday/pages/UploadPhotoPage.dart';
 import 'package:zaijian/com/yestoday/pages/UploadVideoPage.dart';
+import 'package:zaijian/com/yestoday/service/MyTask.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
-import 'package:date_format/date_format.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 /**
  * 回忆管理页面，展示回忆详情，回忆见证人，图片上传，视频上传
@@ -40,7 +39,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
   AnimationController _animationController;
 
   MemoryManagementState(this.user, this.memory);
-
+  MemoryItems memoryItems;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,7 +58,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
               Header(user, memory),
               BriefEyewitness(memory['id'], memory['publicity'], canDelete),
               Expanded(
-                child: MemoryItems(memory['id'], user['id']),
+                child: memoryItems,
               )
             ],
           ),
@@ -95,7 +94,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
                       builder: (BuildContext context) =>
                           UploadVideoPage(memory: memory)));
                   if (res!=null&&res) {
-                    this.setState(() {});
+                    this.memoryItems.refresh();
                   }
                 },
               ),
@@ -122,6 +121,7 @@ class MemoryManagementState extends State<MemoryManagementPage>
   @override
   void initState() {
     super.initState();
+    memoryItems = MemoryItems(memory['id'], user['id']);
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 260),
@@ -137,12 +137,15 @@ class MemoryManagementState extends State<MemoryManagementPage>
 class MemoryItems extends StatefulWidget {
   String mid;
   String uid;
-
+  MemoryItemsState state;
   MemoryItems(this.mid, this.uid);
 
   @override
   State<StatefulWidget> createState() {
-    return MemoryItemsState(mid, uid);
+    return state=MemoryItemsState(mid, uid);
+  }
+  void refresh(){
+    state.refresh();
   }
 }
 
@@ -191,8 +194,15 @@ class MemoryItemsState extends State<MemoryItems> {
   void initState() {
     super.initState();
     loadData();
-  } // 加载数据，每次都从第一页开始
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    items=null;
+    refreshController.dispose();
+  }
+  // 加载数据，每次都从第一页开始
   void loadData() async {
     curPage = 0;
     this.items = [];
@@ -269,6 +279,10 @@ class MemoryItemsState extends State<MemoryItems> {
       this.items.add(item);
     });
   }
+
+  void refresh() {
+    this.loadData();
+  }
 }
 
 class MemoryItem extends StatelessWidget {
@@ -278,6 +292,9 @@ class MemoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String createTime=formatDate(
+            DateTime.fromMillisecondsSinceEpoch(memoryItem['createTime']),
+            [yy, '/', mm, '/', dd, '\n', hh, ':', mm, ':', ss]);
     return Container(
         padding: EdgeInsets.fromLTRB(5.0, 5, 5.0, 5.0),
         decoration: BoxDecoration(
@@ -287,9 +304,7 @@ class MemoryItem extends StatelessWidget {
         child: Column(children: [
           ListTile(
               contentPadding: EdgeInsets.all(0),
-              leading: Text(formatDate(
-                  DateTime.fromMillisecondsSinceEpoch(memoryItem['createTime']),
-                  [yy, '/', mm, '/', dd, '\n', hh, ':', mm, ':', ss])),
+              leading: memoryItem['status']==9?Text(createTime):MyProgress(memoryItem['id'],createTime),
               title: Text(memoryItem['title'],
                   style: TextStyle(fontSize: FontSize.NORMAL),
                   overflow: TextOverflow.clip),
@@ -309,7 +324,83 @@ class MemoryItem extends StatelessWidget {
         ]));
   }
 }
+class MyProgress extends StatefulWidget{
+  String itemId;
+  String createTime;
+  MyProgress(this.itemId,this.createTime);
+  @override
+  State<StatefulWidget> createState() {
+    return MyProgressState(itemId,createTime);
+  }
+}
 
+class MyProgressState extends State<MyProgress>{
+  String itemId;
+  String createTime;
+  bool living=true;
+  double percent=0;
+  int status=0;
+
+  MyProgressState(this.itemId,this.createTime);
+
+  @override
+  Widget build(BuildContext context) {
+    return status==9?Text(createTime):CircularPercentIndicator(
+      radius: 38.0,
+      lineWidth: 2.5,
+      percent: percent,
+      center: new Text((percent*100).ceilToDouble().toString()+"%",style:TextStyle(fontSize: 11)),
+      progressColor: Colors.green,
+      footer: getText(),
+      onAnimationEnd: (){
+        status=9;
+        refresh();
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startListen();
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    living=false;
+  }
+
+  Future<void> startListen() async {
+    while(living&&percent<1){
+      var res=MyTask.instance.getProgressValue(itemId);
+      print(percent.toString()+"==="+itemId);
+      if(res==null){
+        await Future.delayed(Duration(milliseconds: 1000));
+        continue;
+      }
+      percent=res;
+      status=1;
+      refresh();
+      await Future.delayed(Duration(milliseconds: 100));
+    }
+    status=9;
+    refresh();
+  }
+  void refresh(){
+    if(living){
+      this.setState(() {});
+    }
+  }
+  Text getText() {
+      switch(status){
+          case 0:return Text('等待上传',style:TextStyle(fontSize: 9));
+          case 1:return Text('正在上传',style:TextStyle(fontSize: 9));
+          default:return Text('上传完成',style:TextStyle(fontSize: 9));
+      }
+  }
+}
 class BriefEyewitness extends StatefulWidget {
   String id;
   bool publiciy;

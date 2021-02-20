@@ -78,7 +78,6 @@ class MyApi {
 
   // 访问服务器用默认的
   static OkHttpClient defaultClient = OkHttpClientBuilder()
-      .connectionTimeout(Duration(seconds: 5))
       .addInterceptor(NetStateInterceptor())
       .cookieJar(TokenCookieJar())
       //.cache(null) // 后期再考虑加缓存
@@ -86,12 +85,12 @@ class MyApi {
 
   // 访问obs专用
   static OkHttpClient obsClient = OkHttpClientBuilder()
-      .connectionTimeout(Duration(seconds: 10)) // 后期再考虑加缓存
+      .connectionTimeout(Duration(seconds: 20)) // 后期再考虑加缓存
       // 增加进度拦截器
       .addNetworkInterceptor(ProgressRequestInterceptor((HttpUrl url,
           String method, int progressBytes, int totalBytes, bool isDone) {
     //print(url.toString()+"==="+progressBytes.toString()+"/"+totalBytes.toString()+"==="+isDone.toString());
-    MyTask.listenProgress(url, progressBytes, totalBytes, isDone);
+    MyTask.instance.listenProgress(url, progressBytes, totalBytes, isDone);
   })).build();
 
   static void refreshUserData(rsp) async {

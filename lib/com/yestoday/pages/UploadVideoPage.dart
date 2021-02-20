@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -27,7 +28,6 @@ class UploadVideoState extends State<UploadVideoPage> {
   TextEditingController nameController = TextEditingController();
   dynamic memory;
   UploadVideoState(this.memory);
-
   FijkPlayer player = FijkPlayer();
 
   @override
@@ -88,7 +88,7 @@ class UploadVideoState extends State<UploadVideoPage> {
                         ? Center(child: Text("未选择文件"))
                         : Material(
                             child: FijkView(
-                              fit: FijkFit.cover,
+                              fit: FijkFit.contain,
                               fs: false,
                               player: player,
                               panelBuilder: null, // 不提供操作界面
@@ -136,7 +136,6 @@ class UploadVideoState extends State<UploadVideoPage> {
   }
 
   Future<void> initPlayer() async {
-    player.setOption(FijkOption.playerCategory, "cover-after-prepared", [0, 1]);
     player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
   }
 
@@ -201,7 +200,7 @@ class UploadVideoState extends State<UploadVideoPage> {
       minHeight: 180,
       minWidth: 285,
       quality: 80,
-      rotate: player.value.size.width<player.value.size.height?90:0,
+      rotate: player.value.rotate,
     );
     return compData;
   }

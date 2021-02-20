@@ -75,6 +75,12 @@ class MemoryListPageState extends State<MemoryListPage> {
     this.loadData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    items=null;
+    refreshController.dispose();
+  }
   // 加载数据，每次都从第一页开始
   void loadData() async {
     curPage = 0;

@@ -375,7 +375,6 @@ class MyProgressState extends State<MyProgress>{
   Future<void> startListen() async {
     while(living&&percent<1){
       var res=MyTask.instance.getProgressValue(itemId);
-      print(percent.toString()+"==="+itemId);
       if(res==null){
         await Future.delayed(Duration(milliseconds: 1000));
         continue;

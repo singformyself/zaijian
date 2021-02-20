@@ -88,7 +88,7 @@ class UploadVideoState extends State<UploadVideoPage> {
                         ? Center(child: Text("未选择文件"))
                         : Material(
                             child: FijkView(
-                              fit: FijkFit.contain,
+                              fit: FijkFit.cover,
                               fs: false,
                               player: player,
                               panelBuilder: null, // 不提供操作界面

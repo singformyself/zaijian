@@ -86,7 +86,7 @@ class MyTask {
             removeFinish(runningTask.itemId);
           }
     } catch (e) {
-      print(e.toString()+"======================================");
+      print(e);
     } finally {
       runningTask = null;
       isRunning = false;

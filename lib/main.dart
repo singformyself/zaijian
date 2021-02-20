@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
@@ -7,13 +5,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
 import 'com/yestoday/pages/MemoryListPage.dart';
-import 'com/yestoday/service/MyTask.dart';
 
 void main() {
-  UploadTask task = UploadTask.fromJson({'itemId':'ididid',
-    'uploadObjects':[{'objectId':'objectId1','filePath':'filePath1'},{'objectId':'objectId2','filePath':'filePath2'}],
-    'totalBytes':12345});
-  print("================"+json.encode(task));
   runApp(MyApp());
   SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);

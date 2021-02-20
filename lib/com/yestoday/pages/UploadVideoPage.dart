@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
+import 'package:zaijian/com/yestoday/service/MyTask.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
@@ -36,7 +37,7 @@ class UploadVideoState extends State<UploadVideoPage> {
       floatingActionButton: FloatingActionButton(
         child: Text("确定"),
         onPressed: () {
-          takeSnapShot();
+          submit();
         },
       ),
       body: Form(
@@ -145,7 +146,7 @@ class UploadVideoState extends State<UploadVideoPage> {
     player.release();
   }
 
-  Future<void> takeSnapShot() async {
+  Future<void> submit() async {
     if (player.dataSource == null) {
       EasyLoading.showInfo("请选择要上传的视频");
       return;
@@ -153,6 +154,46 @@ class UploadVideoState extends State<UploadVideoPage> {
     if (!formKey.currentState.validate()) {
       return;
     }
+    // 截图并压缩
+    Uint8List compData = await takeSnapShotAndCompress();
+    // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
+    String icon = MyUtil.genCoverName();
+    bool success = await OBSApi.uploadObsBytes(icon, compData);
+    if (!success) {
+      EasyLoading.showError('初始化封面失败，请重试');
+      return;
+    }
+    File uploadFile = File(player.dataSource);
+    int totalBytes = uploadFile.lengthSync();
+    // 上传视频objectId
+    String videoName = MyUtil.genVideoName(player.dataSource);
+    var data = {
+      'mid': memory['id'],
+      'creator': await MyUtil.getUserId(),
+      'title': nameController.text,
+      'type': 0, //视频
+      'icon': '/' + icon,
+      'urls':['/'+videoName],
+      'fileBytes':totalBytes
+    };
+    dynamic rsp = await MemoryApi.putJson(MemoryApi.PUT_MEMORY_ITEM, data);
+    if (!rsp[KEY.SUCCESS]) {
+      EasyLoading.showError(rsp[KEY.MSG]);
+      return;
+    }
+    // 构建上传任务
+    UploadTask task = UploadTask.fromJson({
+      'itemId':rsp['itemId'],
+      'uploadObjects':[{'objectId':videoName,'filePath':uploadFile.path}],
+      'totalBytes':totalBytes
+    });
+    MyTask.instance.addTask(task);
+    EasyLoading.showSuccess('创建成功');
+    await Future.delayed(Duration(milliseconds: 2000));
+    Navigator.pop(context, true);
+  }
+
+  Future<Uint8List> takeSnapShotAndCompress() async {
     Uint8List imageData = await player.takeSnapShot();
     // 由于截图比较大，先压缩后上传
     Uint8List compData = await FlutterImageCompress.compressWithList(
@@ -162,36 +203,6 @@ class UploadVideoState extends State<UploadVideoPage> {
       quality: 80,
       rotate: player.value.size.width<player.value.size.height?90:0,
     );
-    // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
-    String icon = MyUtil.genCoverName();
-    bool success = await OBSApi.uploadObsBytes(icon, compData);
-    if (!success) {
-      EasyLoading.showError('初始化封面失败，请重试');
-      return;
-    }
-    // 上传视频objectId
-    String videoName = MyUtil.genVideoName(player.dataSource);
-    var data = {
-      'mid': memory['id'],
-      'creator': await MyUtil.getUserId(),
-      'title': nameController.text,
-      'type': 0, //视频
-      'icon': '/' + icon,
-      'urls':['/'+videoName]
-    };
-    dynamic rsp = await MemoryApi.putJson(MemoryApi.PUT_MEMORY_ITEM, data);
-    if (!rsp[KEY.SUCCESS]) {
-      EasyLoading.showError(rsp[KEY.MSG]);
-      return;
-    }
-    // 构建上传任务
-    bool res = await OBSApi.uploadFile(videoName, File(player.dataSource));
-    if (!res) {
-      EasyLoading.showError('上传视频失败');
-      return;
-    }
-    EasyLoading.showSuccess('创建成功');
-    await Future.delayed(Duration(milliseconds: 2000));
-    Navigator.pop(context, true);
+    return compData;
   }
 }

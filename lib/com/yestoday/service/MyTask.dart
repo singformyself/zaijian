@@ -17,6 +17,7 @@ class MyTask {
     }
     tasks.add(json.encode(task));
     stg.setStringList(TASK_KEY, tasks);
+    start();
   }
 
   Future<UploadTask> getNextTask() async {

@@ -8,6 +8,7 @@ import 'package:okhttp_kit/okhttp_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:date_format/date_format.dart';
+import 'package:zaijian/com/yestoday/service/MyTask.dart';
 
 class KEY {
   static const String TOKEN = "token";
@@ -16,6 +17,7 @@ class KEY {
   static const String SUCCESS = "success";
   static const String MSG = "msg";
 }
+
 class FontSize {
   static const double SUPER_LARGE = 18.0;
   static const double LARGE = 16.0;
@@ -23,32 +25,46 @@ class FontSize {
   static const double SMALL = 12.0;
   static const double SUPER_SMALL = 10.0;
 }
-class MyUtil{
+
+class MyUtil {
   static void cleanStorage() {
     SharedPreferences.getInstance().then((stg) {
       stg.clear();
     });
   }
+
   static Future<dynamic> getUser() async {
     SharedPreferences stg = await SharedPreferences.getInstance();
     String user = stg.getString(KEY.USER);
     return json.decode(user);
   }
+
   static Future<dynamic> getUserId() async {
     SharedPreferences stg = await SharedPreferences.getInstance();
     return stg.getString(KEY.USER_ID);
   }
-  static String genCoverName(){
+
+  static String genCoverName() {
     String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
     return "cover/" + month + "/" + Uuid().v4().replaceAll('-', '') + ".jpg";
   }
-  static String genVideoName(String filePath){
+
+  static String genVideoName(String filePath) {
     String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
-    return "video/" + month + "/" + Uuid().v4().replaceAll('-', '') + filePath.substring(filePath.lastIndexOf('.'), filePath.length);
+    return "video/" +
+        month +
+        "/" +
+        Uuid().v4().replaceAll('-', '') +
+        filePath.substring(filePath.lastIndexOf('.'), filePath.length);
   }
-  static String genPhotoName(String filePath){
+
+  static String genPhotoName(String filePath) {
     String month = formatDate(DateTime.now(), [yyyy, '-', mm]);
-    return "photo/" + month + "/" + Uuid().v4().replaceAll('-', '') + filePath.substring(filePath.lastIndexOf('.'), filePath.length);
+    return "photo/" +
+        month +
+        "/" +
+        Uuid().v4().replaceAll('-', '') +
+        filePath.substring(filePath.lastIndexOf('.'), filePath.length);
   }
 }
 
@@ -71,7 +87,12 @@ class MyApi {
   // 访问obs专用
   static OkHttpClient obsClient = OkHttpClientBuilder()
       .connectionTimeout(Duration(seconds: 10)) // 后期再考虑加缓存
-      .build();
+      // 增加进度拦截器
+      .addNetworkInterceptor(ProgressRequestInterceptor((HttpUrl url,
+          String method, int progressBytes, int totalBytes, bool isDone) {
+    //print(url.toString()+"==="+progressBytes.toString()+"/"+totalBytes.toString()+"==="+isDone.toString());
+    MyTask.listenProgress(url, progressBytes, totalBytes, isDone);
+  })).build();
 
   static void refreshUserData(rsp) async {
     // 将用户数据存入storage
@@ -237,7 +258,7 @@ class TokenApi {
 class OBSApi {
   static const String POST_UPLOAD_AUTH = "/obs/uploadAuth";
 
-  static Future<bool> uploadObs(String objectId, File file) async {
+  static Future<bool> uploadFile(String objectId, File file) async {
     FormBody formBody = FormBodyBuilder().add('objectId', objectId).build();
     Request authReq = RequestBuilder()
         .url(HttpUrl.parse(MyApi.HOST + POST_UPLOAD_AUTH))
@@ -292,6 +313,7 @@ class MemoryApi {
   static const String GET_EYEWITNESS_PAGE_LIST = "/memory/eyewitnessPageList";
   static const String DELETE_EYEWITNESS = "/memory/deleteEyewitness";
   static const String PUT_MEMORY_ITEM = "/memory/addMemoryItem";
+  static const String PUT_MEMORY_ITEM_STATUS = "/memory/updateMemoryItemStatus";
 
   static Future<dynamic> call(Request request) async {
     Response rsp = await MyApi.defaultClient.newCall(request).enqueue();
@@ -301,14 +323,12 @@ class MemoryApi {
     }
     return MyApi.COMMON_FAIL;
   }
-
-  static Future<dynamic> put(String url, dynamic data) {
+  // 懒人提交接口
+  static Future<dynamic> putJson(String url, dynamic data) {
     RequestBody body = RequestBody.textBody(
         MediaType.parse("application/json"), json.encode(data));
-    Request request = RequestBuilder()
-        .url(HttpUrl.parse(MyApi.HOST + url))
-        .put(body)
-        .build();
+    Request request =
+        RequestBuilder().url(HttpUrl.parse(MyApi.HOST + url)).put(body).build();
     return call(request);
   }
 
@@ -322,12 +342,12 @@ class MemoryApi {
   }
 
   // 懒人写法
-  static Future<dynamic> deleteById(String url,String id) {
+  static Future<dynamic> deleteById(String url, String id) {
     RequestBody body = FormBodyBuilder().add('id', id).build();
     Request request = RequestBuilder()
-            .url(HttpUrl.parse(MyApi.HOST + url))
-            .delete(body)
-            .build();
+        .url(HttpUrl.parse(MyApi.HOST + url))
+        .delete(body)
+        .build();
     return call(request);
   }
 
@@ -344,17 +364,18 @@ class MemoryApi {
         .build();
     return call(request);
   }
+
   // 懒人get接口
   static Future<dynamic> getList(String url, Map params) {
     String param = '';
-    for(int i=0;i<params.entries.length;i++){
+    for (int i = 0; i < params.entries.length; i++) {
       MapEntry item = params.entries.elementAt(i);
-      param+=(i==0?'?':'&')+item.key+'='+item.value.toString();
+      param += (i == 0 ? '?' : '&') + item.key + '=' + item.value.toString();
     }
     Request request = RequestBuilder()
-            .url(HttpUrl.parse(MyApi.HOST + url + param))
-            .get()
-            .build();
+        .url(HttpUrl.parse(MyApi.HOST + url + param))
+        .get()
+        .build();
     return call(request);
   }
 
@@ -379,6 +400,15 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + DELETE_EYEWITNESS))
         .delete(body)
         .build();
+    return call(request);
+  }
+
+  static Future<dynamic> updateMemoryItemStatus(String itemId, int st) {
+    RequestBody body = FormBodyBuilder().add('itemId', itemId).add('status', st.toString()).build();
+    Request request = RequestBuilder()
+            .url(HttpUrl.parse(MyApi.HOST + PUT_MEMORY_ITEM_STATUS))
+            .put(body)
+            .build();
     return call(request);
   }
 }

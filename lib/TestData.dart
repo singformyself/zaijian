@@ -32,10 +32,12 @@ class TestData {
 
   static final List<String> videos = [
     "https://zaijian.obs.cn-north-4.myhuaweicloud.com/bcc7f2147c4fc6dccb256a46776bc2c7.mp4",
-    "https://zaijian.obs.cn-north-4.myhuaweicloud.com/3ad13a13a27bc2a951e68e91ecc1f60a.mp4"
+    "https://zaijian.obs.cn-north-4.myhuaweicloud.com/3ad13a13a27bc2a951e68e91ecc1f60a.mp4",
+    "https://zaijian.obs.cn-north-4.myhuaweicloud.com/video/2021-02/2bc6875f54064c319064ddba4d60f207.mp4"
   ];
   static final List<List<double>> ratio = [
     [960.0,544.0],
+    [544.0,960.0],
     [544.0,960.0],
   ];
 

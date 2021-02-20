@@ -147,7 +147,7 @@ class ModifyMemoryState extends State<ModifyMemoryPage> {
       }
     }
     memory['title'] = nameController.text;
-    MemoryApi.put(MemoryApi.PUT_SAVE, memory).then((rsp) async {
+    MemoryApi.putJson(MemoryApi.PUT_SAVE, memory).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess("修改成功");
         await Future.delayed(Duration(milliseconds: 2000));

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class UploadVideoPage extends StatefulWidget {
   dynamic memory;
@@ -23,10 +25,6 @@ class UploadVideoState extends State<UploadVideoPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   dynamic memory;
-  Uint8List snapshotData;
-
-//  final ImagePicker imagePicker = ImagePicker();
-
   UploadVideoState(this.memory);
 
   FijkPlayer player = FijkPlayer();
@@ -155,24 +153,41 @@ class UploadVideoState extends State<UploadVideoPage> {
     if (!formKey.currentState.validate()) {
       return;
     }
-    var imageData = await player.takeSnapShot();
+    Uint8List imageData = await player.takeSnapShot();
+    // 由于截图比较大，先压缩后上传
+    Uint8List compData = await FlutterImageCompress.compressWithList(
+      imageData,
+      minHeight: 180,
+      minWidth: 285,
+      quality: 80,
+      rotate: player.value.size.width<player.value.size.height?90:0,
+    );
     // 优先上传图片到obs，图片上传成功，返回路径名称，再存储数据到服务器
     String icon = MyUtil.genCoverName();
-    bool success = await OBSApi.uploadObsBytes(icon, imageData);
+    bool success = await OBSApi.uploadObsBytes(icon, compData);
     if (!success) {
       EasyLoading.showError('初始化封面失败，请重试');
       return;
     }
+    // 上传视频objectId
+    String videoName = MyUtil.genVideoName(player.dataSource);
     var data = {
       'mid': memory['id'],
       'creator': await MyUtil.getUserId(),
       'title': nameController.text,
       'type': 0, //视频
       'icon': '/' + icon,
+      'urls':['/'+videoName]
     };
-    dynamic rsp = await MemoryApi.put(MemoryApi.PUT_MEMORY_ITEM, data);
+    dynamic rsp = await MemoryApi.putJson(MemoryApi.PUT_MEMORY_ITEM, data);
     if (!rsp[KEY.SUCCESS]) {
       EasyLoading.showError(rsp[KEY.MSG]);
+      return;
+    }
+    // 构建上传任务
+    bool res = await OBSApi.uploadFile(videoName, File(player.dataSource));
+    if (!res) {
+      EasyLoading.showError('上传视频失败');
       return;
     }
     EasyLoading.showSuccess('创建成功');

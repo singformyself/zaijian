@@ -89,11 +89,14 @@ class MemoryManagementState extends State<MemoryManagementPage>
                 icon: Icons.file_upload,
                 titleStyle:
                     TextStyle(fontSize: FontSize.NORMAL, color: Colors.white),
-                onPress: () {
+                onPress: () async {
                   _animationController.reverse();
-                  Navigator.of(context).push(MaterialPageRoute(
+                  bool res = await Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
                           UploadVideoPage(memory: memory)));
+                  if (res!=null&&res) {
+                    this.setState(() {});
+                  }
                 },
               ),
             ],

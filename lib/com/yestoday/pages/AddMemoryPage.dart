@@ -146,7 +146,7 @@ class AddMemoryState extends State<AddMemoryPage> {
       memory['icon'] = "/" + name;
     }
     memory['title'] = nameController.text;
-    MemoryApi.put(MemoryApi.PUT_SAVE, memory).then((rsp) async {
+    MemoryApi.putJson(MemoryApi.PUT_SAVE, memory).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess("创建成功");
         await Future.delayed(Duration(milliseconds: 2000));

@@ -137,7 +137,7 @@ class LoginState extends State<LoginPage> {
       LoginApi.sendSms(phone).then((rsp) async {
         if (rsp[KEY.SUCCESS]) {
           // 发送成功，执行倒计时
-          EasyLoading.showSuccess(rsp[KEY.MSG]);
+          EasyLoading.showToast(rsp[KEY.MSG]);
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
@@ -169,7 +169,7 @@ class LoginState extends State<LoginPage> {
     LoginApi.login(phone, code).then((rsp) async {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess('登陆成功');
-        await Future.delayed(Duration(milliseconds: 1000));
+        await Future.delayed(Duration(milliseconds: 2000));
         while (Navigator.canPop(context)) {
           Navigator.pop(context, rsp[KEY.USER]);
         }

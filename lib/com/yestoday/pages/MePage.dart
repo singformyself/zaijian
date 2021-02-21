@@ -83,7 +83,7 @@ class MePageState extends State<MePage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        EditBaseInfoPage()));
+                                        EditBaseInfoPage(user)));
                             if (result != null) {
                               this.setState(() {
                                 user = result;

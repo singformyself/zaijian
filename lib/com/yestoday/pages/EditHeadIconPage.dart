@@ -12,6 +12,7 @@ import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
 import 'package:zaijian/com/yestoday/widget/common_widget.dart';
 import 'package:zaijian/com/yestoday/utils/crop_editor_helper.dart';
 
+// ignore: must_be_immutable
 class EditHeadIconPage extends StatefulWidget {
   dynamic user;
 
@@ -41,7 +42,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
         floatingActionButton: FloatingActionButton(
           child: Text("确定"),
           onPressed: () {
-            submitData().then((user) => {Navigator.of(context).pop(user)});
+            submitData();
           },
         ),
         body: Column(
@@ -229,7 +230,7 @@ class EditHeadIconState extends State<EditHeadIconPage> {
     }
   }
 
-  Future<dynamic> submitData() async {
+  void submitData() async {
     if (cropImageDate == null) {
       await _cropImage();
     }
@@ -240,11 +241,11 @@ class EditHeadIconState extends State<EditHeadIconPage> {
       dynamic rsp =await UserApi.updateIcon(user['id'], name);
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess('更新成功');
-        return rsp[KEY.USER];
+        await Future.delayed(Duration(milliseconds: 2000));
+        Navigator.pop(context, rsp[KEY.USER]);
       } else {
         EasyLoading.showError('更新失败');
       }
     }
-    return null;
   }
 }

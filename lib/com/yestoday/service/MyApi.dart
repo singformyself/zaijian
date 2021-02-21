@@ -252,7 +252,7 @@ class LoginApi {
         .url(HttpUrl.parse(MyApi.HOST + POST_SEND_SMS))
         .post(body)
         .build();
-    return MyApi.callAndRefreshUser(request);
+    return MyApi.call(request);
   }
 }
 

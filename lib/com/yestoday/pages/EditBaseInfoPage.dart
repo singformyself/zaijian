@@ -6,15 +6,26 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter_my_picker/flutter_my_picker.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 
+// ignore: must_be_immutable
 class EditBaseInfoPage extends StatefulWidget {
+  dynamic user;
+
+  EditBaseInfoPage(this.user);
+
   @override
   State<StatefulWidget> createState() {
-    return EditBaseInfoState();
+    return EditBaseInfoState(user);
   }
 }
 
 class EditBaseInfoState extends State<EditBaseInfoPage> {
-  dynamic user;
+  dynamic user={
+    'id':'',
+    'nickName':'',
+    'sex':2,
+    'birthDay':''
+  };
+  EditBaseInfoState(this.user);
   static const int sex = 2;
   TextEditingController nameController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -123,14 +134,12 @@ class EditBaseInfoState extends State<EditBaseInfoPage> {
   @override
   Future<void> initState() {
     super.initState();
-    getUser();
-  }
-  Future<void> getUser() async {
-    user = await MyUtil.getUser();
     nameController = TextEditingController(text: user['nickName']);
-    this.setState(() {});
   }
   void submit(String nickName, BuildContext context) {
+    if (!formKey.currentState.validate()) {
+      return;
+    }
     UserApi.updateInfo(user['id'],nickName,user['sex'],user['birthDay']).then((rsp) async {
       if(rsp[KEY.SUCCESS]){
         EasyLoading.showSuccess('修改成功');

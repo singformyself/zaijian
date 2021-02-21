@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '再见',
-      theme: ThemeData(brightness: Brightness.light,backgroundColor:Colors.white),
+      theme: ThemeData(brightness: Brightness.light,focusColor: Colors.blueGrey,hoverColor: Colors.blueGrey),
       home: NavigationFrame(),
       builder: EasyLoading.init()
     );
@@ -74,13 +74,14 @@ class NavigationFrameState extends State<NavigationFrame> {
     super.initState();
     EasyLoading.instance
       ..displayDuration = const Duration(milliseconds: 2000)
+      ..toastPosition = EasyLoadingToastPosition.top
       ..indicatorType = EasyLoadingIndicatorType.fadingFour
       ..loadingStyle = EasyLoadingStyle.custom
-      ..radius = 3
-      ..progressColor = Colors.blue
-      ..backgroundColor = Colors.white.withOpacity(0.8)
-      ..indicatorColor = Colors.blue
-      ..textColor = Colors.blue
-      ..maskColor = Colors.blue.withOpacity(0.5);
+      ..radius = 8
+      ..progressColor = Colors.white
+      ..backgroundColor = Colors.black.withOpacity(0.5)
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..maskColor = Colors.white.withOpacity(0.5);
   }
 }

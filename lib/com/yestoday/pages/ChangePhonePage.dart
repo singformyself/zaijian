@@ -23,6 +23,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
   bool stopCount = false;
   TextEditingController phoneController = TextEditingController();
   TextEditingController codeController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,60 +35,63 @@ class ChangePhoneState extends State<ChangePhonePage> {
             submit(phoneController.text, codeController.text, context);
           },
         ),
-        body: Container(
-            padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              ListTile(
-                  leading:
-                      Text("当前手机号", style: TextStyle(fontSize: FontSize.LARGE)),
-                  title: Text(nowPhone,
-                      style: TextStyle(fontSize: FontSize.LARGE))),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                controller: phoneController,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.phone_android),
-                  hintText: '请输入新手机号',
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "请输入手机号";
-                  }
-                  if (!BaseConfig.phoneExp.hasMatch(value)) {
-                    return "手机号填写错误";
-                  }
-                  return null;
-                },
-              ),
-              Stack(
-                alignment: AlignmentDirectional.topEnd,
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: codeController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.security),
-                      hintText: '请输入验证码',
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "请输入验证码";
-                      }
-                      return null;
-                    },
-                  ),
-                  OutlineButton(
-                    onPressed: () {
-                      sendValidateNumber(phoneController.text, context);
-                    },
-                    child: Text(getCountDownText(),
-                        style:
-                            TextStyle(color: Theme.of(context).primaryColor)),
-                  )
-                ],
-              )
-            ])));
+        body: Form(
+            key: formKey,
+            child: Container(
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ListTile(
+                          leading: Text("当前手机号",
+                              style: TextStyle(fontSize: FontSize.LARGE)),
+                          title: Text(nowPhone,
+                              style: TextStyle(fontSize: FontSize.LARGE))),
+                      TextFormField(
+                        keyboardType: TextInputType.phone,
+                        controller: phoneController,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.phone_android),
+                          hintText: '请输入新手机号',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "请输入手机号";
+                          }
+                          if (!BaseConfig.phoneExp.hasMatch(value)) {
+                            return "手机号填写错误";
+                          }
+                          return null;
+                        },
+                      ),
+                      Stack(
+                        alignment: AlignmentDirectional.topEnd,
+                        children: [
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: codeController,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.security),
+                              hintText: '请输入验证码',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "请输入验证码";
+                              }
+                              return null;
+                            },
+                          ),
+                          OutlineButton(
+                            onPressed: () {
+                              sendValidateNumber(phoneController.text, context);
+                            },
+                            child: Text(getCountDownText(),
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor)),
+                          )
+                        ],
+                      )
+                    ]))));
   }
 
   @override
@@ -109,8 +113,12 @@ class ChangePhoneState extends State<ChangePhonePage> {
   }
 
   void sendValidateNumber(String phone, BuildContext context) async {
+    if(phone==null||phone.length==0){
+      EasyLoading.showInfo('请输入手机号');
+      return;
+    }
     if (!BaseConfig.phoneExp.hasMatch(phone)) {
-      EasyLoading.showToast('手机号填写错误');
+      EasyLoading.showInfo('手机号填写错误');
       return;
     }
     if (canSend) {
@@ -148,6 +156,9 @@ class ChangePhoneState extends State<ChangePhonePage> {
   }
 
   void submit(String phone, String code, BuildContext context) {
+    if (!formKey.currentState.validate()) {
+      return;
+    }
     UserApi.changePhone(user['id'], phone, code).then((rsp) {
       if (rsp[KEY.SUCCESS]) {
         EasyLoading.showSuccess("修改成功");

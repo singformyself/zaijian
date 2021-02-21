@@ -103,14 +103,30 @@ class MyApi {
   }
 
   static Future<dynamic> callAndRefreshUser(Request request) async {
-    Response rsp = await defaultClient.newCall(request).enqueue();
-    if (rsp.isSuccessful()) {
-      String data = await rsp.body().string();
-      dynamic res = json.decode(data);
-      refreshUserData(res);
-      return res;
+    try {
+      Response rsp = await defaultClient.newCall(request).enqueue();
+      if (rsp.isSuccessful()) {
+            String data = await rsp.body().string();
+            dynamic res = json.decode(data);
+            refreshUserData(res);
+            return res;
+          }
+    } catch (e) {
+      print(e);
     }
-    return MyApi.COMMON_FAIL;
+    return COMMON_FAIL;
+  }
+  static Future<dynamic> call(Request request) async {
+    try {
+      Response rsp = await MyApi.defaultClient.newCall(request).enqueue();
+      if (rsp.isSuccessful()) {
+        String data = await rsp.body().string();
+        return json.decode(data);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return COMMON_FAIL;
   }
 }
 
@@ -250,7 +266,11 @@ class TokenApi {
         .url(HttpUrl.parse(MyApi.HOST + POST_TOKEN))
         .post(body)
         .build();
-    MyApi.defaultClient.newCall(request).enqueue();
+    try {
+      MyApi.defaultClient.newCall(request).enqueue();
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -286,18 +306,22 @@ class OBSApi {
         .url(HttpUrl.parse(MyApi.HOST + POST_UPLOAD_AUTH))
         .post(formBody)
         .build();
-    Response authRsp = await MyApi.defaultClient.newCall(authReq).enqueue();
-    if (authRsp.isSuccessful()) {
-      RequestBody requestBody =
-          RequestBody.bytesBody(MediaType.parse("text/plain"), bytes);
-      String rsp = await authRsp.body().string();
-      dynamic res = json.decode(rsp);
-      Request request = RequestBuilder()
-          .url(HttpUrl.parse(res['authUrl']))
-          .put(requestBody)
-          .build();
-      Response obsRsp = await MyApi.obsClient.newCall(request).enqueue();
-      return obsRsp.isSuccessful();
+    try {
+      Response authRsp = await MyApi.defaultClient.newCall(authReq).enqueue();
+      if (authRsp.isSuccessful()) {
+            RequestBody requestBody =
+                RequestBody.bytesBody(MediaType.parse("text/plain"), bytes);
+            String rsp = await authRsp.body().string();
+            dynamic res = json.decode(rsp);
+            Request request = RequestBuilder()
+                .url(HttpUrl.parse(res['authUrl']))
+                .put(requestBody)
+                .build();
+            Response obsRsp = await MyApi.obsClient.newCall(request).enqueue();
+            return obsRsp.isSuccessful();
+          }
+    } catch (e) {
+      print(e);
     }
     return false;
   }
@@ -314,21 +338,13 @@ class MemoryApi {
   static const String PUT_MEMORY_ITEM = "/memory/addMemoryItem";
   static const String PUT_MEMORY_ITEM_STATUS = "/memory/updateMemoryItemStatus";
 
-  static Future<dynamic> call(Request request) async {
-    Response rsp = await MyApi.defaultClient.newCall(request).enqueue();
-    if (rsp.isSuccessful()) {
-      String data = await rsp.body().string();
-      return json.decode(data);
-    }
-    return MyApi.COMMON_FAIL;
-  }
   // 懒人提交接口
   static Future<dynamic> putJson(String url, dynamic data) {
     RequestBody body = RequestBody.textBody(
         MediaType.parse("application/json"), json.encode(data));
     Request request =
         RequestBuilder().url(HttpUrl.parse(MyApi.HOST + url)).put(body).build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   static Future<dynamic> delete(String id) {
@@ -337,7 +353,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + DELETE))
         .delete(body)
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   // 懒人写法
@@ -347,7 +363,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + url))
         .delete(body)
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   static Future<dynamic> pageList(String uid, int curPage, int length) {
@@ -361,7 +377,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + GET_PAGE_LIST + param))
         .get()
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   // 懒人get接口
@@ -375,7 +391,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + url + param))
         .get()
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   static Future<dynamic> eyewitnessList(String mid, int curPage, int length) {
@@ -389,7 +405,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + GET_EYEWITNESS_PAGE_LIST + param))
         .get()
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   static Future<dynamic> deleteEyewitness(String mid, String uid) {
@@ -399,7 +415,7 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + DELETE_EYEWITNESS))
         .delete(body)
         .build();
-    return call(request);
+    return MyApi.call(request);
   }
 
   static Future<dynamic> updateMemoryItemStatus(String itemId, int st) {
@@ -408,6 +424,6 @@ class MemoryApi {
             .url(HttpUrl.parse(MyApi.HOST + PUT_MEMORY_ITEM_STATUS))
             .put(body)
             .build();
-    return call(request);
+    return MyApi.call(request);
   }
 }

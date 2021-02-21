@@ -95,7 +95,7 @@ class UploadVideoState extends State<UploadVideoPage> {
                             ),
                           )),
                 Padding(padding: EdgeInsets.all(10)),
-                OutlineButton(
+                OutlinedButton(
                     child: Text("选择视频...",
                         style:
                             TextStyle(color: Theme.of(context).primaryColor)),

@@ -72,7 +72,7 @@ class LoginState extends State<LoginPage> {
                           return null;
                         },
                       ),
-                      OutlineButton(
+                      OutlinedButton(
                         onPressed: () {
                           sendValidateNumber(phoneController.text,context);
                         },
@@ -109,7 +109,7 @@ class LoginState extends State<LoginPage> {
                   padding: EdgeInsets.all(5.0),
                   height: 65.0,
                   child: SizedBox.expand(
-                    child: OutlineButton(
+                    child: OutlinedButton(
                         onPressed: gotoRegistryPage(context),
                         child: Text("还没账号？赶快注册一个吧😂",
                             style: TextStyle(

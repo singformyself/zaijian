@@ -81,7 +81,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
                               return null;
                             },
                           ),
-                          OutlineButton(
+                          OutlinedButton(
                             onPressed: () {
                               sendValidateNumber(phoneController.text, context);
                             },

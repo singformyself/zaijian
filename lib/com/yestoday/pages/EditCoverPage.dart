@@ -82,7 +82,7 @@ class EditCoverState extends State<EditCoverPage> {
                             }
                           });
                         },
-                        child: OutlineButton(child: Text("选择图片...",
+                        child: OutlinedButton(child: Text("选择图片...",
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor)),),
                         itemBuilder: (context) => <PopupMenuItem<String>>[

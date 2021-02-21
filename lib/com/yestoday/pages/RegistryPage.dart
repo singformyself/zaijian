@@ -70,7 +70,7 @@ class RegistryState extends State<RegistryPage> {
                           return null;
                         },
                       ),
-                      OutlineButton(
+                      OutlinedButton(
                         onPressed: () {
                           sendValidateNumber(phoneController.text, context);
                         },

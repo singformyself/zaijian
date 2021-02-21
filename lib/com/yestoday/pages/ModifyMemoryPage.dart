@@ -104,7 +104,7 @@ class ModifyMemoryState extends State<ModifyMemoryPage> {
                       ),
                     ),
                     Padding(padding: EdgeInsets.all(10)),
-                    OutlineButton(
+                    OutlinedButton(
                       child: Text("设置封面",
                           style:
                           TextStyle(color: Theme.of(context).primaryColor)),

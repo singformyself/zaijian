@@ -1,6 +1,5 @@
 import 'package:date_format/date_format.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -39,7 +38,9 @@ class MemoryManagementState extends State<MemoryManagementPage>
   AnimationController _animationController;
 
   MemoryManagementState(this.user, this.memory);
+
   MemoryItems memoryItems;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,64 +58,58 @@ class MemoryManagementState extends State<MemoryManagementPage>
             children: [
               Header(user, memory),
               BriefEyewitness(memory['id'], memory['publicity'], canDelete),
+              Container(
+                  padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                  color: Theme.of(context).primaryColor,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('我的见证', style: TextStyle(color: Colors.white)),
+                        Row(
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  _animationController.reverse();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          UploadPhotoPage()));
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.file_upload,
+                                        color: Colors.white, size: 18),
+                                    Text("照片",
+                                        style: TextStyle(color: Colors.white))
+                                  ],
+                                )),
+                            Text("|", style: TextStyle(color: Colors.white54)),
+                            TextButton(
+                                onPressed: () async {
+                                  _animationController.reverse();
+                                  bool res = await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              UploadVideoPage(memory: memory)));
+                                  if (res != null && res) {
+                                    this.memoryItems.refresh();
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.file_upload,
+                                        color: Colors.white, size: 18),
+                                    Text("视频",
+                                        style: TextStyle(color: Colors.white))
+                                  ],
+                                ))
+                          ],
+                        )
+                      ])),
               Expanded(
                 child: memoryItems,
               )
             ],
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          floatingActionButton: FloatingActionBubble(
-            // Menu items
-            items: <Bubble>[
-              // Floating action menu item
-              Bubble(
-                title: "照片",
-                iconColor: Colors.white,
-                bubbleColor: Theme.of(context).primaryColor,
-                icon: Icons.file_upload,
-                titleStyle:
-                    TextStyle(fontSize: FontSize.NORMAL, color: Colors.white),
-                onPress: () {
-                  _animationController.reverse();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => UploadPhotoPage()));
-                },
-              ),
-              //Floating action menu item
-              Bubble(
-                title: "视频",
-                iconColor: Colors.white,
-                bubbleColor: Theme.of(context).primaryColor,
-                icon: Icons.file_upload,
-                titleStyle:
-                    TextStyle(fontSize: FontSize.NORMAL, color: Colors.white),
-                onPress: () async {
-                  _animationController.reverse();
-                  bool res = await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          UploadVideoPage(memory: memory)));
-                  if (res!=null&&res) {
-                    this.memoryItems.refresh();
-                  }
-                },
-              ),
-            ],
-
-            // animation controller
-            animation: _animation,
-
-            // On pressed change animation state
-            onPress: () => _animationController.isCompleted
-                ? _animationController.reverse()
-                : _animationController.forward(),
-
-            // Floating Action button Icon color
-            iconColor: Colors.white,
-
-            // Flaoting Action button Icon
-            iconData: Icons.add,
-            backGroundColor: Theme.of(context).primaryColor,
-          ),
+          )
         ));
   }
 
@@ -138,13 +133,15 @@ class MemoryItems extends StatefulWidget {
   String mid;
   String uid;
   MemoryItemsState state;
+
   MemoryItems(this.mid, this.uid);
 
   @override
   State<StatefulWidget> createState() {
-    return state=MemoryItemsState(mid, uid);
+    return state = MemoryItemsState(mid, uid);
   }
-  void refresh(){
+
+  void refresh() {
     state.refresh();
   }
 }
@@ -199,9 +196,10 @@ class MemoryItemsState extends State<MemoryItems> {
   @override
   void dispose() {
     super.dispose();
-    items=null;
+    items = null;
     refreshController.dispose();
   }
+
   // 加载数据，每次都从第一页开始
   void loadData() async {
     curPage = 0;
@@ -261,7 +259,8 @@ class MemoryItemsState extends State<MemoryItems> {
             color: Colors.red,
             icon: Icons.delete,
             onTap: () {
-              MemoryApi.deleteById(MemoryApi.DELETE_ITEM, memoryItem['id']).then((rsp) {
+              MemoryApi.deleteById(MemoryApi.DELETE_ITEM, memoryItem['id'])
+                  .then((rsp) {
                 if (rsp[KEY.SUCCESS]) {
                   EasyLoading.showSuccess('删除成功');
                   this.setState(() {
@@ -292,9 +291,9 @@ class MemoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String createTime=formatDate(
-            DateTime.fromMillisecondsSinceEpoch(memoryItem['createTime']),
-            [yy, '/', mm, '/', dd, '\n', hh, ':', mm, ':', ss]);
+    String createTime = formatDate(
+        DateTime.fromMillisecondsSinceEpoch(memoryItem['createTime']),
+        [yy, '/', mm, '/', dd, '\n', hh, ':', mm, ':', ss]);
     return Container(
         padding: EdgeInsets.fromLTRB(5.0, 5, 5.0, 5.0),
         decoration: BoxDecoration(
@@ -304,7 +303,9 @@ class MemoryItem extends StatelessWidget {
         child: Column(children: [
           ListTile(
               contentPadding: EdgeInsets.all(0),
-              leading: memoryItem['status']==9?Text(createTime):MyProgress(memoryItem['id'],createTime),
+              leading: memoryItem['status'] == 9
+                  ? Text(createTime)
+                  : MyProgress(memoryItem['id'], createTime),
               title: Text(memoryItem['title'],
                   style: TextStyle(fontSize: FontSize.NORMAL),
                   overflow: TextOverflow.clip),
@@ -324,39 +325,45 @@ class MemoryItem extends StatelessWidget {
         ]));
   }
 }
-class MyProgress extends StatefulWidget{
+
+class MyProgress extends StatefulWidget {
   String itemId;
   String createTime;
-  MyProgress(this.itemId,this.createTime);
+
+  MyProgress(this.itemId, this.createTime);
+
   @override
   State<StatefulWidget> createState() {
-    return MyProgressState(itemId,createTime);
+    return MyProgressState(itemId, createTime);
   }
 }
 
-class MyProgressState extends State<MyProgress>{
+class MyProgressState extends State<MyProgress> {
   String itemId;
   String createTime;
-  bool living=true;
-  double percent=0;
-  int status=0;
+  bool living = true;
+  double percent = 0;
+  int status = 0;
 
-  MyProgressState(this.itemId,this.createTime);
+  MyProgressState(this.itemId, this.createTime);
 
   @override
   Widget build(BuildContext context) {
-    return status==9?Text(createTime):CircularPercentIndicator(
-      radius: 38.0,
-      lineWidth: 2.5,
-      percent: percent,
-      center: new Text((percent*100).ceilToDouble().toString()+"%",style:TextStyle(fontSize: 11)),
-      progressColor: Colors.green,
-      footer: getText(),
-      onAnimationEnd: (){
-        status=9;
-        refresh();
-      },
-    );
+    return status == 9
+        ? Text(createTime)
+        : CircularPercentIndicator(
+            radius: 38.0,
+            lineWidth: 2.5,
+            percent: percent,
+            center: new Text((percent * 100).ceilToDouble().toString() + "%",
+                style: TextStyle(fontSize: 11)),
+            progressColor: Colors.green,
+            footer: getText(),
+            onAnimationEnd: () {
+              status = 9;
+              refresh();
+            },
+          );
   }
 
   @override
@@ -365,41 +372,46 @@ class MyProgressState extends State<MyProgress>{
     startListen();
   }
 
-
   @override
   void dispose() {
     super.dispose();
-    living=false;
+    living = false;
   }
 
   Future<void> startListen() async {
-    while(living&&percent<1){
-      var res=MyTask.instance.getProgressValue(itemId);
-      if(res==null){
+    while (living && percent < 1) {
+      var res = MyTask.instance.getProgressValue(itemId);
+      if (res == null) {
         await Future.delayed(Duration(milliseconds: 1000));
         continue;
       }
-      percent=res;
-      status=1;
+      percent = res;
+      status = 1;
       refresh();
       await Future.delayed(Duration(milliseconds: 100));
     }
-    status=9;
+    status = 9;
     refresh();
   }
-  void refresh(){
-    if(living){
+
+  void refresh() {
+    if (living) {
       this.setState(() {});
     }
   }
+
   Text getText() {
-      switch(status){
-          case 0:return Text('等待上传',style:TextStyle(fontSize: 9));
-          case 1:return Text('正在上传',style:TextStyle(fontSize: 9));
-          default:return Text('上传完成',style:TextStyle(fontSize: 9));
-      }
+    switch (status) {
+      case 0:
+        return Text('等待上传', style: TextStyle(fontSize: 9));
+      case 1:
+        return Text('正在上传', style: TextStyle(fontSize: 9));
+      default:
+        return Text('上传完成', style: TextStyle(fontSize: 9));
+    }
   }
 }
+
 class BriefEyewitness extends StatefulWidget {
   String id;
   bool publiciy;
@@ -435,45 +447,31 @@ class BriefEyewitnessState extends State<BriefEyewitness> {
 
   @override
   Widget build(BuildContext context) {
-    Widget hasData = GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  EyewitnessPage(id, canDelete)));
-        },
-        child: Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                border: Border(bottom: BorderSide(color: Colors.black12))),
-            padding: EdgeInsets.all(5),
-            height: 90,
-            child: Column(
-              children: [
-                Container(
-                  height: 45,
+    return Column(
+      children: [
+        publiciy
+            ? GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          EyewitnessPage(id, canDelete)));
+                },
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                    color: Colors.black.withOpacity(0.5),
+                    height: 45,
                     child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: getEyewitness(),
-                    ),
-                    Icon(Icons.more_horiz, color: Colors.white)
-                  ],
-                )),
-                Divider(color: Colors.white),
-                Row(children: [
-                  Text('我的见证', style: TextStyle(color: Colors.white))
-                ])
-              ],
-            )));
-    return publiciy
-        ? hasData
-        : Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                border: Border(bottom: BorderSide(color: Colors.black12))),
-            height: 10,
-          );
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: getEyewitness(),
+                        ),
+                        Icon(Icons.more_horiz, color: Colors.white)
+                      ],
+                    )))
+            : Container(),
+      ],
+    );
   }
 
   List<Widget> getEyewitness() {

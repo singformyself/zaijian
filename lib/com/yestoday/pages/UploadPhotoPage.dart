@@ -49,7 +49,7 @@ class UploadPhotoState extends State<UploadPhotoPage>{
                 ),
               ),
             ),
-            OutlineButton(
+            OutlinedButton(
               child: Text("选择照片",style: TextStyle(color:Theme.of(context).primaryColor)),
               onPressed: loadAssets,
             ),

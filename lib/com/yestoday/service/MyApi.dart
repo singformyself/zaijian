@@ -69,7 +69,7 @@ class MyUtil {
 }
 
 class MyApi {
-  static const String HOST = "http://192.168.145.103:80";
+  static const String HOST = "http://192.168.0.101:80";
   static const String OBS_HOST =
       "https://zaijian.obs.cn-north-4.myhuaweicloud.com";
   static const String DEFAULT_ICON = "/icon/default.jpg";

@@ -103,8 +103,7 @@ class UploadVideoState extends State<UploadVideoPage> {
                       player.reset();
                       FilePicker.platform
                           .pickFiles(
-                              type: FileType.custom,
-                              allowedExtensions: ['mp4', 'flv', 'wmv', 'avi'],
+                              type: FileType.video,
                               onFileLoading: (st) {
                                 if (st == FilePickerStatus.picking) {
                                   EasyLoading.show(status: "加载中...");

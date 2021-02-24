@@ -33,10 +33,6 @@ class MemoryManagementState extends State<MemoryManagementPage>
   dynamic user;
   dynamic memory;
   bool canDelete = false; // 只有回忆创建者才可以删除回忆记录和见证人
-  //List<Eyewitness> eyewitness = [Eyewitness(), Eyewitness(), Eyewitness()];
-  Animation<double> _animation;
-  AnimationController _animationController;
-
   MemoryManagementState(this.user, this.memory);
 
   MemoryItems memoryItems;
@@ -68,11 +64,13 @@ class MemoryManagementState extends State<MemoryManagementPage>
                         Row(
                           children: [
                             TextButton(
-                                onPressed: () {
-                                  _animationController.reverse();
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                onPressed: () async {
+                                  bool res = await Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          UploadPhotoPage()));
+                                          UploadPhotoPage(memory)));
+                                  if (res != null && res) {
+                                    this.memoryItems.refresh();
+                                  }
                                 },
                                 child: Row(
                                   children: [
@@ -85,7 +83,6 @@ class MemoryManagementState extends State<MemoryManagementPage>
                             Text("|", style: TextStyle(color: Colors.white54)),
                             TextButton(
                                 onPressed: () async {
-                                  _animationController.reverse();
                                   bool res = await Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
@@ -117,14 +114,6 @@ class MemoryManagementState extends State<MemoryManagementPage>
   void initState() {
     super.initState();
     memoryItems = MemoryItems(memory['id'], user['id']);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 260),
-    );
-
-    final curvedAnimation = CurvedAnimation(
-        curve: Curves.bounceInOut, parent: _animationController);
-    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
     this.canDelete = user['id'] == memory['creator'];
   }
 }

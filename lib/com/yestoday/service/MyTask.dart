@@ -113,6 +113,8 @@ class UploadTask {
     return map;
   }
 
+  UploadTask.name(this.itemId, this.uploadObjects, this.totalBytes);
+
   UploadTask(String itemId, List<dynamic> uploadObjects, int totalBytes) {
     this.itemId = itemId;
     this.totalBytes = totalBytes;

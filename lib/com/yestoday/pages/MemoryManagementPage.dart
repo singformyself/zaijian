@@ -48,66 +48,68 @@ class MemoryManagementState extends State<MemoryManagementPage>
                     cache: true),
                 fit: BoxFit.fitWidth)),
         child: Scaffold(
-          backgroundColor: Colors.black.withOpacity(0.2),
-          appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0),
-          body: Column(
-            children: [
-              Header(user, memory),
-              BriefEyewitness(memory['id'], memory['publicity'], canDelete),
-              Container(
-                  padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
-                  color: Theme.of(context).primaryColor,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('我的见证', style: TextStyle(color: Colors.white)),
-                        Row(
-                          children: [
-                            TextButton(
-                                onPressed: () async {
-                                  bool res = await Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          UploadPhotoPage(memory)));
-                                  if (res != null && res) {
-                                    this.memoryItems.refresh();
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.file_upload,
-                                        color: Colors.white, size: 18),
-                                    Text("照片",
-                                        style: TextStyle(color: Colors.white))
-                                  ],
-                                )),
-                            Text("|", style: TextStyle(color: Colors.white54)),
-                            TextButton(
-                                onPressed: () async {
-                                  bool res = await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              UploadVideoPage(memory: memory)));
-                                  if (res != null && res) {
-                                    this.memoryItems.refresh();
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.file_upload,
-                                        color: Colors.white, size: 18),
-                                    Text("视频",
-                                        style: TextStyle(color: Colors.white))
-                                  ],
-                                ))
-                          ],
-                        )
-                      ])),
-              Expanded(
-                child: memoryItems,
-              )
-            ],
-          )
-        ));
+            backgroundColor: Colors.black.withOpacity(0.2),
+            appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0),
+            body: Column(
+              children: [
+                Header(user, memory),
+                BriefEyewitness(memory['id'], memory['publicity'], canDelete),
+                Container(
+                    padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                    color: Theme.of(context).primaryColor,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('我的见证', style: TextStyle(color: Colors.white)),
+                          Row(
+                            children: [
+                              TextButton(
+                                  onPressed: () async {
+                                    bool res = await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                UploadPhotoPage(memory)));
+                                    if (res != null && res) {
+                                      this.memoryItems.refresh();
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.file_upload,
+                                          color: Colors.white, size: 18),
+                                      Text("照片",
+                                          style: TextStyle(color: Colors.white))
+                                    ],
+                                  )),
+                              Text("|",
+                                  style: TextStyle(color: Colors.white54)),
+                              TextButton(
+                                  onPressed: () async {
+                                    bool res = await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                UploadVideoPage(
+                                                    memory: memory)));
+                                    if (res != null && res) {
+                                      this.memoryItems.refresh();
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.file_upload,
+                                          color: Colors.white, size: 18),
+                                      Text("视频",
+                                          style: TextStyle(color: Colors.white))
+                                    ],
+                                  ))
+                            ],
+                          )
+                        ])),
+                Expanded(
+                  child: memoryItems,
+                )
+              ],
+            )));
   }
 
   @override
@@ -307,8 +309,23 @@ class MemoryItem extends StatelessWidget {
                           MyApi.OBS_HOST + memoryItem['icon'],
                           width: 95.0,
                           height: 60.0)),
-                  Icon(memoryItem['type'] == 0 ? Icons.videocam : Icons.photo,
-                      color: Colors.white.withOpacity(0.9))
+                  Container(
+                      padding: EdgeInsets.all(1),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              memoryItem['type'] == 0
+                                  ? ''
+                                  : memoryItem['urls'].length.toString(),
+                              style: TextStyle(color: Colors.white)),
+                          Icon(
+                              memoryItem['type'] == 0
+                                  ? Icons.videocam
+                                  : Icons.photo,
+                              color: Colors.white.withOpacity(0.9),size: 16,)
+                        ],
+                      ))
                 ],
               )),
         ]));

@@ -48,7 +48,6 @@ class MyTask {
         if (isDone) {
           runningTask.now+=totalBytes;
         }
-        print(percent.toString()+"+++++++++"+runningTask.itemId);
       }
 
     }

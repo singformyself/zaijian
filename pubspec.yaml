@@ -49,6 +49,7 @@ dependencies:
   connectivity: ^2.0.2    #监听网络状态
   flutter_image_compress: ^0.7.0    #用户视频封面压缩
   percent_indicator: ^2.1.9+1     #进度条
+  video_compress: ^2.1.1    #视频压缩
 
 dev_dependencies:
   flutter_test:

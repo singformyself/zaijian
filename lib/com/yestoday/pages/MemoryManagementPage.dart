@@ -360,8 +360,8 @@ class MyProgressState extends State<MyProgress> {
         : CircularPercentIndicator(
             radius: 38.0,
             lineWidth: 2.5,
-            percent: percent,
-            center: new Text((percent * 100).ceilToDouble().toString() + "%",
+            percent: percent/100,
+            center: new Text(percent.ceilToDouble().toString() + "%",
                 style: TextStyle(fontSize: 11)),
             progressColor: Colors.green,
             footer: getText(),
@@ -385,19 +385,17 @@ class MyProgressState extends State<MyProgress> {
   }
 
   Future<void> startListen() async {
-    while (living && percent < 1) {
-      var res = MyTask.instance.getProgressValue(itemId);
+    ProgressStatus res;
+    while (living && status < 9) {
+      await Future.delayed(Duration(seconds: 1));
+      res = MyTask.instance.getProgressValue(itemId);
       if (res == null) {
-        await Future.delayed(Duration(milliseconds: 1000));
         continue;
       }
-      percent = res;
-      status = 1;
+      percent = res.value;
+      status = res.status;
       refresh();
-      await Future.delayed(Duration(milliseconds: 100));
     }
-    status = 9;
-    refresh();
   }
 
   void refresh() {
@@ -408,6 +406,8 @@ class MyProgressState extends State<MyProgress> {
 
   Text getText() {
     switch (status) {
+      case -1:
+        return Text('正在压缩', style: TextStyle(fontSize: 9));
       case 0:
         return Text('等待上传', style: TextStyle(fontSize: 9));
       case 1:

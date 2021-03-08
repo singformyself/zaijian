@@ -130,7 +130,7 @@ class ChangePhoneState extends State<ChangePhonePage> {
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
-            await Future.delayed(Duration(milliseconds: 1000));
+            await Future.delayed(Duration(seconds: 1));
             if (!stopCount) {
               // 页面关闭了就不再setState了
               this.setState(() {

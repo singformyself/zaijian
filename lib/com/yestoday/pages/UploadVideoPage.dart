@@ -180,6 +180,7 @@ class UploadVideoState extends State<UploadVideoPage> {
     }
     // 构建上传任务
     UploadTask task = UploadTask.fromJson({
+      'type':0,
       'itemId':rsp['itemId'],
       'uploadObjects':[{'objectId':videoName,'filePath':uploadFile.path}],
       'totalBytes':totalBytes

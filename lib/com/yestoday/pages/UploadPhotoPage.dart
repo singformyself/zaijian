@@ -246,7 +246,7 @@ class UploadPhotoState extends State<UploadPhotoPage> {
     for (int i = 0; i < obIds.length; i++) {
       obs.add(UploadObject(obIds[i], paths[i]));
     }
-    UploadTask task = UploadTask.name(rsp['itemId'], obs, totalBytes);
+    UploadTask task = UploadTask.name(1,rsp['itemId'], obs, totalBytes);
     MyTask.instance.addTask(task);
     EasyLoading.showSuccess('创建成功');
     await Future.delayed(Duration(milliseconds: 2000));

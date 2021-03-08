@@ -141,7 +141,7 @@ class RegistryState extends State<RegistryPage> {
           this.countDown = COUNT_TIME;
           this.canSend = false;
           while (countDown >= 0 && !stopCount) {
-            await Future.delayed(Duration(milliseconds: 1000));
+            await Future.delayed(Duration(seconds: 1));
             if (!stopCount) {
               this.setState(() {
                 countDown--;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'com/yestoday/pages/EyewitnessMemoryListPage.dart';
 import 'com/yestoday/pages/HomePage.dart';
 import 'com/yestoday/pages/MePage.dart';
 import 'com/yestoday/pages/MemoryListPage.dart';
@@ -39,7 +40,7 @@ class NavigationFrame extends StatefulWidget {
 
 class NavigationFrameState extends State<NavigationFrame> {
   int currentTabIndex = 0;
-  List<Widget> pages = [HomePage(), MemoryListPage(), MePage()];
+  List<Widget> pages = [HomePage(), MemoryListPage(),EyewitnessMemoryListPage(), MePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +54,10 @@ class NavigationFrameState extends State<NavigationFrame> {
             this._changePage(index);
           },
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("首页", style:TextStyle(fontSize: 12.0))),
-            BottomNavigationBarItem(icon: Icon(Icons.camera), title: Text("我的回忆", style:TextStyle(fontSize: 12.0))),
-            BottomNavigationBarItem(icon: Icon(Icons.person), title: Text("我的", style:TextStyle(fontSize: 12.0)))
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
+            BottomNavigationBarItem(icon: Icon(Icons.camera), label: "我的回忆"),
+            BottomNavigationBarItem(icon: Icon(Icons.camera), label: "我的见证"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的")
           ],
           type: BottomNavigationBarType.fixed)
     );

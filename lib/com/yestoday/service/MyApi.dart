@@ -328,13 +328,14 @@ class OBSApi {
 }
 
 class MemoryApi {
-  static const String PUT_SAVE = "/memory/save";
   static const String DELETE = "/memory/delete";
-  static const String DELETE_ITEM = "/memory/deleteItem";
   static const String GET_PAGE_LIST = "/memory/pageList";
-  static const String GET_ITEM_UPLOAD_HIS_PAGE_LIST = "/memory/itemUploadHispageList";
+  static const String GET_EYEWITNESS_MEMORY_PAGE_LIST = "/memory/eyewitnessMemoryPageList";
+  static const String GET_ITEM_UPLOAD_HIS_PAGE_LIST = "/memory/itemUploadHisPageList";
   static const String GET_EYEWITNESS_PAGE_LIST = "/memory/eyewitnessPageList";
+  static const String DELETE_ITEM = "/memory/deleteItem";
   static const String DELETE_EYEWITNESS = "/memory/deleteEyewitness";
+  static const String PUT_SAVE = "/memory/save";
   static const String PUT_MEMORY_ITEM = "/memory/addMemoryItem";
   static const String PUT_MEMORY_ITEM_STATUS = "/memory/updateMemoryItemStatus";
 
@@ -377,6 +378,19 @@ class MemoryApi {
         .url(HttpUrl.parse(MyApi.HOST + GET_PAGE_LIST + param))
         .get()
         .build();
+    return MyApi.call(request);
+  }
+  static Future<dynamic> eyewitnessMemoryPageList(String uid, int curPage, int length) {
+    String param = "?uid=" +
+            uid +
+            "&curPage=" +
+            curPage.toString() +
+            "&length=" +
+            length.toString();
+    Request request = RequestBuilder()
+            .url(HttpUrl.parse(MyApi.HOST + GET_EYEWITNESS_MEMORY_PAGE_LIST + param))
+            .get()
+            .build();
     return MyApi.call(request);
   }
 

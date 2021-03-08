@@ -32,19 +32,6 @@ class EyewitnessMemoryListPageState extends State<EyewitnessMemoryListPage> {
         return Scaffold(
             backgroundColor: Colors.white,
             appBar: ZJ_AppBar("见证列表"),
-            floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: () async {
-                    bool result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                    builder: (BuildContext context) => AddMemoryPage()));
-                    // 如果新增了记录，则刷新列表
-                    if (result == true) {
-                        loadData();
-                    }
-                },
-            ),
             body: SmartRefresher(
                 controller: refreshController,
                 enablePullUp: true,
@@ -141,7 +128,6 @@ class EyewitnessMemoryListPageState extends State<EyewitnessMemoryListPage> {
                     ),
                 ],
             );
-
             this.items.add(item);
         });
     }

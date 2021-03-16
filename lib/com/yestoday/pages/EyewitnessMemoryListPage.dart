@@ -1,12 +1,13 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:zaijian/com/yestoday/pages/MemoryListPage.dart';
 import 'package:zaijian/com/yestoday/service/MyApi.dart';
 import 'package:zaijian/com/yestoday/widget/ZJ_AppBar.dart';
-import 'AddMemoryPage.dart';
+import 'package:zaijian/com/yestoday/widget/ZJ_Image.dart';
+import 'MemoryManagementPage.dart';
 
 /**
  * 我的见证列表
@@ -133,3 +134,82 @@ class EyewitnessMemoryListPageState extends State<EyewitnessMemoryListPage> {
     }
 }
 
+class MemoryItem extends StatelessWidget {
+    dynamic user;
+    dynamic memory;
+
+    MemoryItem(this.user, this.memory);
+
+    @override
+    Widget build(BuildContext context) {
+        return Container(
+                padding: EdgeInsets.fromLTRB(5.0, 5, 5.0, 5.0),
+                decoration: BoxDecoration(
+                        color: Colors.white,
+                        border:
+                        Border(bottom: BorderSide(color: Colors.black12, width: 2))),
+                child: Column(children: [
+                    ListTile(
+                            onTap: () {
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                                builder: (BuildContext context) =>
+                                                        MemoryManagementPage(user, memory)));
+                            },
+                            contentPadding: EdgeInsets.all(0),
+                            title: Text("        " + memory['title'],
+                                    style: TextStyle(fontSize: FontSize.NORMAL),
+                                    overflow: TextOverflow.clip),
+                            trailing: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: ZJ_Image.network(MyApi.OBS_HOST + memory['icon'],
+                                            width: 95.0, height: 60.0))),
+                    Divider(indent: 50),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                            UserIcon(memory['creatorIcon'],memory['creatorName']),
+                            Text(
+                                    formatDate(
+                                            DateTime.fromMillisecondsSinceEpoch(memory['createTime']),
+                                            [yyyy, '-', mm, '-', dd, ' ', HH, ':', mm])+'  '+(memory['publicity'] ? '公开' : '私有'),
+                                    style: TextStyle(
+                                            fontSize: FontSize.SMALL, color: Colors.black54))
+
+                        ],
+                    ),
+                ]));
+    }
+}
+class UserIcon extends StatelessWidget {
+    String icon;
+    String nickName;
+    UserIcon(this.icon, this.nickName);
+
+  @override
+    Widget build(BuildContext context) {
+        return Container(
+            padding: EdgeInsets.fromLTRB(3, 1, 3, 1),
+            width: 120,
+            child: Row(
+                children: [
+                    ClipOval(
+                        child: ZJ_Image.network(
+                                MyApi.OBS_HOST+icon,
+                                width: 22.0,
+                                height: 22.0),
+                    ),
+                    Padding(padding: EdgeInsets.all(3)),
+                    Expanded(
+                            child: Text(
+                                    nickName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                            fontSize: FontSize.SMALL, color: Colors.black54)
+                            )),
+                ],
+            ),
+        );
+    }
+}

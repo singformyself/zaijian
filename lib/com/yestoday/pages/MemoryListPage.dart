@@ -127,10 +127,6 @@ class MemoryListPageState extends State<MemoryListPage> {
             color: Theme.of(context).primaryColor,
             icon: Icons.edit,
             onTap: () async {
-              if (user['id'] != memoryVO['creator']) {
-                EasyLoading.showToast('只有创建人才能编辑');
-                return;
-              }
               bool result = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -146,10 +142,6 @@ class MemoryListPageState extends State<MemoryListPage> {
             color: Colors.red,
             icon: Icons.delete,
             onTap: () {
-              if (user['id'] != memoryVO['creator']) {
-                EasyLoading.showToast('只有创建人才能删除');
-                return;
-              }
               MemoryApi.delete(memoryVO['id']).then((rsp) {
                 if (rsp[KEY.SUCCESS]) {
                   EasyLoading.showSuccess('删除成功');

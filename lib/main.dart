@@ -55,8 +55,8 @@ class NavigationFrameState extends State<NavigationFrame> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
-            BottomNavigationBarItem(icon: Icon(Icons.storage), label: "我的回忆"),
-            BottomNavigationBarItem(icon: Icon(Icons.camera), label: "我的见证"),
+            BottomNavigationBarItem(icon: Icon(Icons.storage), label: "回忆"),
+            BottomNavigationBarItem(icon: Icon(Icons.camera), label: "见证"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的")
           ],
           type: BottomNavigationBarType.fixed)
